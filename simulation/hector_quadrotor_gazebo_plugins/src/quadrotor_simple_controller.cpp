@@ -85,6 +85,16 @@ void GazeboQuadrotorSimpleController::Load(physics::ModelPtr _model, sdf::Elemen
    link = _model->GetLink(link_name_);
   }
 
+  if (!_sdf->HasElement("bodyName") || !_sdf->GetElement("bodyName")->GetValue())
+  {
+   link = _model->GetLink();
+   link_name_ = link->GetName();
+  }
+  else {
+   link_name_ = _sdf->GetElement("bodyName")->Get<std::string>();
+   link = _model->GetLink(link_name_);
+  }
+  
   if (!link)
   {
    ROS_FATAL("gazebo_ros_baro plugin error: bodyName: %s does not exist\n", link_name_.c_str());

@@ -6,11 +6,10 @@ xmlns:xacro="http://ros.org/wiki/xacro"
 >
 
   <!-- Quadrotor Simple Controller Plugin -->
-  <xacro:macro name="hector_quadrotor_simple_controller" params="model_name base_link state_topic imu_topic command_topic update_rate">
+  <xacro:macro name="hector_quadrotor_simple_controller" params="model_name base_link state_topic imu_topic command_topic">
     <gazebo>
       <plugin name="hector_quadrotor_simple_controller" filename="libhector_quadrotor_gazebo_simple_controller.so">
         <alwaysOn>true</alwaysOn>
-        <updateRate>${update_rate}</updateRate>
         <bodyName>${base_link}</bodyName>
         <topicName>${model_name}/${command_topic}</topicName>
         <stateTopic>${model_name}/${state_topic}</stateTopic>
