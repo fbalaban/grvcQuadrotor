@@ -9,9 +9,10 @@
   <xacro:include filename="$(find hector_quadrotor_gazebo_plugins)/urdf/quadrotor_controller.urdf.xacro" /-->
 
   <!-- Quadrotor Gazebo Plugins -->
-  <xacro:macro name="quadrotor_plugins" params="model_name">
+  <xacro:macro name="quadrotor_plugins" params="model_name base_link">
     <canonicalBody>base_link</canonicalBody>
-    <xacro:quadrotor_sensors model_name="${model_name}"/>
-    <xacro:quadrotor_simple_controller model_name="${model_name}"  state_topic="ground_truth/state" imu_topic="raw_imu"/>
+    <xacro:quadrotor_sensors model_name="${model_name}" base_link="${base_link}"/>
+    <xacro:quadrotor_simple_controller model_name="${model_name}"  state_topic="ground_truth/state" imu_topic="raw_imu"
+      base_link="${base_link}" command_topic="cmd_vel"/>
   </xacro:macro>
 </robot>

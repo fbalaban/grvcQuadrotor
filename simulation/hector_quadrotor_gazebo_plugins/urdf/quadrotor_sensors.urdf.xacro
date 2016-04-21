@@ -7,11 +7,11 @@ xmlns:xacro="http://ros.org/wiki/xacro"
 >
 
   <!-- Quadrotor Sensor Plugins -->
-  <xacro:macro name="quadrotor_sensors" params="model_name">
+  <xacro:macro name="quadrotor_sensors" params="model_name base_link">
     <gazebo>
       <plugin name="quadrotor_imu_sim" filename="libhector_gazebo_ros_imu.so">
         <updateRate>100.0</updateRate>
-        <bodyName>base_link</bodyName>
+        <bodyName>${base_link}</bodyName>
         <topicName>${model_name}/raw_imu</topicName>
         <rpyOffsets>0 0 0</rpyOffsets> <!-- deprecated -->
         <gaussianNoise>0</gaussianNoise>  <!-- deprecated -->
@@ -25,7 +25,7 @@ xmlns:xacro="http://ros.org/wiki/xacro"
 
       <plugin name="quadrotor_baro_sim" filename="libhector_gazebo_ros_baro.so">
         <updateRate>10.0</updateRate>
-        <bodyName>base_link</bodyName>
+        <bodyName>${base_link}</bodyName>
         <topicName>${model_name}/pressure_height</topicName>
         <altimeterTopicName>${model_name}/altimeter</altimeterTopicName>
         <offset>0</offset>
@@ -35,7 +35,7 @@ xmlns:xacro="http://ros.org/wiki/xacro"
 
       <plugin name="quadrotor_magnetic_sim" filename="libhector_gazebo_ros_magnetic.so">
         <updateRate>10.0</updateRate>
-        <bodyName>base_link</bodyName>
+        <bodyName>${base_link}</bodyName>
         <topicName>${model_name}/magnetic</topicName>
         <offset>0 0 0</offset>
         <drift>0.0 0.0 0.0</drift>
@@ -44,7 +44,7 @@ xmlns:xacro="http://ros.org/wiki/xacro"
 
       <plugin name="quadrotor_gps_sim" filename="libhector_gazebo_ros_gps.so">
         <updateRate>4.0</updateRate>
-        <bodyName>base_link</bodyName>
+        <bodyName>${base_link}</bodyName>
         <topicName>${model_name}/fix</topicName>
         <velocityTopicName>${model_name}/fix_velocity</velocityTopicName>
         <drift>5.0 5.0 5.0</drift>
@@ -55,7 +55,7 @@ xmlns:xacro="http://ros.org/wiki/xacro"
 
       <plugin name="quadrotor_groundtruth_sim" filename="libgazebo_ros_p3d.so">
         <updateRate>100.0</updateRate>
-        <bodyName>base_link</bodyName>
+        <bodyName>${base_link}</bodyName>
         <topicName>${model_name}/ground_truth/state</topicName>
         <gaussianNoise>0.0</gaussianNoise>
         <frameName>map</frameName>
