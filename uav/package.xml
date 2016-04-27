@@ -1,0 +1,15 @@
+<package>
+	<name>grvcQuadrotorUav</name>
+	<version>1.0.0</version>
+	<description>
+		This package provides a high level interface to a uav platform.
+	</description>
+	<maintainer email="todo@todo.com">GRVC University of Seville</maintainer>
+	<license>MIT</license>
+
+	<buildtool_depend>catkin</buildtool_depend>
+
+	<build_depend>rosscpp</build_depend>
+
+	<run_depend>rosscpp</run_depend>
+</package>
