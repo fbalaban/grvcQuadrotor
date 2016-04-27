@@ -26,6 +26,10 @@
 #ifndef _GRVCQUADROTOR_UAV_SRC_SERVER_UAV_SERVICE_ROS_H_
 #define _GRVCQUADROTOR_UAV_SRC_SERVER_UAV_SERVICE_ROS_H_
 
+#ifdef GRVC_USE_ROS
+
+#include "uav_service.h"
+
 namespace grvc {
 	
 	class UavServiceROS : public UavService {
@@ -34,5 +38,7 @@ namespace grvc {
 	};
 	
 }	// namespace grvc
+
+#endif // GRVC_USE_ROS
 
 #endif // _GRVCQUADROTOR_UAV_SRC_SERVER_UAV_SERVICE_ROS_H_
