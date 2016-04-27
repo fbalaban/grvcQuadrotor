@@ -31,15 +31,15 @@ project(grvcQuadrotorUav)
 option(GRVCQUAD_BUILD_TESTS "Enable testing and generate test projects" OFF)
 
 # ---- Clasify sources according to folder structure ----
-# This macro is courtesy of http://www.cmake.org/pipermail/cmake/2013-November/056336.html
-macro(GroupSources curdir)
+# This macro is a modified version of http://www.cmake.org/pipermail/cmake/2013-November/056336.html
+macro(GroupSources curdir dirLabel)
 	file(GLOB children RELATIVE ${PROJECT_SOURCE_DIR}/${curdir}
 		${PROJECT_SOURCE_DIR}/${curdir}/*)
 	foreach(child ${children})
 		if(IS_DIRECTORY ${PROJECT_SOURCE_DIR}/${curdir}/${child})
-			GroupSources(${curdir}/${child})
+			GroupSources(${curdir}/${child} ${dirLabel}/${child})
 		else()
-			string(REPLACE "/" "\\" groupname ${curdir})
+			string(REPLACE "/" "\\" groupname ${dirLabel})
 			source_group(${groupname} FILES
 				${PROJECT_SOURCE_DIR}/${curdir}/${child})
 		endif()
@@ -56,22 +56,25 @@ if(CMAKE_COMPILER_IS_GNUCXX)
 endif()
 
 # --- uav server library. Extend this library to create more advanced servers ---
-file(GLOB_RECURSE UAVSERVER_SOURCE_FILES "server/*.cpp" "server/*.h" "server/*.inl")
-GroupSources(server)
+set(SERVER_DIR src/server)
+file(GLOB_RECURSE UAVSERVER_SOURCE_FILES "${SERVER_DIR}/*.cpp" "${SERVER_DIR}/*.h" "${SERVER_DIR}/*.inl")
+GroupSources(src/server server)
 add_library(uav_server STATIC ${UAVSERVER_SOURCE_FILES})
-target_include_directories(uav_server PUBLIC "server")
+target_include_directories(uav_server PUBLIC "include")
 set_target_properties(uav_server PROPERTIES FOLDER "uav")
 
 # --- Main executable, simple node running the uav service ---
-file(GLOB_RECURSE UAVNODE_SOURCE_FILES "node/*.cpp" "node/*.h" "node/*.inl")
-GroupSources(node)
+set(NODE_DIR src/server)
+file(GLOB_RECURSE UAVNODE_SOURCE_FILES "${NODE_DIR}/*.cpp" "${NODE_DIR}/*.h" "${NODE_DIR}/*.inl")
+GroupSources(src/node node)
 add_executable(uav_node ${UAVNODE_SOURCE_FILES})
 target_link_libraries(uav_node LINK_PUBLIC uav_server)
 set_target_properties(uav_node PROPERTIES FOLDER "uav")
 
 # --- Client library. Communicates with uav server ---
-file(GLOB_RECURSE UAVCLIENT_SOURCE_FILES "client/*.cpp" "client/*.h" "client/*.inl")
-GroupSources(client)
+set(CLIENT_DIR src/server)
+file(GLOB_RECURSE UAVCLIENT_SOURCE_FILES "${CLIENT_DIR}/*.cpp" "${CLIENT_DIR}/*.h" "${CLIENT_DIR}/*.inl")
+GroupSources(src/client client)
 add_library(uav_client STATIC ${UAVCLIENT_SOURCE_FILES})
-target_include_directories(uav_client PUBLIC "client")
+target_include_directories(uav_client PUBLIC "include")
 set_target_properties(uav_client PROPERTIES FOLDER "uav")
