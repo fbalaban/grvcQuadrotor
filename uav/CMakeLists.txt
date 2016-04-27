@@ -46,15 +46,6 @@ macro(GroupSources curdir dirLabel)
 	endforeach()
 endmacro()
 
-# --- Compiler specific options ---
-# Visual studio specifics
-if(MSVC)
-	add_definitions(/W4 /WX) # Enable high level warnings and treat them like errors
-endif(MSVC)
-if(CMAKE_COMPILER_IS_GNUCXX)
-    add_definitions(-std=c++11 -Wall -Werror)
-endif()
-
 # --- Catkin specific configuration for ros ---
 if(GRVCQUAD_USE_ROS)
 	find_package(catkin REQUIRED COMPONENTS roscpp)
