@@ -23,8 +23,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //------------------------------------------------------------------------------
-#ifndef _GRVCQUADROTOR_UAV_CLIENT_UAV_CLIENT_H_
-#define _GRVCQUADROTOR_UAV_CLIENT_UAV_CLIENT_H_
+#ifndef _GRVCQUADROTOR_UAV_CLIENT_UAVCLIENT_H_
+#define _GRVCQUADROTOR_UAV_CLIENT_UAVCLIENT_H_
 
 namespace grvc {
 	
@@ -35,4 +35,4 @@ namespace grvc {
 	
 }	// namespace grvc
 
-#endif // _GRVCQUADROTOR_UAV_CLIENT_UAV_CLIENT_H_
+#endif // _GRVCQUADROTOR_UAV_CLIENT_UAVCLIENT_H_

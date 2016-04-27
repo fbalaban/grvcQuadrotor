@@ -23,16 +23,22 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //------------------------------------------------------------------------------
-#ifndef _GRVCQUADROTOR_UAV_SRC_UAV_SERVER_H_
-#define _GRVCQUADROTOR_UAV_SRC_UAV_SERVER_H_
+#ifndef _GRVCQUADROTOR_UAV_SERVER_SERVICE_UAVSERVICEROS_H_
+#define _GRVCQUADROTOR_UAV_SERVER_SERVICE_UAVSERVICEROS_H_
+
+#ifdef GRVC_USE_ROS
+
+#include "uav_service.h"
 
 namespace grvc {
 	
-	class UavServer {
+	class UavServiceROS : public UavService {
 	public:
-		void run(int _argc, const char** _argv);
+		void onFollowWpList() override;
 	};
 	
 }	// namespace grvc
 
-#endif // _GRVCQUADROTOR_UAV_SRC_UAV_SERVER_H_
+#endif // GRVC_USE_ROS
+
+#endif // _GRVCQUADROTOR_UAV_SERVER_SERVICE_UAVSERVICEROS_H_

@@ -55,16 +55,23 @@ if(CMAKE_COMPILER_IS_GNUCXX)
     add_definitions(-std=c++11 -Wall -Werror)
 endif()
 
-# --- Main project, uav server ---
-include_directories("src") # Both the server and the client must be able to access the server's headers
-file(GLOB_RECURSE UAV_SOURCE_FILES "src/*.cpp" "src/*.h" "src/*.inl")
-GroupSources(src)
-add_executable(uav ${UAV_SOURCE_FILES})
-set_target_properties(uav PROPERTIES FOLDER "uav")
+# --- uav server library. Extend this library to create more advanced servers ---
+file(GLOB_RECURSE UAVSERVER_SOURCE_FILES "server/*.cpp" "server/*.h" "server/*.inl")
+GroupSources(server)
+add_library(uav_server STATIC ${UAVSERVER_SOURCE_FILES})
+target_include_directories(uav_server PUBLIC "server")
+set_target_properties(uav_server PROPERTIES FOLDER "uav")
 
-# --- Client library ---
+# --- Main executable, simple node running the uav service ---
+file(GLOB_RECURSE UAVNODE_SOURCE_FILES "node/*.cpp" "node/*.h" "node/*.inl")
+GroupSources(node)
+add_executable(uav_node ${UAVNODE_SOURCE_FILES})
+target_link_libraries(uav_node LINK_PUBLIC uav_server)
+set_target_properties(uav_node PROPERTIES FOLDER "uav")
+
+# --- Client library. Communicates with uav server ---
 file(GLOB_RECURSE UAVCLIENT_SOURCE_FILES "client/*.cpp" "client/*.h" "client/*.inl")
 GroupSources(client)
-add_library(uavClient STATIC ${UAVCLIENT_SOURCE_FILES})
-target_include_directories(uavClient PUBLIC "client")
-set_target_properties(uavClient PROPERTIES FOLDER "uav")
+add_library(uav_client STATIC ${UAVCLIENT_SOURCE_FILES})
+target_include_directories(uav_client PUBLIC "client")
+set_target_properties(uav_client PROPERTIES FOLDER "uav")
