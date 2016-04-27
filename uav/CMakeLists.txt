@@ -60,9 +60,11 @@ include_directories("src") # Both the server and the client must be able to acce
 file(GLOB_RECURSE UAV_SOURCE_FILES "src/*.cpp" "src/*.h" "src/*.inl")
 GroupSources(src)
 add_executable(uav ${UAV_SOURCE_FILES})
+set_target_properties(uav PROPERTIES FOLDER "uav")
 
 # --- Client library ---
 file(GLOB_RECURSE UAVCLIENT_SOURCE_FILES "client/*.cpp" "client/*.h" "client/*.inl")
 GroupSources(client)
 add_library(uavClient STATIC ${UAVCLIENT_SOURCE_FILES})
 target_include_directories(uavClient PUBLIC "client")
+set_target_properties(uavClient PROPERTIES FOLDER "uav")
