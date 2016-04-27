@@ -1,5 +1,5 @@
 <package>
-	<name>grvcQuadrotorUav</name>
+	<name>grvc_quadrotor_uav</name>
 	<version>1.0.0</version>
 	<description>
 		This package provides a high level interface to a uav platform.
