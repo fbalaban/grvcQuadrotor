@@ -55,26 +55,40 @@ if(CMAKE_COMPILER_IS_GNUCXX)
     add_definitions(-std=c++11 -Wall -Werror)
 endif()
 
+# --- Catkin specific configuration for ros ---
+if(GRVCQUAD_USE_ROS)
+	find_package(catkin REQUIRED COMPONENTS roscpp)
+
+	catkin_package(
+		INCLUDE_DIRS include
+		LIBRARIES uav_server uav_client
+		CATKIN_DEPENDS roscpp)
+
+	include_directories(${catkin_INCLUDE_DIRS})
+endif(GRVCQUAD_USE_ROS)
+
 # --- uav server library. Extend this library to create more advanced servers ---
 set(SERVER_DIR src/server)
-file(GLOB_RECURSE UAVSERVER_SOURCE_FILES "${SERVER_DIR}/*.cpp" "${SERVER_DIR}/*.h" "${SERVER_DIR}/*.inl")
+file(GLOB_RECURSE UAVSERVER_SOURCE_FILES "${SERVER_DIR}/*.cpp")
 GroupSources(src/server server)
+GroupSources(include/uav_server server)
 add_library(uav_server STATIC ${UAVSERVER_SOURCE_FILES})
 target_include_directories(uav_server PUBLIC "include")
 set_target_properties(uav_server PROPERTIES FOLDER "uav")
 
 # --- Main executable, simple node running the uav service ---
-set(NODE_DIR src/server)
-file(GLOB_RECURSE UAVNODE_SOURCE_FILES "${NODE_DIR}/*.cpp" "${NODE_DIR}/*.h" "${NODE_DIR}/*.inl")
+set(NODE_DIR src/node)
+file(GLOB_RECURSE UAVNODE_SOURCE_FILES "${NODE_DIR}/*.cpp")
 GroupSources(src/node node)
 add_executable(uav_node ${UAVNODE_SOURCE_FILES})
 target_link_libraries(uav_node LINK_PUBLIC uav_server)
 set_target_properties(uav_node PROPERTIES FOLDER "uav")
 
 # --- Client library. Communicates with uav server ---
-set(CLIENT_DIR src/server)
-file(GLOB_RECURSE UAVCLIENT_SOURCE_FILES "${CLIENT_DIR}/*.cpp" "${CLIENT_DIR}/*.h" "${CLIENT_DIR}/*.inl")
+set(CLIENT_DIR src/client)
+file(GLOB_RECURSE UAVCLIENT_SOURCE_FILES "${CLIENT_DIR}/*.cpp")
 GroupSources(src/client client)
+GroupSources(include/uav_client client)
 add_library(uav_client STATIC ${UAVCLIENT_SOURCE_FILES})
 target_include_directories(uav_client PUBLIC "include")
 set_target_properties(uav_client PROPERTIES FOLDER "uav")
