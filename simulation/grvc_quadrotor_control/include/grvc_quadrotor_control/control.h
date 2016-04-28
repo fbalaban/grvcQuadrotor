@@ -23,13 +23,19 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //------------------------------------------------------------------------------
-#include <grvc_quadrotor_control/control.h>
+#ifndef _GRVCQUADROTOR_SIMULATION_GRVCQUADROTORCONTROL_CONTROL_H_
+#define _GRVCQUADROTOR_SIMULATION_GRVCQUADROTORCONTROL_CONTROL_H_
 
-int main(int _argc, char** _argv) {
+#include <ros/ros.h>
 
-	const char nodeName[] = "grvc_quadrotor_control";
-	grvc::QuadrotorControl controller(nodeName, _argc, _argv);
+namespace grvc {
+	class QuadrotorControl {
+	public:
+		QuadrotorControl(const char* _nodeName, int _argc, char** _argv);
+		void run();
 
-	controller.run();
-	return 0;
-}
+	private:
+		ros::NodeHandle	mRosHandle;
+	};
+} // namespace grvc
+#endif // _GRVCQUADROTOR_SIMULATION_GRVCQUADROTORCONTROL_CONTROL_H_

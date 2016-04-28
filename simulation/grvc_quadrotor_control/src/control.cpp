@@ -24,12 +24,23 @@
 // SOFTWARE.
 //------------------------------------------------------------------------------
 #include <grvc_quadrotor_control/control.h>
+#include <ros/ros.h>
 
-int main(int _argc, char** _argv) {
+namespace grvc {
+	
+	//------------------------------------------------------------------------------------------------------------------
+	QuadrotorControl::QuadrotorControl(const char* _nodeName, int _argc, char** _argv)
+		: mRosHandle(_nodeName)
+	{
+		// Init ros
+		ros::init(_argc, _argv, _nodeName, ros::init_options::AnonymousName);
+	}
 
-	const char nodeName[] = "grvc_quadrotor_control";
-	grvc::QuadrotorControl controller(nodeName, _argc, _argv);
+	//------------------------------------------------------------------------------------------------------------------
+	void QuadrotorControl::run() {
+		while(ros::ok()) {
+			//
+		}
+	}
 
-	controller.run();
-	return 0;
-}
+} // namespace grvc
