@@ -10,37 +10,17 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 -->
 <launch>
 	<!-- Configurable options -->
-	<arg name="use_sim_time" default="true"/>
-	<arg name="gui" default="true"/>
-	<arg name="multi" default="true"/>
-
-	<!-- ########################################################################## -->
-	<!-- Launch Gazebo -->
-	<!-- ########################################################################## -->
-	<!-- Configure gazebo server options -->
-	<group if="$(arg use_sim_time)">
-		<param name="/use_sim_time" value="true" />
-	</group>
-
-	<!-- Actually start gazebo server -->
-	<node name="gazebo" pkg="gazebo_ros" type="gzserver" respawn="false" output="screen" args="worlds/empty.world"/>
-
-	<!-- launch gazebo client -->
-	<group if="$(arg gui)">
-		<node name="gazebo_gui" pkg="gazebo_ros" type="gzclient" respawn="false" output="screen"/>
-	</group>
+	<arg name="robot_name"/> <!-- Robot name defines the namespace for all topics regarding the robot -->
+	<arg name="id" default="1"/>
+	<arg name="pos_x" default="0.0"/>
+	<arg name="pos_y" default="0.0"/>
+	<arg name="pos_z" default="1.0"/>
 
 	<!-- Spawn a quad: send the robot XML to param server, push robot_description to factory and spawn robot in gazebo-->
-	<include file="$(find grvc_quadrotor_gazebo)/launch/spawn_quad.launch">
-		<arg name="robot_name" value="grvc_gazebo_1"/>
-		<arg name="id" value="1"/>
-	</include>
-
-	<group if="$(arg multi)">
-		<include file="$(find grvc_quadrotor_gazebo)/launch/spawn_quad.launch">
-			<arg name="pos_x" value="2.0"/>
-			<arg name="robot_name" value="grvc_gazebo_2"/>
-			<arg name="id" value="2"/>
-		</include>
-	</group>
+	<arg name="model" default="$(find grvc_quadrotor_gazebo)/urdf/grvc_quadrotor.urdf.xacro"/>
+	<param command="$(find xacro)/xacro.py '$(arg model)' model_name:=$(arg robot_name) id:=$(arg id)" name="robot_description_$(arg robot_name)"/>
+	<node name="spawn_$(arg robot_name)" pkg="gazebo_ros" type="spawn_model" output="screen" 
+		args="-param robot_description_$(arg robot_name) -urdf -x $(arg pos_x) -y $(arg pos_y) -z $(arg pos_z) -model $(arg robot_name)"
+		respawn="false">
+	</node>
 </launch>

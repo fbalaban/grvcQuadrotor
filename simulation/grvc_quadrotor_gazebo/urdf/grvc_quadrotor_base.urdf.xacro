@@ -41,7 +41,7 @@ xmlns:xacro="http://ros.org/wiki/xacro">
       <visual>
         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
         <geometry>
-          <mesh filename="package://grvc_quadrotor_hal/model/propellers.dae"/>
+          <mesh filename="package://grvc_quadrotor_gazebo/model/propellers.dae"/>
         </geometry>
       </visual>
 
@@ -73,14 +73,14 @@ xmlns:xacro="http://ros.org/wiki/xacro">
       <visual>
         <origin xyz="0 0 -0.25" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://grvc_quadrotor_hal/model/grvc_quad.dae"/>
+          <mesh filename="package://grvc_quadrotor_gazebo/model/grvc_quad.dae"/>
         </geometry>
       </visual>
 
       <collision>
         <origin xyz="0 0 -0.25" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://grvc_quadrotor_hal/model/grvc_quad_simplified.stl"/>
+          <mesh filename="package://grvc_quadrotor_gazebo/model/grvc_quad_simplified.stl"/>
         </geometry>
       </collision>
     </link>
