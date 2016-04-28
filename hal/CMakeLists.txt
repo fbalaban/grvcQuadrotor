@@ -72,6 +72,7 @@ set(NODE_DIR src/node)
 file(GLOB_RECURSE HALNODE_SOURCE_FILES "${NODE_DIR}/*.cpp")
 GroupSources(src/node node)
 add_executable(hal_node ${HALNODE_SOURCE_FILES})
+target_include_directories(hal_node PUBLIC "include")
 target_link_libraries(hal_node LINK_PUBLIC uav_server)
 set_target_properties(hal_node PROPERTIES FOLDER "hal")
 

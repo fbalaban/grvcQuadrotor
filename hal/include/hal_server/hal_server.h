@@ -30,7 +30,8 @@ namespace grvc {
 	
 	class HalServer {
 	public:
-		void followWpList();
+		HalServer(int _argc, const char** _argv);
+		void run();
 	};
 	
 }	// namespace grvc

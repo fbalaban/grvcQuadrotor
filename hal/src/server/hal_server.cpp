@@ -28,8 +28,10 @@
 namespace grvc {
 	
 	//------------------------------------------------------------------------------------------------------------------
-	void HalServer::followWpList() {
-		// TODO
+	HalServer::HalServer(int _argc, const char** _argv) {
+		// Unused variables
+		_argc;
+		_argv;
 	}
 	
 }	// namespace grvc
