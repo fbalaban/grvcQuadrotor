@@ -37,7 +37,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 	<!-- Spawn a quad: send the robot XML to param server, push robot_description to factory and spawn robot in gazebo-->
 	<arg name="model" default="$(find grvc_quadrotor_hal)/urdf/grvc_quadrotor.urdf.xacro"/>
 	<param command="$(find xacro)/xacro.py '$(arg model)'" name="robot_description"/>
-	<node name="spawn_$(arg robot_name)" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf 
-		-x $(arg pos_x) -y $(arg pos_y) -z $(arg pos_z) -model $(arg robot_name)" respawn="false">
+	<node name="spawn_$(arg robot_name)" pkg="gazebo_ros" type="spawn_model" output="screen" 
+		args="-param robot_description -urdf -x $(arg pos_x) -y $(arg pos_y) -z $(arg pos_z) -model $(arg robot_name)"
+		respawn="false">
 	</node>
 </launch>

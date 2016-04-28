@@ -26,16 +26,18 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //=================================================================================================
 
-#include <hector_quadrotor_gazebo_plugins/quadrotor_simple_controller.h>
+#include <grvc_quadrotor_gazebo/quadrotor_simple_controller.h>
 #include <gazebo/common/Events.hh>
 #include <gazebo/physics/physics.hh>
 
 #include <cmath>
+#include <cassert>
 
 namespace gazebo {
 
 GazeboQuadrotorSimpleController::GazeboQuadrotorSimpleController()
 {
+  ROS_INFO(" ---------------- Creating controller plugin ----------------------");
 }
 
 ////////////////////////////////////////////////////////////////////////////////

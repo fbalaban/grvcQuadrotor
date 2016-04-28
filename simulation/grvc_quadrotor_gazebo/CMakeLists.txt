@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(hector_quadrotor_gazebo_plugins)
+project(grvc_quadrotor_gazebo)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -23,4 +23,4 @@ catkin_package(
 link_directories(${GAZEBO_LIBRARY_DIRS})
 include_directories(include ${catkin_INCLUDE_DIRS} ${GAZEBO_INCLUDE_DIRS})
 
-add_library(hector_quadrotor_gazebo_simple_controller src/quadrotor_simple_controller.cpp)
+add_library(grvc_quadrotor_gazebo src/quadrotor_simple_controller.cpp)

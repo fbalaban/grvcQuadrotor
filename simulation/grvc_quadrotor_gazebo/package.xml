@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package>
-  <name>hector_quadrotor_gazebo_plugins</name>
+  <name>grvc_quadrotor_gazebo</name>
   <version>2.0.0</version>
   <description>Modified version of hector_quadrotor_gazebo_plugins</description>
 
