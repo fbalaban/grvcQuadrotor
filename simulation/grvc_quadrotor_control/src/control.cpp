@@ -35,15 +35,16 @@ namespace grvc {
 	
 	//------------------------------------------------------------------------------------------------------------------
 	QuadrotorControl::QuadrotorControl(const char* _nodeName, int _argc, char** _argv)
-		: ros_handle_(_nodeName)
 	{
 		// Init ros
 		ros::init(_argc, _argv, _nodeName, ros::init_options::AnonymousName);
+		ros_handle_ = new ros::NodeHandle(_nodeName);
 		// Init myself
+		setDefaultParams();
 		parseArguments(_argc, _argv);
 		startRosCommunications();
 		// Start running async
-		publish_timer_ = ros_handle_.createTimer(ros::Duration(1/publish_rate_),
+		publish_timer_ = ros_handle_->createTimer(ros::Duration(1/publish_rate_),
                [this](const ros::TimerEvent& _te) { publishCb(_te); });
 	}
 
@@ -88,7 +89,7 @@ namespace grvc {
 	void QuadrotorControl::startRosCommunications() {
 		// Topic to set velocity references for gazebo plugin
 		auto cmd_vel_full_topic = gazebo_ns_ + "/" + cmd_vel_topic_;
-		cmd_vel_pub_ = ros_handle_.advertise<geometry_msgs::Twist>(cmd_vel_full_topic.c_str(), 0);
+		cmd_vel_pub_ = ros_handle_->advertise<geometry_msgs::Twist>(cmd_vel_full_topic.c_str(), 0);
 	}
 
 	//------------------------------------------------------------------------------------------------------------------

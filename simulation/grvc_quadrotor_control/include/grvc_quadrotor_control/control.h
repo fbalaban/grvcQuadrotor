@@ -45,7 +45,7 @@ namespace grvc {
 		void publishCb(const ros::TimerEvent& _te);
 
 	private:
-		ros::NodeHandle	ros_handle_;
+		ros::NodeHandle* ros_handle_;
 		ros::Timer publish_timer_;
 		float publish_rate_ = 100.f;
 

@@ -37,7 +37,6 @@ namespace gazebo {
 
 GazeboQuadrotorSimpleController::GazeboQuadrotorSimpleController()
 {
-  ROS_INFO(" ---------------- Creating controller plugin ----------------------");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -140,7 +139,7 @@ void GazeboQuadrotorSimpleController::Load(physics::ModelPtr _model, sdf::Elemen
      ros::VoidPtr(), &callback_queue_);
    imu_subscriber_ = node_handle_->subscribe(ops);
 
-   ROS_INFO_NAMED("hector_quadrotor_simple_controller", "Using imu information on topic %s as source of orientation and angular velocity.", imu_topic_.c_str());
+   //ROS_INFO_NAMED("hector_quadrotor_simple_controller", "Using imu information on topic %s as source of orientation and angular velocity.", imu_topic_.c_str());
   }
 
   // subscribe state
@@ -152,7 +151,7 @@ void GazeboQuadrotorSimpleController::Load(physics::ModelPtr _model, sdf::Elemen
      ros::VoidPtr(), &callback_queue_);
    state_subscriber_ = node_handle_->subscribe(ops);
 
-   ROS_INFO_NAMED("hector_quadrotor_simple_controller", "Using state information on topic %s as source of state information.", state_topic_.c_str());
+   //ROS_INFO_NAMED("hector_quadrotor_simple_controller", "Using state information on topic %s as source of state information.", state_topic_.c_str());
   }
 
   // callback_queue_thread_ = boost::thread( boost::bind( &GazeboQuadrotorSimpleController::CallbackQueueThread,this ) );
