@@ -25,6 +25,9 @@
 //------------------------------------------------------------------------------
 #include <grvc_quadrotor_control/control.h>
 #include <ros/ros.h>
+#include <string>
+
+using namespace std;
 
 namespace grvc {
 	
@@ -34,13 +37,45 @@ namespace grvc {
 	{
 		// Init ros
 		ros::init(_argc, _argv, _nodeName, ros::init_options::AnonymousName);
+		// Init myself
+		parseArguments(_argc, _argv);
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
 	void QuadrotorControl::run() {
-		while(ros::ok()) {
-			//
+		// Keep running asynchronously until some event cancels execution
+		ros::AsyncSpinner spinner(0);
+		spinner.start();
+		ros::waitForShutdown();
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	void QuadrotorControl::setDefaultParams() {
+		gazebo_ns_ = "gazebo_ns_";
+		cmd_vel_topic_ = "cmd_vel";
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	void QuadrotorControl::parseArguments(int _argc, char** _argv) {
+		const string gazebo_ns_arg = "-gazebo_ns=";
+		const string cmd_vel_topic_arg = "-cmd_vel_topic=";
+
+		for(int i = 0; i < _argc; ++i) {
+			string arg = _argv[i];
+			if(parseArg(arg, gazebo_ns_arg, gazebo_ns_))
+				break;
+			if(parseArg(arg, cmd_vel_topic_arg, cmd_vel_topic_))
+				break;
 		}
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	bool QuadrotorControl::parseArg(const string& _arg, const string& _label, string& _dst) {
+		if(_arg.substr(0, _label.size()) == _label) {
+			_dst = _arg.substr(_label.size());
+			return true;
+		}
+		return false;
 	}
 
 } // namespace grvc

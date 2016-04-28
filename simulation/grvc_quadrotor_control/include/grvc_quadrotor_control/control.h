@@ -27,6 +27,7 @@
 #define _GRVCQUADROTOR_SIMULATION_GRVCQUADROTORCONTROL_CONTROL_H_
 
 #include <ros/ros.h>
+#include <string>
 
 namespace grvc {
 	class QuadrotorControl {
@@ -35,7 +36,14 @@ namespace grvc {
 		void run();
 
 	private:
+		void setDefaultParams();
+		void parseArguments(int _argc, char** _argv);
+		bool parseArg(const std::string& _arg, const std::string& _label, std::string& _dst);
 		ros::NodeHandle	mRosHandle;
+
+		// Ros communication topics
+		std::string cmd_vel_topic_;
+		std::string gazebo_ns_;
 	};
 } // namespace grvc
 #endif // _GRVCQUADROTOR_SIMULATION_GRVCQUADROTORCONTROL_CONTROL_H_
