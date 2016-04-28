@@ -60,26 +60,26 @@ endif(GRVCQUAD_USE_ROS)
 
 # --- uav server library. Extend this library to create more advanced servers ---
 set(SERVER_DIR src/server)
-file(GLOB_RECURSE UAVSERVER_SOURCE_FILES "${SERVER_DIR}/*.cpp")
+file(GLOB_RECURSE HALSERVER_SOURCE_FILES "${SERVER_DIR}/*.cpp")
 GroupSources(src/server server)
 GroupSources(include/hal_server server)
-add_library(hal_server STATIC ${UAVSERVER_SOURCE_FILES})
+add_library(hal_server STATIC ${HALSERVER_SOURCE_FILES})
 target_include_directories(hal_server PUBLIC "include")
 set_target_properties(hal_server PROPERTIES FOLDER "hal")
 
 # --- Main executable, simple node running the uav service ---
 set(NODE_DIR src/node)
-file(GLOB_RECURSE UAVNODE_SOURCE_FILES "${NODE_DIR}/*.cpp")
+file(GLOB_RECURSE HALNODE_SOURCE_FILES "${NODE_DIR}/*.cpp")
 GroupSources(src/node node)
-add_executable(hal_node ${UAVNODE_SOURCE_FILES})
+add_executable(hal_node ${HALNODE_SOURCE_FILES})
 target_link_libraries(hal_node LINK_PUBLIC uav_server)
 set_target_properties(hal_node PROPERTIES FOLDER "hal")
 
 # --- Client library. Communicates with uav server ---
 set(CLIENT_DIR src/client)
-file(GLOB_RECURSE UAVCLIENT_SOURCE_FILES "${CLIENT_DIR}/*.cpp")
+file(GLOB_RECURSE HALCLIENT_SOURCE_FILES "${CLIENT_DIR}/*.cpp")
 GroupSources(src/client client)
 GroupSources(include/hal_client client)
-add_library(hal_client STATIC ${UAVCLIENT_SOURCE_FILES})
+add_library(hal_client STATIC ${HALCLIENT_SOURCE_FILES})
 target_include_directories(hal_client PUBLIC "include")
 set_target_properties(hal_client PROPERTIES FOLDER "hal")
