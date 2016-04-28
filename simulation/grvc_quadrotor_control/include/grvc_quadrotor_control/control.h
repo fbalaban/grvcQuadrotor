@@ -39,7 +39,18 @@ namespace grvc {
 		void setDefaultParams();
 		void parseArguments(int _argc, char** _argv);
 		bool parseArg(const std::string& _arg, const std::string& _label, std::string& _dst);
-		ros::NodeHandle	mRosHandle;
+		void startRosCommunications();
+
+		// Call backs
+		void publishCb(const ros::TimerEvent& _te);
+
+	private:
+		ros::NodeHandle	ros_handle_;
+		ros::Timer publish_timer_;
+		float publish_rate_ = 100.f;
+
+		// Ros communication channels
+		ros::Publisher	cmd_vel_pub_;
 
 		// Ros communication topics
 		std::string cmd_vel_topic_;

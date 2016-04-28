@@ -15,6 +15,9 @@ catkin_package(
   CATKIN_DEPENDS roscpp
 )
 
+# Compiler config
+add_definitions(-std=c++11 -Wall -Werror)
+
 link_directories(${GAZEBO_LIBRARY_DIRS})
 include_directories(include ${catkin_INCLUDE_DIRS} "include")
 

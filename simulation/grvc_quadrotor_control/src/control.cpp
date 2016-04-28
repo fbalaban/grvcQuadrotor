@@ -23,7 +23,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //------------------------------------------------------------------------------
+#include <functional>
 #include <grvc_quadrotor_control/control.h>
+#include <geometry_msgs/Twist.h>
 #include <ros/ros.h>
 #include <string>
 
@@ -33,12 +35,16 @@ namespace grvc {
 	
 	//------------------------------------------------------------------------------------------------------------------
 	QuadrotorControl::QuadrotorControl(const char* _nodeName, int _argc, char** _argv)
-		: mRosHandle(_nodeName)
+		: ros_handle_(_nodeName)
 	{
 		// Init ros
 		ros::init(_argc, _argv, _nodeName, ros::init_options::AnonymousName);
 		// Init myself
 		parseArguments(_argc, _argv);
+		startRosCommunications();
+		// Start running async
+		publish_timer_ = ros_handle_.createTimer(ros::Duration(1/publish_rate_),
+               [this](const ros::TimerEvent& _te) { publishCb(_te); });
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
@@ -76,6 +82,25 @@ namespace grvc {
 			return true;
 		}
 		return false;
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	void QuadrotorControl::startRosCommunications() {
+		// Topic to set velocity references for gazebo plugin
+		auto cmd_vel_full_topic = gazebo_ns_ + "/" + cmd_vel_topic_;
+		cmd_vel_pub_ = ros_handle_.advertise<geometry_msgs::Twist>(cmd_vel_full_topic.c_str(), 0);
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	void QuadrotorControl::publishCb(const ros::TimerEvent&) {
+		geometry_msgs::Twist t;
+		t.linear.x = 0.0;
+		t.linear.y = 0.0;
+		t.linear.z = 0.0;
+		t.angular.x = 0.0;
+		t.angular.y = 0.0;
+		t.angular.z = 1.0;
+		cmd_vel_pub_.publish(t);
 	}
 
 } // namespace grvc
