@@ -27,6 +27,7 @@
 #define _GRVCQUADROTOR_SIMULATION_GRVCQUADROTORCONTROL_CONTROL_H_
 
 #include <ros/ros.h>
+#include <gazebo/common/PID.hh>
 #include <string>
 
 namespace grvc {

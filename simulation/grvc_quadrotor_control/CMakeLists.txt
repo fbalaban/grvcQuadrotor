@@ -9,17 +9,21 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   hector_gazebo_plugins
   hector_uav_msgs
+  gazebo_ros
 )
 
 catkin_package(
   CATKIN_DEPENDS roscpp
+  DEPENDS gazebo_ros
 )
+
+find_package(gazebo REQUIRED)
 
 # Compiler config
 add_definitions(-std=c++11 -Wall -Werror)
 
 link_directories(${GAZEBO_LIBRARY_DIRS})
-include_directories(include ${catkin_INCLUDE_DIRS} "include")
+include_directories(include ${catkin_INCLUDE_DIRS} ${GAZEBO_INCLUDE_DIRS} "include")
 
 # ---- Clasify sources according to folder structure ----
 # This macro is a modified version of http://www.cmake.org/pipermail/cmake/2013-November/056336.html
