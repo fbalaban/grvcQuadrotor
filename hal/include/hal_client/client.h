@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// GRVC Quadrotor Control
+// GRVC Quadrotor HAL
 //------------------------------------------------------------------------------
 // The MIT License (MIT)
 // 
@@ -23,56 +23,30 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //------------------------------------------------------------------------------
-#ifndef _GRVCQUADROTOR_SIMULATION_GRVCQUADROTORCONTROL_CONTROL_H_
-#define _GRVCQUADROTOR_SIMULATION_GRVCQUADROTORCONTROL_CONTROL_H_
+#ifndef _GRVCQUADROTOR_HAL_CLIENT_CLIENT_H_
+#define _GRVCQUADROTOR_HAL_CLIENT_CLIENT_H_
 
-#include <ros/ros.h>
-#include <gazebo/common/PID.hh>
+#include <Eigen/Core>
+#include <vector>
 #include <string>
-#include "model.h"
 
-namespace grvc {
-
-	class State;
-
-	class QuadrotorControl {
+namespace grvc { namespace hal {
+	
+	class Client {
 	public:
-		QuadrotorControl(const char* _nodeName, int _argc, char** _argv);
-		void run();
+		typedef Eigen::Vector3d	Vec3;
+	public:
+		// Public hal interface
+		virtual void goToWP			() = 0;
+		virtual void takeOff		() = 0;
+		virtual void land			() = 0;
+		virtual bool finishedTask	() const = 0;
+		virtual void abortTask		() = 0;
+		virtual Vec3 position		() const = 0;
 
-	private:
-		void setDefaultParams();
-		void parseArguments(int _argc, char** _argv);
-		bool parseArg(const std::string& _arg, const std::string& _label, std::string& _dst);
-		void startRosCommunications();
-
-		// Call backs
-		void publishCb(const ros::TimerEvent& _te);
-		void updateCb(const ros::TimerEvent& _te);
-
-	private:
-		ros::NodeHandle* ros_handle_;
-		ros::Timer publish_timer_;
-		ros::Timer update_timer_;
-		float publish_rate_ = 100.f;
-		float update_rate_ = 100.f;
-
-		// Control
-		Model state_controller_;
-
-		// State machine
-		State* cur_state_ = nullptr;
-		double take_off_z_ = 1.0;
-
-		// Ros communication channels
-		ros::Publisher	cmd_vel_pub_;
-		ros::Subscriber	control_refs_sub_;
-   		ros::Subscriber odometry_sub_;
-
-		// Ros communication topics
-		std::string odometry_topic_;
-		std::string cmd_vel_topic_;
-		std::string gazebo_ns_;
+		static Client* createClient(const std::vector<std::string>& _args);
 	};
-} // namespace grvc
-#endif // _GRVCQUADROTOR_SIMULATION_GRVCQUADROTORCONTROL_CONTROL_H_
+	
+}}	// namespace grvc::hal
+
+#endif // _GRVCQUADROTOR_HAL_CLIENT_CLIENT_H_

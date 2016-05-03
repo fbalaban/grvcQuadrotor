@@ -122,6 +122,7 @@ namespace grvc {
 		// -- Init states if necessary
 		if(!cur_state_) {
 			// Use current state estimation to decide initial state
+			
 		}
 	}
 

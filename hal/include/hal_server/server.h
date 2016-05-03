@@ -23,17 +23,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //------------------------------------------------------------------------------
-#ifndef _GRVCQUADROTOR_HAL_SERVER_HALSERVER_H_
-#define _GRVCQUADROTOR_HAL_SERVER_HALSERVER_H_
+#ifndef _GRVCQUADROTOR_HAL_SERVER_SERVER_H_
+#define _GRVCQUADROTOR_HAL_SERVER_SERVER_H_
 
-namespace grvc {
+namespace grvc { namespace hal {
 	
-	class HalServer {
+	class Server {
 	public:
-		HalServer(int _argc, const char** _argv);
+		Server(int _argc, const char** _argv);
 		void run();
 	};
 	
-}	// namespace grvc
+}}	// namespace grvc::hal
 
-#endif // _GRVCQUADROTOR_HAL_SERVER_HALSERVER_H_
+#endif // _GRVCQUADROTOR_HAL_SERVER_SERVER_H_

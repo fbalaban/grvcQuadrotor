@@ -23,19 +23,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //------------------------------------------------------------------------------
-#ifndef _GRVCQUADROTOR_HAL_CLIENT_HALCLIENT_H_
-#define _GRVCQUADROTOR_HAL_CLIENT_HALCLIENT_H_
+#ifndef _GRVCQUADROTOR_HAL_SERVER_SERVICE_SERVICE_H_
+#define _GRVCQUADROTOR_HAL_SERVER_SERVICE_SERVICE_H_
 
-namespace grvc {
+namespace grvc { namespace hal {
 	
-	class HalClient {
+	class Service {
 	public:
-		void followWpList	();
-		void takeOff		();
-		void land			();
-		void goTo			();
+		HalServer(int _argc, const char** _argv);
+		void run();
 	};
 	
-}	// namespace grvc
+}}	// namespace grvc::hal
 
-#endif // _GRVCQUADROTOR_HAL_CLIENT_HALCLIENT_H_
+#endif // _GRVCQUADROTOR_HAL_SERVER_SERVICE_SERVICE_H_
