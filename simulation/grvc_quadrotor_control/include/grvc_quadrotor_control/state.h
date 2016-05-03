@@ -23,55 +23,38 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //------------------------------------------------------------------------------
-#ifndef _GRVCQUADROTOR_SIMULATION_GRVCQUADROTORCONTROL_CONTROL_H_
-#define _GRVCQUADROTOR_SIMULATION_GRVCQUADROTORCONTROL_CONTROL_H_
+#ifndef _GRVCQUADROTOR_SIMULATION_GRVCQUADROTORCONTROL_STATE_H_
+#define _GRVCQUADROTOR_SIMULATION_GRVCQUADROTORCONTROL_STATE_H_
 
-#include <ros/ros.h>
-#include <gazebo/common/PID.hh>
-#include <string>
-#include "model.h"
+#include <geometry_msgs/Twist.h>
 
 namespace grvc {
 
-	class State;
-
-	class QuadrotorControl {
+	class State {
 	public:
-		QuadrotorControl(const char* _nodeName, int _argc, char** _argv);
-		void run();
+		typedef geometry_msgs::Vector3	Vec3;
 
-	private:
-		void setDefaultParams();
-		void parseArguments(int _argc, char** _argv);
-		bool parseArg(const std::string& _arg, const std::string& _label, std::string& _dst);
-		void startRosCommunications();
+	public:
+		double 		yawReference () const { return yaw_action_; }
+		const Vec3& posReference () const { return spd_action_; }
 
-		// Call backs
-		void publishCb(const ros::TimerEvent& _te);
-		void updateCb(const ros::TimerEvent& _te);
+		virtual void setModelEstimation(double _yaw, const Vec3& _pos) = 0;
 
-	private:
-		ros::NodeHandle* ros_handle_;
-		ros::Timer publish_timer_;
-		ros::Timer update_timer_;
-		float publish_rate_ = 100.f;
-		float update_rate_ = 100.f;
+		virtual State* nextState() const = 0;
 
-		// Control
-		Model state_controller_;
+		// Action callbacks
+		virtual void onFlyRequest(const Vec3& _goalPos) = 0;
+		virtual void onTakeOffRequest() = 0;
+		virtual void onLandRequest() = 0;
 
-		// State machine
-		State* cur_state_ = nullptr;
+		virtual bool completedAction() const = 0;
 
-		// Ros communication channels
-		ros::Publisher	cmd_vel_pub_;
-		ros::Subscriber	control_refs_sub_;
-   		ros::Subscriber odometry_sub_;
-
-		// Ros communication topics
-		std::string odometry_topic_;
-		std::string cmd_vel_topic_;
-		std::string gazebo_ns_;
+	protected:
+		// Internal state
+		double	yaw_reference_;
+		Vec3	pos_reference_;
 	};
+
 } // namespace grvc
-#endif // _GRVCQUADROTOR_SIMULATION_GRVCQUADROTORCONTROL_CONTROL_H_
+
+#endif // _GRVCQUADROTOR_SIMULATION_GRVCQUADROTORCONTROL_STATE_H_

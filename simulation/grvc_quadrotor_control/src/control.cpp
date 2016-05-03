@@ -26,6 +26,7 @@
 #include <functional>
 #include <grvc_quadrotor_control/control.h>
 #include <geometry_msgs/Twist.h>
+#include <nav_msgs/Odometry.h>
 #include <ros/ros.h>
 #include <string>
 
@@ -45,7 +46,10 @@ namespace grvc {
 		startRosCommunications();
 		// Start running async
 		publish_timer_ = ros_handle_->createTimer(ros::Duration(1/publish_rate_),
-               [this](const ros::TimerEvent& _te) { publishCb(_te); });
+			[this](const ros::TimerEvent& _te) { publishCb(_te); });
+		update_timer_ = ros_handle_->createTimer(ros::Duration(1/update_rate_),
+			[this](const ros::TimerEvent& _te) { updateCb(_te); });
+
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
@@ -60,18 +64,22 @@ namespace grvc {
 	void QuadrotorControl::setDefaultParams() {
 		gazebo_ns_ = "gazebo_ns_";
 		cmd_vel_topic_ = "cmd_vel";
+		odometry_topic_ = "ground_truth/state";
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
 	void QuadrotorControl::parseArguments(int _argc, char** _argv) {
 		const string gazebo_ns_arg = "-gazebo_ns=";
 		const string cmd_vel_topic_arg = "-cmd_vel_topic=";
+		const string odometry_topic_arg = "-odometry_topic=";
 
 		for(int i = 0; i < _argc; ++i) {
 			string arg = _argv[i];
 			if(parseArg(arg, gazebo_ns_arg, gazebo_ns_))
 				break;
 			if(parseArg(arg, cmd_vel_topic_arg, cmd_vel_topic_))
+				break;
+			if(parseArg(arg, odometry_topic_arg, odometry_topic_))
 				break;
 		}
 	}
@@ -90,18 +98,45 @@ namespace grvc {
 		// Topic to set velocity references for gazebo plugin
 		auto cmd_vel_full_topic = gazebo_ns_ + "/" + cmd_vel_topic_;
 		cmd_vel_pub_ = ros_handle_->advertise<geometry_msgs::Twist>(cmd_vel_full_topic.c_str(), 0);
+
+		// Suscribe to odometry messages from gazebo
+		auto odometry_full_topic = gazebo_ns_ + "/" + odometry_topic_;
+		odometry_sub_ = ros_handle_->subscribe(odometry_full_topic.c_str(),
+               1000, &QuadrotorControl::odometryCb,
+                        this);
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	void QuadrotorControl::odometryCb(const nav_msgs::Odometry::ConstPtr& odom) {
+		
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
 	void QuadrotorControl::publishCb(const ros::TimerEvent&) {
-		geometry_msgs::Twist t;
-		t.linear.x = 0.0;
-		t.linear.y = 0.0;
-		t.linear.z = 0.0;
-		t.angular.x = 0.0;
-		t.angular.y = 0.0;
-		t.angular.z = 1.0;
+		// We can only publish control information when thre is a State available,
+		// generating control references for the PIDs
+		assert(cur_state_);
+		geometry_msgs::Twist twist;
+		twist.linear = state_controller_.velocity();
+		twist.angular.x = 0;
+		twist.angular.y = 0;
+		twist.angular.z = state_controller_.yaw();
 		cmd_vel_pub_.publish(t);
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	void QuadrotorControl::updateCb(const ros::TimerEvent&) {
+		assert(cur_state_);
+		cur_state_->setModelEstimation(state_controller_.yaw(), state_controller_.pos());
+		// Update state
+		State* next_state = cur_state_->nextState();
+		if(next_state != cur_state_) {
+			delete cur_state_;
+			cur_state_ = next_state;
+		}
+		// Update control references
+		state_controller_.setReferencePos(cur_state_->posReference());
+		state_controller_.setReferenceYaw(cur_state_->yawReference());
 	}
 
 } // namespace grvc
