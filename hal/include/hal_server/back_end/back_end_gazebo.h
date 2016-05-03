@@ -22,13 +22,14 @@
 #define _GRVCQUADROTOR_HALSERVER_BACKEND_BACKENDGAZEBO_H_
 
 #include "back_end.h"
+#include "pid_controller.h"
 
 namespace grvc { namespace hal {
 	
 	/// Common interface for back end implementations of hal
 	class BackEndGazebo : public BackEnd {
 	public:
-		BackEndGazebo(int _argc, char** _argv);
+		BackEndGazebo(const char* _nodeName, int _argc, char** _argv);
 
 		/// Go to the specified waypoint, following a straight line.
 		/// \param _wp goal waypoint.
@@ -44,6 +45,35 @@ namespace grvc { namespace hal {
 		void		abortTask		() override;
 		/// Latest position estimation of the robot
 		Vec3		position		() const override;
+
+	private:
+		void run();
+		void setDefaultParams();
+		void parseArguments(int _argc, char** _argv);
+		bool parseArg(const std::string& _arg, const std::string& _label, std::string& _dst);
+		void startRosCommunications();
+		void updateCb(const ros::TimerEvent& _te);
+
+	private:
+		TaskState cur_task_state_;
+
+		ros::NodeHandle* ros_handle_;
+		ros::Timer publish_timer_;
+		ros::Timer update_timer_;
+		float publish_rate_ = 100.f;
+		float update_rate_ = 100.f;
+
+		// Control
+		PidController state_controller_;
+		bool has_odometry_;
+		bool has_references_;
+
+		// Ros communication
+		ros::Publisher	cmd_vel_pub_;
+   		ros::Subscriber odometry_sub_;
+		std::string odometry_topic_;
+		std::string cmd_vel_topic_;
+		std::string gazebo_ns_;
 	};
 	
 }}	// namespace grvc::hal
