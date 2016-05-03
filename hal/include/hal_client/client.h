@@ -60,6 +60,8 @@ namespace grvc { namespace hal {
 		/// Latest position estimation of the robot
 		virtual Vec3		position		() const = 0;
 
+		virtual ~Service() = default; // Ensure proper destructor calling for derived classes
+
 		/// \brief Create an adequate hal::Client depending on current platform and command arguments.
 		/// \param _args command line arguments passed to the program. This arguments will be parsed
 		/// and used to select the best fitting implementation of Client from those available in the
