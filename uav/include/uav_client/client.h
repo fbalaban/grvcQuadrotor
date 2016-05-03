@@ -48,9 +48,9 @@ namespace grvc { namespace uav {
 		/// place in the current location.
 		virtual void land() = 0;
 		/// Cancel execution of the current task
-		virtual void		abortTask		() = 0;
+		virtual void abortTask		() = 0;
 		/// Latest position estimation of the robot
-		virtual Vec3		position		() const = 0;
+		virtual Vec3 position		() const = 0;
 
 		virtual ~Client() = default; // Ensure proper destructor calling for derived classes
 
