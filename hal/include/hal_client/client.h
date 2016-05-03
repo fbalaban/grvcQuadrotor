@@ -21,9 +21,9 @@
 #ifndef _GRVCQUADROTOR_HAL_CLIENT_CLIENT_H_
 #define _GRVCQUADROTOR_HAL_CLIENT_CLIENT_H_
 
-#include <Eigen/Core>
-#include <vector>
+#include <hal_common/types.h>
 #include <string>
+#include <vector>
 
 namespace grvc { namespace hal {
 	/// \brief Cient interface for other modules to communicate with a hal (or hal-derived) node
@@ -33,16 +33,6 @@ namespace grvc { namespace hal {
 	/// and expects a hal::SericeRos to be running in some other node in the network. Equivalent, hal::ClientHttp
 	/// would require hal::ServiceHttp to be running somewhere, with an accessible IP address.
 	class Client {
-	public:
-		typedef Eigen::Vector3d	Vec3;
-
-		enum class TaskState {
-			finished, ///< The task has finished with success.
-			failed, ///< The task failed during execution.
-			aborted, ///< The task was aborted from outside.
-			running ///< The task is still running
-		};
-
 	public:
 		// Public hal interface
 		/// Go to the specified watpoint, following a straight line.
@@ -75,4 +65,4 @@ namespace grvc { namespace hal {
 	
 }}	// namespace grvc::hal
 
-#endif // _GRVCQUADROTOR_HAL_CLIENT_CLIENT_H_
+#endif // _GRVCQUADROTOR_HAL_CLIENT_CLIENT_H_º
