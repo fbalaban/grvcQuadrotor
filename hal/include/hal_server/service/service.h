@@ -48,6 +48,18 @@ namespace grvc { namespace hal {
 		// Direct interface
 		virtual void publishPosition	(const Vec3&) = 0; ///< Publish latest position estimate
 		virtual void publishTaskState	(TaskState) = 0; ///< Publish state of the current task
+
+		virtual ~Service() = default; // Ensure proper destructor calling for derived classes
+
+		/// \brief Create and start an adequate hal::Service depending on current platform and command arguments.
+		/// \param _args command line arguments passed to the program. This arguments will be parsed
+		/// and used to select the best fitting implementation of Service from those available in the
+		/// current platform.
+		/// \return the newly created Service. Whoever calls this method, is responsible for eventually
+		/// destroying the Service.
+		/// \remark This is the recommended method for creating Services, since it abstracts from the
+		/// underlying (platform-dependent) implementation details.
+		static Service* createService(const std::vector<std::string>& _args);
 	};
 	
 }}	// namespace grvc::hal
