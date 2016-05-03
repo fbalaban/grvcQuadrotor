@@ -24,11 +24,12 @@
 // SOFTWARE.
 //------------------------------------------------------------------------------
 #include <functional>
-#include <grvc_quadrotor_control/control.h>
 #include <geometry_msgs/Twist.h>
+#include <grvc_quadrotor_control/control.h>
 #include <nav_msgs/Odometry.h>
 #include <ros/ros.h>
 #include <string>
+#include <tf/transform_datatypes.h>
 
 using namespace std;
 
@@ -108,7 +109,20 @@ namespace grvc {
 
 	//------------------------------------------------------------------------------------------------------------------
 	void QuadrotorControl::odometryCb(const nav_msgs::Odometry::ConstPtr& odom) {
-		
+		// -- Update model controller --
+		state_controller_.setPos(odom->pose.pose.position);
+		// Rotation
+		tf::Quaternion orientation(odom->pose.pose.orientation.x,
+			odom->pose.pose.orientation.y,
+			odom->pose.pose.orientation.z,
+			odom->pose.pose.orientation.w);
+		double roll, pitch, yaw;
+		trix3x3(orientation).getRPY(roll, pitch, yaw);
+		state_controller_.setYaw(yaw);
+		// -- Init states if necessary
+		if(!cur_state_) {
+			// Use current state estimation to decide initial state
+		}
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
