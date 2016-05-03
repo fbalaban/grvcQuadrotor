@@ -53,14 +53,15 @@ namespace grvc { namespace uav {
 		virtual ~Service() = default; // Ensure proper destructor calling for derived classes
 
 		/// \brief Create and start an adequate uav::Service depending on current platform and command arguments.
-		/// \param _args command line arguments passed to the program. This arguments will be parsed
+		/// \param _argc number of arguments in _argv
+		/// \param _argv command line arguments passed to the program. This arguments will be parsed
 		/// and used to select the best fitting implementation of Service from those available in the
 		/// current platform.
 		/// \return the newly created Service. Whoever calls this method, is responsible for eventually
 		/// destroying the Service.
 		/// \remark This is the recommended method for creating Services, since it abstracts from the
 		/// underlying (platform-dependent) implementation details.
-		static Service* createService(const std::vector<std::string>& _args);
+		static Service* createService(int _argc, char** _argv);
 	};
 	
 }}	// namespace grvc::uav

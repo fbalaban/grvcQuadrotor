@@ -23,22 +23,33 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //------------------------------------------------------------------------------
-#ifndef _GRVCQUADROTOR_UAV_SERVER_SERVICE_UAVSERVICEROS_H_
-#define _GRVCQUADROTOR_UAV_SERVER_SERVICE_UAVSERVICEROS_H_
+#ifndef _GRVCQUADROTOR_UAVSERVER_SERVICE_SERVICEROS_H_
+#define _GRVCQUADROTOR_UAVSERVER_SERVICE_SERVICEROS_H_
 
 #ifdef GRVC_USE_ROS
 
-#include "uav_service.h"
+#include "service.h"
+#include <string>
 
-namespace grvc {
+namespace grvc { namespace uav {
 	
-	class UavServiceROS : public UavService {
+	/// Implements Service interface using ROS for communications
+	class ServiceROS : public Service {
 	public:
-		void onFollowWpList() override;
+		ServiceRos(const std::string& _nodeName, int _argc, char** _argv);
+
+		// Set callbacks
+		void onTrackPath	(TrackPathCb) override;	///< Set callback for TrackPath commands
+		void onTakeOff		(TakeOffCb) override;	///< Set callback for TakeOff commands
+		void onLand			(LandCb) override;		///< Set callback for Land commands
+		void onAbort		(AbortCb) override;		///< Set callback for command abortions
+
+		// Direct interface
+		void publishPosition	(const Vec3&) override; ///< Publish latest position estimate
 	};
 	
-}	// namespace grvc
+}}	// namespace grvc::uav
 
 #endif // GRVC_USE_ROS
 
-#endif // _GRVCQUADROTOR_UAV_SERVER_SERVICE_UAVSERVICEROS_H_
+#endif // _GRVCQUADROTOR_UAVSERVER_SERVICE_SERVICEROS_H_
