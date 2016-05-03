@@ -18,33 +18,35 @@
 // OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------------------------------------------------
-#ifndef _GRVCQUADROTOR_HAL_CLIENT_CLIENT_H_
-#define _GRVCQUADROTOR_HAL_CLIENT_CLIENT_H_
+#ifndef _GRVCQUADROTOR_UAVCLIENT_CLIENT_H_
+#define _GRVCQUADROTOR_UAVCLIENT_CLIENT_H_
 
-#include <hal_common/types.h>
+#include <uav_common/types.h>
 #include <string>
 #include <vector>
 
-namespace grvc { namespace hal {
-	/// \brief Cient interface for other modules to communicate with a hal (or hal-derived) node
+namespace grvc { namespace uav {
+	
+	/// \brief Cient interface for other modules to communicate with a uav (or uav-derived) node
 
-	/// Different implementations of this interface are responsible of communications with an analogous hal service.
-	/// For example, hal::ClientRos (derived from hal::Client), implements communications using topics and services
-	/// and expects a hal::SericeRos to be running in some other node in the network. Equivalent, hal::ClientHttp
-	/// would require hal::ServiceHttp to be running somewhere, with an accessible IP address.
+	/// Different implementations of this interface are responsible of communications with an analogous uav service.
+	/// For example, uav::ClientRos (derived from uav::Client), implements communications using topics and services
+	/// and expects a uav::SericeRos to be running in some other node in the network. Equivalent, uav::ClientHttp
+	/// would require uav::ServiceHttp to be running somewhere, with an accessible IP address.
 	class Client {
 	public:
-		// Public hal interface
-		/// Go to the specified waypoint, following a straight line.
-		/// \param _wp goal waypoint.
-		virtual void		goToWP			(const Vec3& _wp) = 0;
-		/// Perform a take off maneuver
+		/// Follow the reqyested path, one waypoint at a time
+		///
+		/// If the UAV is landed, a take off will be automatically performed before actual path tracking can take place
+		/// If a is already being tracked, it will be cancelled and substituted for the new path.
+		/// \param _path an ordered waypoint list to follow.
+		virtual void trackPath(const std::vector<Vec3>& _path) = 0;
+		/// Perform a take off maneuver and hover until new commands arrive.
 		/// \param _height targer height that must be reached to consider the take off complete.
-		virtual void		takeOff			(double _height) = 0;
-		/// Land on the current position.
-		virtual void		land			() = 0;
-		/// Retrieve the state of the last task requested
-		virtual TaskState	curTaskState	() const = 0;
+		virtual void takeOff (double _height) = 0;
+		/// Land on the current position. If a previous command was running. It is instantly aborted and landing takes
+		/// place in the current location.
+		virtual void land() = 0;
 		/// Cancel execution of the current task
 		virtual void		abortTask		() = 0;
 		/// Latest position estimation of the robot
@@ -52,7 +54,7 @@ namespace grvc { namespace hal {
 
 		virtual ~Client() = default; // Ensure proper destructor calling for derived classes
 
-		/// \brief Create an adequate hal::Client depending on current platform and command arguments.
+		/// \brief Create an adequate uav::Client depending on current platform and command arguments.
 		/// \param _args command line arguments passed to the program. This arguments will be parsed
 		/// and used to select the best fitting implementation of Client from those available in the
 		/// current platform.
@@ -63,6 +65,6 @@ namespace grvc { namespace hal {
 		static Client* createClient(const std::vector<std::string>& _args);
 	};
 	
-}}	// namespace grvc::hal
+}}	// namespace grvc::uav
 
-#endif // _GRVCQUADROTOR_HAL_CLIENT_CLIENT_H_
+#endif // _GRVCQUADROTOR_UAVCLIENT_CLIENT_H_

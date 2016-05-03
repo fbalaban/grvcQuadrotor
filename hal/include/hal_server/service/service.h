@@ -23,6 +23,8 @@
 
 #include <functional>
 #include <hal_common/types.h>
+#include <string>
+#include <vector>
 
 namespace grvc { namespace hal {
 	
