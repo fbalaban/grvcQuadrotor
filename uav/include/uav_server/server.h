@@ -21,7 +21,13 @@
 #ifndef _GRVCQUADROTOR_UAVSERVER_SERVER_H_
 #define _GRVCQUADROTOR_UAVSERVER_SERVER_H_
 
-namespace grvc { namespace uav {
+namespace grvc { 
+
+	// Forward declarations
+	namespace hal { class Client; }
+	class Service;
+
+	namespace uav {
 	
 	/// Encapsulate all functionality of uav into a single class. Derive from this class if you want to implement
 	/// a project specific uav with more functionality
@@ -29,6 +35,11 @@ namespace grvc { namespace uav {
 	public:
 		Server(int _argc, char** _argv);
 		virtual void run();
+
+	private:
+		// Communication interfaces
+		hal::Client* hal_comm_; ///< Communicate with the underlying hal implementation
+		Service* public_service_; ///< Communicate with clients requesting my functionality
 	};
 	
 }}	// namespace grvc::uav
