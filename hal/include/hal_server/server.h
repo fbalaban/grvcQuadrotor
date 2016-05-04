@@ -21,13 +21,14 @@
 #ifndef _GRVCQUADROTOR_HALSERVER_SERVER_H_
 #define _GRVCQUADROTOR_HALSERVER_SERVER_H_
 
-namespace grvc { 
+#include <chrono>
+
+namespace grvc { namespace hal {
 
 	// Forward declarations
 	class Service;
+	class BackEnd;
 
-	namespace hal {
-	
 	/// Encapsulate all functionality of hal into a single class. Derive from this class if you want to implement
 	/// a project specific hal with more functionality
 	class Server {
@@ -36,8 +37,17 @@ namespace grvc {
 		virtual void run();
 
 	private:
+		void registerCallBacks();
+		/// Read published info from back end and re-publish it to the service
+		void publishBackEndInfo();
+
+	private:
+		typedef std::chrono::high_resolution_clock::time_point Time;
+		Time last_update_;
 		// Communication interfaces
 		Service* public_service_; ///< Communicate with clients requesting my functionality
+		BackEnd* platform_impl_;
+		int update_rate_ = 100;
 	};
 	
 }}	// namespace grvc::hal

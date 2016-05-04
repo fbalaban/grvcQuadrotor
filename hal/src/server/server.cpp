@@ -24,19 +24,58 @@
 // SOFTWARE.
 //------------------------------------------------------------------------------
 #include <hal_server/server.h>
+#include <hal_server/service/service.h>
+#include <hal_server/back_end/back_end.h>
+#include <string>
+#include <thread>
+
+using namespace std;
+using namespace std::chrono;
 
 namespace grvc { namespace hal {
 	
 	//------------------------------------------------------------------------------------------------------------------
 	Server::Server(int _argc, char** _argv) {
-		// Unused variables
-		_argc;
-		_argv;
+		// Set up back end implementation
+		platform_impl_ = BackEnd::createBackEnd(_argc, _argv);
+		// Set up public service
+		public_service_ = Service::createService(_argc, _argv);
+		// Link public service to implementation
+		registerCallBacks();
+		// Start time stamp for update cycle
+		last_update_ = high_resolution_clock::now();
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
 	void Server::run() {
-		//
+		for (;;) {
+			if(!platform_impl_->update())
+				return;
+			publishBackEndInfo();
+			if (!public_service_->update())
+				return;
+			// Sleep until next update
+			if(update_rate_ > 0) {
+				auto period = milliseconds(1000/update_rate_);
+				this_thread::sleep_until(last_update_ + period);
+				last_update_ = high_resolution_clock::now();
+			}
+		}
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	void Server::registerCallBacks() {
+		// Directly map back end implementation to public service call backs
+		public_service_->onGoToWP(platform_impl_->goToWP);
+		public_service_->onTakeOff(platform_impl_->takeOff);
+		public_service_->onLand(platform_impl_->land);
+		public_service_->onAbort(platform_impl_->abortTask);
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	void Server::publishBackEndInfo() {
+		public_service_->publishPosition(	platform_impl_->position() );
+		public_service_->publishTaskState(	platform_impl_->curTaskState() );
 	}
 	
 }}	// namespace grvc
