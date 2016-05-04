@@ -66,10 +66,13 @@ namespace grvc { namespace hal {
 	//------------------------------------------------------------------------------------------------------------------
 	void Server::registerCallBacks() {
 		// Directly map back end implementation to public service call backs
-		public_service_->onGoToWP(platform_impl_->goToWP);
-		public_service_->onTakeOff(platform_impl_->takeOff);
-		public_service_->onLand(platform_impl_->land);
-		public_service_->onAbort(platform_impl_->abortTask);
+		auto bindGoToWP = [this](const Vec3& _v) { platform_impl_->goToWP(_v); };
+		public_service_->onGoToWP(bindGoToWP);
+		auto bindTakeOff = [this](double _z){ platform_impl_->takeOff(_z); };
+		public_service_->onTakeOff(bindTakeOff);
+		// Methods without arguments can simply be passed with std::bind
+		public_service_->onLand(std::bind(&BackEnd::land, platform_impl_));
+		public_service_->onAbort(std::bind(&BackEnd::abortTask, platform_impl_));
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
