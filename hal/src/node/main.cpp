@@ -23,7 +23,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //------------------------------------------------------------------------------
-#include <hal_server/hal_server.h>
+#include <hal_server/server.h>
 
 int main(int, const char**) {
 	return 0;

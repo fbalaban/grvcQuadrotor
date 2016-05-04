@@ -23,12 +23,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //------------------------------------------------------------------------------
-#include <hal_client/hal_client.h>
+#include <hal_client/client.h>
 
 namespace grvc {
 	
 	//------------------------------------------------------------------------------------------------------------------
-	void HalClient::followWpList() {
+	void Client::goToWP(const Vec3& _wp) {
 		// TODO
 	}
 	

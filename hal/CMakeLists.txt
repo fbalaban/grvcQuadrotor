@@ -58,6 +58,11 @@ if(GRVCQUAD_USE_ROS)
 	include_directories(${catkin_INCLUDE_DIRS})
 endif(GRVCQUAD_USE_ROS)
 
+# --- External dependencies ---
+SET(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/modules")
+FIND_PACKAGE(Eigen3 REQUIRED)
+INCLUDE_DIRECTORIES(${EIGEN3_INCLUDRE_DIR})
+
 SET(COMMON_INCLUDES "include/hal_common/*.h")
 
 # --- uav server library. Extend this library to create more advanced servers ---
@@ -88,3 +93,8 @@ GroupSources(include/hal_common common)
 add_library(hal_client STATIC ${HALCLIENT_SOURCE_FILES})
 target_include_directories(hal_client PUBLIC "include")
 set_target_properties(hal_client PROPERTIES FOLDER "hal")
+
+# --- Test projects
+if(GRVCQUAD_BUILD_TESTS)
+	add_subdirectory(test)
+ENDIF(GRVCQUAD_BUILD_TESTS)
