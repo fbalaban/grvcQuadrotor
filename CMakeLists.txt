@@ -33,9 +33,9 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 option(GRVCQUAD_BUILD_TESTS "Enable testing and generate test projects" OFF)
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-	option(GRVCQUAD_USE_ROS, "Enable ros-specific code and interfaces" ON)
+	option(GRVCQUAD_USE_ROS "Enable ros-specific code and interfaces" ON)
 else()
-	option(GRVCQUAD_USE_ROS, "Enable ros-specific code and interfaces" OFF)
+	option(GRVCQUAD_USE_ROS "Enable ros-specific code and interfaces" OFF)
 endif()
 
 # --- Compiler specific options ---
