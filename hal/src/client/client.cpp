@@ -24,12 +24,20 @@
 // SOFTWARE.
 //------------------------------------------------------------------------------
 #include <hal_client/client.h>
+#ifdef GRVC_USE_ROS
+#include <hal_client/client_ros.h>
+#endif // GRVC_USE_ROS
 
-namespace grvc {
+namespace grvc { namespace hal {
 	
 	//------------------------------------------------------------------------------------------------------------------
-	void Client::goToWP(const Vec3& _wp) {
-		// TODO
+	Client* Client::createClient(int _argc, char** _argv) {
+		_argc; _argv; // This arguments may be unused for some platforms
+		Client* client = nullptr;
+#ifdef GRVC_USE_ROS
+		client = ClientROS(_argc, _argv);
+#endif // GRVC_USE_ROS
+		return client;
 	}
 	
-}	// namespace grvc
+}}	// namespace grvc
