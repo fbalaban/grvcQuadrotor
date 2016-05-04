@@ -31,20 +31,56 @@ class MockService : public Service {
 	void onTakeOff(TakeOffCb _cb) override { takeOff = _cb; }
 	void onLand(LandCb _cb) override { land = _cb; }
 	void onAbort(AbortCb _cb) override { abort = _cb; }
-	void publishPosition(const Vec3& _pos) override { position = _pos; }
-	void publishTaskState(TaskState _state) override { taskState = _state; }
+	void publishPosition(const Vec3& _pos) override { position_ = _pos; }
+	void publishTaskState(TaskState _state) override { task_state_ = _state; }
+
+	bool update() override { 
+		update_called_ = true;
+		return !must_exit_;
+	}
 
 	GoToWpCb goToWp;
 	TakeOffCb takeOff;
 	LandCb land;
 	AbortCb abort;
 
-	Vec3 position;
-	TaskState taskState;
+	bool update_called_ = false;
+	bool must_exit_ = false;
+	Vec3 position_;
+	TaskState task_state_;
 };
 
-Service* Service::createService(int _argc, char** _argv) {
+Service* Service::createService(int , char**) {
 	return new MockService;
 }
 
-// Mock Implementation
+// Mock Back End
+class MockBackEnd : public BackEnd {
+public:
+	void		goToWP(const Vec3& _wp) override { position_ = _wp; }
+	void		takeOff(double _height) override { height_ = _height; }
+	void		land() override {}
+	TaskState	curTaskState() const override { return TaskState::running; }
+	void		abortTask() override {}
+	Vec3		position() const override { return position_; }
+
+	bool update() override {
+		update_called_ = true;
+		return !must_exit_;
+	}
+
+	bool update_called_ = false;
+	bool must_exit_ = false;
+
+	Vec3 position_ = Vec3::Zero();
+	double height_ = 0.0;
+};
+
+BackEnd* BackEnd::createBackEnd(int, char**) {
+	return new MockBackEnd;
+}
+
+int main(int _argc, char** _argv) {
+	_argc; _argv;
+	return 0;
+}
