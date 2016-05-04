@@ -23,20 +23,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //------------------------------------------------------------------------------
-#include <hal_server/hal_server.h>
+#include <hal_server/server.h>
 
-namespace grvc {
+namespace grvc { namespace hal {
 	
 	//------------------------------------------------------------------------------------------------------------------
-	HalServer::HalServer(int _argc, const char** _argv) {
+	Server::Server(int _argc, char** _argv) {
 		// Unused variables
 		_argc;
 		_argv;
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	void HalServer::run() {
+	void Server::run() {
 		//
 	}
 	
-}	// namespace grvc
+}}	// namespace grvc
