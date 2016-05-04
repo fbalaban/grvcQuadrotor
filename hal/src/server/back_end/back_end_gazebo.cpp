@@ -18,6 +18,8 @@
 // OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------------------------------------------------
+#ifdef GRVC_USE_ROS
+
 #include <geometry_msgs/Twist.h>
 #include <hal_server/back_end/back_end_gazebo.h>
 #include <nav_msgs/Odometry.h>
@@ -149,4 +151,4 @@ namespace grvc { namespace hal {
 	}
 }}	// namespace grvc::hal
 
-#endif // _GRVCQUADROTOR_HALSERVER_BACKEND_BACKENDGAZEBO_H_
+#endif // GRVC_USE_ROS

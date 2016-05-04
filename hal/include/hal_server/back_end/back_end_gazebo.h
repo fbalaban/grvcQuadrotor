@@ -21,6 +21,8 @@
 #ifndef _GRVCQUADROTOR_HALSERVER_BACKEND_BACKENDGAZEBO_H_
 #define _GRVCQUADROTOR_HALSERVER_BACKEND_BACKENDGAZEBO_H_
 
+#ifdef GRVC_USE_ROS
+
 #include "back_end.h"
 #include "pid_controller.h"
 
@@ -77,5 +79,7 @@ namespace grvc { namespace hal {
 	};
 	
 }}	// namespace grvc::hal
+
+#endif // GRVC_USE_ROS
 
 #endif // _GRVCQUADROTOR_HALSERVER_BACKEND_BACKENDGAZEBO_H_

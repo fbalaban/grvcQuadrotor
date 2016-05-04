@@ -53,8 +53,8 @@ endif(GRVC_USE_ROS)
 
 # Included subprojects
 add_subdirectory(uav)
+add_subdirectory(hal)
 
 if(GRVCQUAD_USE_ROS) # Only ros versions are available for this projects.
-	add_subdirectory(hal)
 	add_subdirectory(simulation)
 endif(GRVCQUAD_USE_ROS)
