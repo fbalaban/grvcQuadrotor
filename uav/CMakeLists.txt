@@ -24,7 +24,7 @@
 # SOFTWARE.
 ################################################################################
 cmake_minimum_required (VERSION 2.6)
-project(grvcQuadrotorUav)
+project(grvc_quadrotor_uav)
 
 # ---- Configurable options ----
 # Pass this options to CMake in command line to select specific functionality for this project

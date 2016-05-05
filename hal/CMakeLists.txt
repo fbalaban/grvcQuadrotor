@@ -59,17 +59,17 @@ if(GRVCQUAD_USE_ROS)
 		geometry_msgs
 		message_generation)
 
-	catkin_package(
-		INCLUDE_DIRS include
-		LIBRARIES hal_server hal_client
-		CATKIN_DEPENDS roscpp message_runtime)
-
 	add_message_files( FILES
 		command.msg)
 
 	generate_messages( DEPENDENCIES 
 		std_msgs
 		geometry_msgs)
+
+	catkin_package(
+		INCLUDE_DIRS include
+		LIBRARIES hal_server hal_client
+		CATKIN_DEPENDS roscpp message_runtime)
 
 	include_directories(${catkin_INCLUDE_DIRS})
 endif(GRVCQUAD_USE_ROS)
