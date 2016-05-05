@@ -24,11 +24,16 @@
 # SOFTWARE.
 ################################################################################
 cmake_minimum_required (VERSION 2.6)
-project(grvcQuadrotorHal)
+project(grvc_quadrotor_hal)
 
 # ---- Configurable options ----
 # Pass this options to CMake in command line to select specific functionality for this project
-option(GRVCQUAD_BUILD_TESTS "Enable testing and generate test projects" OFF)
+option(GRVCQUAD_BUILD_TESTS "Enable testing and generate test projects" ON)
+if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+	option(GRVCQUAD_USE_ROS "Enable ros-specific code and interfaces" ON)
+else()
+	option(GRVCQUAD_USE_ROS "Enable ros-specific code and interfaces" OFF)
+endif()
 
 # ---- Clasify sources according to folder structure ----
 # This macro is a modified version of http://www.cmake.org/pipermail/cmake/2013-November/056336.html
@@ -48,12 +53,23 @@ endmacro()
 
 # --- Catkin specific configuration for ros ---
 if(GRVCQUAD_USE_ROS)
-	find_package(catkin REQUIRED COMPONENTS roscpp)
+	find_package(catkin REQUIRED COMPONENTS 
+		roscpp
+		std_msgs
+		geometry_msgs
+		message_generation)
 
 	catkin_package(
 		INCLUDE_DIRS include
 		LIBRARIES hal_server hal_client
-		CATKIN_DEPENDS roscpp)
+		CATKIN_DEPENDS roscpp message_runtime)
+
+	add_message_files( FILES
+		command.msg)
+
+	generate_messages( DEPENDENCIES 
+		std_msgs
+		geometry_msgs)
 
 	include_directories(${catkin_INCLUDE_DIRS})
 endif(GRVCQUAD_USE_ROS)

@@ -30,7 +30,7 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 # ---- Configurable options ----
 # Pass this options to CMake in command line to select specific functionality for this project
-option(GRVCQUAD_BUILD_TESTS "Enable testing and generate test projects" OFF)
+option(GRVCQUAD_BUILD_TESTS "Enable testing and generate test projects" ON)
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 	option(GRVCQUAD_USE_ROS "Enable ros-specific code and interfaces" ON)
@@ -47,9 +47,9 @@ if(CMAKE_COMPILER_IS_GNUCXX)
     add_definitions(-std=c++11 -Wall -Werror)
 endif()
 
-if(GRVC_USE_ROS)
+if(GRVCQUAD_USE_ROS)
 	add_definitions(-DGRVC_USE_ROS)
-endif(GRVC_USE_ROS)
+endif(GRVCQUAD_USE_ROS)
 
 # Included subprojects
 add_subdirectory(uav)

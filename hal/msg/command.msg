@@ -1,2 +1,2 @@
 string command
-geometry_msgs pos
+geometry_msgs/Pose pos

@@ -21,7 +21,13 @@
 #ifndef _GRVCQUADROTOR_HAL_CLIENT_CLIENTROS_H_
 #define _GRVCQUADROTOR_HAL_CLIENT_CLIENTROS_H_
 
+#ifdef GRVC_USE_ROS
+
 #include "client.h"
+#include <geometry_msgs/Pose.h>
+#include <nav_msgs/Odometry.h>
+#include <ros/ros.h>
+#include <std_msgs/String.h>
 
 namespace grvc { namespace hal {
 	/// \brief Cient interface for other modules to communicate with a hal (or hal-derived) node
@@ -42,11 +48,39 @@ namespace grvc { namespace hal {
 		Vec3		position		() const override;
 
 	private:
+		typedef geometry_msgs::Pose PosMsg;
+
+	private:
+		void setDefaultParams();
+		void parseArguments(int _argc, char** _argv);
+		bool parseArg(const std::string& _arg, const std::string& _label, std::string& _dst);
+		void startRosCommunications();
+
+		// Callbacks
+		void onOdometry(const nav_msgs::Odometry::ConstPtr& _odom);
+		void onTaskProgress(const std_msgs::String::ConstPtr& _state);
+
+	private:
 		// Cache state information
 		Vec3 last_position_;
 		TaskState last_state_;
+
+		// Ros communication channels
+		ros::NodeHandle* ros_handle_;
+
+		ros::Publisher	cmd_pub_;
+		ros::Subscriber	cmd_state_sub_;
+   		ros::Subscriber odometry_sub_;
+
+		// Ros communication topics
+		std::string odometry_topic_;
+		std::string cmd_state_topic_;
+		std::string cmd_topic_;
+		std::string gazebo_ns_;
 	};
 	
 }}	// namespace grvc::hal
+
+#endif // GRVC_USE_ROS
 
 #endif // _GRVCQUADROTOR_HAL_CLIENT_CLIENTROS_H_

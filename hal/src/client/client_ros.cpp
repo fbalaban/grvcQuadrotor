@@ -18,22 +18,28 @@
 // OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------------------------------------------------
-#include <hal_client/client.h>
 #ifdef GRVC_USE_ROS
+
 #include <hal_client/client_ros.h>
-#endif // GRVC_USE_ROS
 
 namespace grvc { namespace hal {
 	
 	//------------------------------------------------------------------------------------------------------------------
-	Client* Client::createClient(int _argc, char** _argv) {
-		Client* client = nullptr;
-#ifdef GRVC_USE_ROS
-		client = ClientROS(_argc, _argv);
-#else
-		_argc; _argv; // This arguments may be unused for some platforms
-#endif // GRVC_USE_ROS
-		return client;
+	ClientROS::ClientROS(const char* _node_name, int _argc, char** _argv) {
+		ros::init(_argc, _argv, _nodeName, ros::init_options::AnonymousName);
+		ros_handle_ = new ros::NodeHandle(_nodeName);
+		// Init myself
+		setDefaultParams();
+		parseArguments(_argc, _argv);
+		startRosCommunications();
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	void ClientROS::goToWP(const Vec3& _pos) {
+		nav_msgs::
+		cmd_pub_
 	}
 	
 }}	// namespace grvc
+
+#endif // GRVC_USE_ROS

@@ -41,7 +41,7 @@ namespace grvc { namespace hal {
 		/// Perform a take off maneuver
 		/// \param _height targer height that must be reached to consider the take off complete.
 		virtual void		takeOff			(double _height) = 0;
-		/// Land on the current position.
+		/// Land on the current position.git 
 		virtual void		land			() = 0;
 		/// Retrieve the state of the last task requested
 		virtual TaskState	curTaskState	() const = 0;
