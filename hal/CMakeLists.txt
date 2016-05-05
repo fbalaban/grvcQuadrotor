@@ -68,6 +68,7 @@ if(GRVCQUAD_USE_ROS)
 	find_package(catkin REQUIRED COMPONENTS 
 		roscpp
 		std_msgs
+		gazebo_ros
 		geometry_msgs
 		message_generation)
 
@@ -81,7 +82,10 @@ if(GRVCQUAD_USE_ROS)
 	catkin_package(
 		INCLUDE_DIRS include
 		LIBRARIES hal_server hal_client
-		CATKIN_DEPENDS roscpp message_runtime)
+		CATKIN_DEPENDS roscpp message_runtime
+		DEPENDS gazebo_ros)
+
+	find_package(gazebo REQUIRED)
 
 	include_directories(${catkin_INCLUDE_DIRS})
 endif(GRVCQUAD_USE_ROS)
@@ -89,7 +93,7 @@ endif(GRVCQUAD_USE_ROS)
 # --- External dependencies ---
 SET(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/modules")
 FIND_PACKAGE(Eigen3 REQUIRED)
-INCLUDE_DIRECTORIES(${EIGEN3_INCLUDE_DIR})
+INCLUDE_DIRECTORIES(${EIGEN3_INCLUDE_DIR} ${GAZEBO_INCLUDE_DIRS})
 
 SET(COMMON_INCLUDES "include/hal_common/*.h")
 
@@ -100,6 +104,9 @@ GroupSources(src/server server)
 GroupSources(include/hal_server server)
 GroupSources(include/hal_common common)
 add_library(hal_server STATIC ${HALSERVER_SOURCE_FILES})
+if(GRVCQUAD_USE_ROS)
+	target_link_libraries(hal_server LINK_PUBLIC ${GAZEBO_LIBRARIES})
+endif(GRVCQUAD_USE_ROS)
 target_include_directories(hal_server PUBLIC "include")
 set_target_properties(hal_server PROPERTIES FOLDER "hal")
 
