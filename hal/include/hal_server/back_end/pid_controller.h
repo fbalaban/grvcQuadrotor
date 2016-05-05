@@ -26,24 +26,24 @@
 #include <gazebo/common/PID.hh>
 #include <hal_common/types.h>
 
-namespace grvc {
+namespace grvc { namespace hal {
 
 	class PidController {
 	public:
-		Model();
+		PidController();
 
 		double 		yawSpd	() const { return yaw_action_; }
 		const Vec3& velocity() const { return spd_action_; }
 
 		const Vec3& pos() const { return cur_pos_; }
 		void setPos(const Vec3& _pos)	{ cur_pos_ = _pos; }
-		const Vec3& yaw() const { return cur_yaw_; }
-		void setYaw(double _yaw)		{ cur_pos_ = _pos; }
+		double yaw() const { return cur_yaw_; }
+		void setYaw(double _yaw)		{ cur_yaw_ = _yaw; }
 
 		void setReferencePos(const Vec3& _pos)	{ pos_reference_ = _pos; }
 		void setReferenceYaw(double _yaw) 		{ yaw_reference_ = _yaw; }
 
-		void updateControlActions(common::Time _dt);
+		void updateControlActions(gazebo::common::Time _dt);
 
 	private:
 		// Control
@@ -55,9 +55,9 @@ namespace grvc {
 
 		// Control actions
 		double	yaw_action_;
-		double  spd_action_;
+		Vec3  spd_action_;
 	};
-} // namespace grvc
+}} // namespace grvc::hal
 
 #endif // GRVC_USE_ROS
 

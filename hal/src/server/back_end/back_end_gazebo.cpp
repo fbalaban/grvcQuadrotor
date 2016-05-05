@@ -27,6 +27,8 @@
 #include <string>
 #include <tf/transform_datatypes.h>
 
+using namespace std;
+
 namespace grvc { namespace hal {
 	
 	//------------------------------------------------------------------------------------------------------------------
@@ -43,9 +45,6 @@ namespace grvc { namespace hal {
 		// Start running async
 		run();
 	}
-
-	//------------------------------------------------------------------------------------------------------------------
-
 
 	//------------------------------------------------------------------------------------------------------------------
 	void BackEndGazebo::run() {
@@ -102,24 +101,26 @@ namespace grvc { namespace hal {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	void BackEndGazebo::odometryCb(const nav_msgs::Odometry::ConstPtr& odom) {
+	void BackEndGazebo::odometryCb(const nav_msgs::Odometry::ConstPtr& _odom) {
 		// -- Update model controller --
-		state_controller_.setPos(odom->pose.pose.position);
+		auto gazeboPos = _odom->pose.pose.position;
+		state_controller_.setPos({gazeboPos.x, gazeboPos.y, gazeboPos.z});
 		// Rotation
-		tf::Quaternion orientation(odom->pose.pose.orientation.x,
-			odom->pose.pose.orientation.y,
-			odom->pose.pose.orientation.z,
-			odom->pose.pose.orientation.w);
+		tf::Quaternion orientation(_odom->pose.pose.orientation.x,
+			_odom->pose.pose.orientation.y,
+			_odom->pose.pose.orientation.z,
+			_odom->pose.pose.orientation.w);
 		double roll, pitch, yaw;
-		trix3x3(orientation).getRPY(roll, pitch, yaw);
+		tf::Matrix3x3(orientation).getRPY(roll, pitch, yaw);
 		state_controller_.setYaw(yaw);
 		// -- Init control loop if necessary
 		if(!has_odometry_) {
 			has_odometry_ = true;
 			// Set current state as initial reference for control
-			bool(has_references_)
-			state_controller_.setReferencePos(state_controller_.pos());
-			state_controller_.setReferenceYaw(state_controller_.yaw());
+			if(!has_references_) {
+				state_controller_.setReferencePos(state_controller_.pos());
+				state_controller_.setReferenceYaw(state_controller_.yaw());
+			}
 			// Now that we have odometry, we can start running the control loop
 			update_timer_ = ros_handle_->createTimer(ros::Duration(1/update_rate_),
 				[this](const ros::TimerEvent& _te) { updateCb(_te); });
@@ -134,18 +135,21 @@ namespace grvc { namespace hal {
 		// generating control references for the PIDs
 		assert(has_odometry_);
 		geometry_msgs::Twist twist;
-		twist.linear = state_controller_.velocity();
+		auto vel = state_controller_.velocity();
+		twist.linear.x = vel.x();
+		twist.linear.y = vel.y();
+		twist.linear.z = vel.z();
 		twist.angular.x = 0;
 		twist.angular.y = 0;
 		twist.angular.z = state_controller_.yaw();
-		cmd_vel_pub_.publish(t);
+		cmd_vel_pub_.publish(twist);
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
 	void BackEndGazebo::updateCb(const ros::TimerEvent& _te) {
 		assert(has_odometry_);
 		// Compute real elapsed time. Might not exactly match the update rate
-		ros::Time deltaT = _te.current_real - _te.last_real;
+		ros::Duration deltaT = _te.current_real - _te.last_real;
 		// Update control references
 		state_controller_.updateControlActions(gazebo::common::Time(deltaT.sec, deltaT.nsec));
 	}

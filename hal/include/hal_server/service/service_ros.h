@@ -21,9 +21,9 @@
 #ifndef _GRVCQUADROTOR_HAL_SERVER_SERVICE_SERVICEROS_H_
 #define _GRVCQUADROTOR_HAL_SERVER_SERVICE_SERVICEROS_H_
 
-#ifndef GRVC_USE_ROS
+#ifdef GRVC_USE_ROS
 
-#include <hal_msgs/command.h>
+#include <grvc_quadrotor_hal/command.h>
 #include <ros/ros.h>
 #include "service.h"
 
@@ -34,9 +34,9 @@ namespace grvc { namespace hal {
 	/// Whoever uses this class is responsible for registering callbacks for every event they want to be notified of.
 	/// New callbacks override older ones, so only the most recent one will be invoked for any event. If you require
 	/// Multiple callbacks to be invoked, you will need to do the dispatching for yourself.
-	class ServiceROS {
+	class ServiceROS : public Service {
 	public:
-		ServiceROS(const char* _nodeName, int _argc, char** _argv);
+		ServiceROS(const char* _node_name, int _argc, char** _argv);
 
 		// Set callbacks
 		void onGoToWP	(GoToWpCb) override;
@@ -53,12 +53,14 @@ namespace grvc { namespace hal {
 		bool update() override;
 
 	private:
+		typedef grvc_quadrotor_hal::command CmdMsg;
+
 		void setDefaultParams();
 		void parseArguments(int _argc, char** _argv);
 		bool parseArg(const std::string& _arg, const std::string& _label, std::string& _dst);
 		void startRosCommunications();
 
-		void onCmdCallBack(const hal_msgs::command::ConstPtr& _cmd);
+		void onCmdCallBack(const CmdMsg::ConstPtr& _cmd);
 
 	private:
 		GoToWpCb go_to_wp_cb_;

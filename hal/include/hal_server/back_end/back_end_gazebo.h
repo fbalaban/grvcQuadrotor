@@ -24,7 +24,9 @@
 #ifdef GRVC_USE_ROS
 
 #include "back_end.h"
+#include <nav_msgs/Odometry.h>
 #include "pid_controller.h"
+#include <ros/ros.h>
 
 namespace grvc { namespace hal {
 	
@@ -55,6 +57,8 @@ namespace grvc { namespace hal {
 		bool parseArg(const std::string& _arg, const std::string& _label, std::string& _dst);
 		void startRosCommunications();
 		void updateCb(const ros::TimerEvent& _te);
+		void publishCb(const ros::TimerEvent& _te);
+		void odometryCb(const nav_msgs::Odometry::ConstPtr&);
 
 	private:
 		TaskState cur_task_state_;

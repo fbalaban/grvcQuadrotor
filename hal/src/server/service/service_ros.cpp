@@ -20,12 +20,14 @@
 //----------------------------------------------------------------------------------------------------------------------
 #include <hal_server/service/service_ros.h>
 
+using namespace std;
+
 namespace grvc { namespace hal {
 	
 	//------------------------------------------------------------------------------------------------------------------
-	ServiceROS::ServiceROS(const char* _nodeName, int _argc, char** _argv) {
-		ros::init(_argc, _argv, _nodeName, ros::init_options::AnonymousName);
-		ros_handle_ = new ros::NodeHandle(_nodeName);
+	ServiceROS::ServiceROS(const char* _node_name, int _argc, char** _argv) {
+		ros::init(_argc, _argv, _node_name, ros::init_options::AnonymousName);
+		ros_handle_ = new ros::NodeHandle(_node_name);
 		// Init myself
 		setDefaultParams();
 		parseArguments(_argc, _argv);
@@ -78,13 +80,14 @@ namespace grvc { namespace hal {
 	void ServiceROS::startRosCommunications() {
 		// Suscribe to commands topic
 		auto cmd_full_topic = hal_ns_ +  "/" + cmd_topic_;
-		cmd_sub_ = ros_handle_->subscribe(cmd_full_topic.c_str(), 1000, &SeriveROS::onCmdCallBack, this);
+		cmd_sub_ = ros_handle_->subscribe(cmd_full_topic.c_str(), 1000, &ServiceROS::onCmdCallBack, this);
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	void ServiceROS::onCmdCallBack(const hal_msgs::command::ConstPtr& _cmd) {
-		if(_cmd.command.data == "goToWp") {
-			Vec3 waypoint = { _cmd.pos.x, _cmd.pos.y, _cmd.pos.z };
+	void ServiceROS::onCmdCallBack(const CmdMsg::ConstPtr& _cmd) {
+		if(_cmd->command == "goToWp") {
+			auto pos = _cmd->pos.position;
+			Vec3 waypoint = { pos.x, pos.y, pos.z };
 			go_to_wp_cb_(waypoint);
 		}
 	}

@@ -21,14 +21,14 @@
 #ifdef GRVC_USE_ROS
 
 #include <hal_client/client_ros.h>
-#include <hal_msgs/command.h>
+#include <grvc_quadrotor_hal/command.h>
 
 namespace grvc { namespace hal {
 	
 	//------------------------------------------------------------------------------------------------------------------
 	ClientROS::ClientROS(const char* _node_name, int _argc, char** _argv) {
-		ros::init(_argc, _argv, _nodeName, ros::init_options::AnonymousName);
-		ros_handle_ = new ros::NodeHandle(_nodeName);
+		ros::init(_argc, _argv, _node_name, ros::init_options::AnonymousName);
+		ros_handle_ = new ros::NodeHandle(_node_name);
 		// Init myself
 		setDefaultParams();
 		parseArguments(_argc, _argv);
@@ -37,9 +37,11 @@ namespace grvc { namespace hal {
 
 	//------------------------------------------------------------------------------------------------------------------
 	void ClientROS::goToWP(const Vec3& _pos) {
-		hal_msgs::command cmd;
+		grvc_quadrotor_hal::command cmd;
 		cmd.command = "GoToWP";
-		cmd.pos = _pos;
+		cmd.pos.position.x = _pos.x();
+		cmd.pos.position.y = _pos.y();
+		cmd.pos.position.z = _pos.z();
 		cmd_pub_.publish(cmd);
 	}
 	
