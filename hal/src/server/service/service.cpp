@@ -18,22 +18,22 @@
 // OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------------------------------------------------
-#include <hal_client/client.h>
+#include <hal_server/service/service.h>
 #ifdef GRVC_USE_ROS
-#include <hal_client/client_ros.h>
+#include <hal_server/service/service_ros.h>
 #endif // GRVC_USE_ROS
 
 namespace grvc { namespace hal {
 	
 	//------------------------------------------------------------------------------------------------------------------
-	Client* Client::createClient(int _argc, char** _argv) {
-		Client* client = nullptr;
+	Service* Service::createService(int _argc, char** _argv) {
+		Service* srv = nullptr;
 #ifdef GRVC_USE_ROS
-		client = new ClientROS("hal_client", _argc, _argv);
+		srv = new ServiceROS("hal_server", _argc, _argv);
 #else
 		_argc; _argv; // This arguments may be unused for some platforms
 #endif // GRVC_USE_ROS
-		return client;
+		return srv;
 	}
 	
 }}	// namespace grvc

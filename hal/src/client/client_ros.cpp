@@ -21,6 +21,7 @@
 #ifdef GRVC_USE_ROS
 
 #include <hal_client/client_ros.h>
+#include <hal_msgs/command.h>
 
 namespace grvc { namespace hal {
 	
@@ -36,8 +37,10 @@ namespace grvc { namespace hal {
 
 	//------------------------------------------------------------------------------------------------------------------
 	void ClientROS::goToWP(const Vec3& _pos) {
-		nav_msgs::
-		cmd_pub_
+		hal_msgs::command cmd;
+		cmd.command = "GoToWP";
+		cmd.pos = _pos;
+		cmd_pub_.publish(cmd);
 	}
 	
 }}	// namespace grvc
