@@ -58,7 +58,7 @@ namespace grvc { namespace hal {
 		bool parseArg(const std::string& _arg, const std::string& _label, std::string& _dst);
 		void startRosCommunications();
 
-		void onCmdCallback(const hal_msgs::command::ConstPtr& _cmd);
+		void onCmdCallBack(const hal_msgs::command::ConstPtr& _cmd);
 
 	private:
 		GoToWpCb go_to_wp_cb_;

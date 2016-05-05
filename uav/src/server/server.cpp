@@ -25,11 +25,11 @@
 //------------------------------------------------------------------------------
 #include <uav_server/server.h>
 
-namespace grvc {
+namespace grvc { namespace uav {
 	
 	//------------------------------------------------------------------------------------------------------------------
-	void UavServer::run(int , const char** ) {
+	Server::Server(int , char** ) {
 		// TODO
 	}
 	
-}	// namespace grvc
+}}	// namespace grvc::uav

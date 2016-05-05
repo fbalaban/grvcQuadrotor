@@ -75,6 +75,11 @@ if(GRVCQUAD_USE_ROS)
 	include_directories(${catkin_INCLUDE_DIRS})
 endif(GRVCQUAD_USE_ROS)
 
+# --- External dependencies ---
+SET(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/modules")
+FIND_PACKAGE(Eigen3 REQUIRED)
+INCLUDE_DIRECTORIES(${EIGEN3_INCLUDE_DIR} ${GAZEBO_INCLUDE_DIRS})
+
 # --- uav server library. Extend this library to create more advanced servers ---
 set(SERVER_DIR src/server)
 file(GLOB_RECURSE UAVSERVER_SOURCE_FILES "${SERVER_DIR}/*.cpp")

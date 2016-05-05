@@ -25,11 +25,11 @@
 //------------------------------------------------------------------------------
 #include <uav_client/client.h>
 
-namespace grvc {
+namespace grvc { namespace uav {
 	
 	//------------------------------------------------------------------------------------------------------------------
-	void UavClient::followWpList() {
+	void Client::trackPath(const std::vector<Vec3>& ) {
 		// TODO
 	}
 	
-}	// namespace grvc
+}}	// namespace grvc::uav
