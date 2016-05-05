@@ -28,7 +28,24 @@ project(grvc_quadrotor_uav)
 
 # ---- Configurable options ----
 # Pass this options to CMake in command line to select specific functionality for this project
-option(GRVCQUAD_BUILD_TESTS "Enable testing and generate test projects" OFF)
+option(GRVCQUAD_BUILD_TESTS "Enable testing and generate test projects" ON)
+if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+	option(GRVCQUAD_USE_ROS "Enable ros-specific code and interfaces" ON)
+else()
+	option(GRVCQUAD_USE_ROS "Enable ros-specific code and interfaces" OFF)
+endif()
+
+# --- Compiler specific options ---
+if(MSVC)
+	add_definitions(/W4 /WX) # Enable high level warnings and treat them like errors
+endif(MSVC)
+if(CMAKE_COMPILER_IS_GNUCXX)
+    add_definitions(-std=c++11 -Wall -Werror)
+endif()
+
+if(GRVCQUAD_USE_ROS)
+	add_definitions(-DGRVC_USE_ROS)
+endif(GRVCQUAD_USE_ROS)
 
 # ---- Clasify sources according to folder structure ----
 # This macro is a modified version of http://www.cmake.org/pipermail/cmake/2013-November/056336.html
