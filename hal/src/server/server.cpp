@@ -95,12 +95,11 @@ namespace grvc { namespace hal {
 		// Suscribe to waypoint command topic
 		auto wp_full_topic = hal_ns_ + "/" + wp_topic_;
 		auto bindGoToWP = [this](const Vec3& _v) { platform_impl_->goToWP(_v); };
-		wp_sub_ = new com::Subscriber("hal_node", wp_full_topic.c_str(), _argc, _argv);
-		wp_sub_->setCallBack<Vec3>(bindGoToWP);
+		wp_sub_ = new com::Subscriber<Vec3>("hal_node", wp_full_topic.c_str(), _argc, _argv, bindGoToWP);
 		// Suscribe to take off topic
-		auto take_off_topic = hal_ns_ + "/" + take_off_topic_;
-		auto bindTakeOff = [this](double _z) { platform_impl_->takeOff(_z); }
-		take_off_sub_ = new com::Subscriber("hal_node")
+		auto take_off_full_topic = hal_ns_ + "/" + take_off_topic_;
+		auto bindTakeOff = [this](double _z) { platform_impl_->takeOff(_z); };
+		take_off_sub_ = new com::Subscriber<double>("hal_node", take_off_full_topic.c_str(), _argc, _argv, bindTakeOff);
 	}
 	
 }}	// namespace grvc

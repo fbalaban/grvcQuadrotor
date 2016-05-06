@@ -24,6 +24,7 @@
 #include <chrono>
 #include <grvc_com/publisher.h>
 #include <grvc_com/subscriber.h>
+#include <grvc_quadrotor_hal/types.h>
 
 namespace grvc { namespace hal {
 
@@ -49,8 +50,8 @@ namespace grvc { namespace hal {
 		typedef std::chrono::high_resolution_clock::time_point Time;
 		Time last_update_;
 		// Communication interfaces
-		com::Subscriber* wp_sub_ = nullptr;
-		com::Subscriber* take_off_sub_ = nullptr;
+		com::Subscriber<Vec3>* wp_sub_ = nullptr;
+		com::Subscriber<double>* take_off_sub_ = nullptr;
 
 		// Communication topics
 		std::string wp_topic_;

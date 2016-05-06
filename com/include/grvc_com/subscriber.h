@@ -42,25 +42,12 @@ namespace grvc {
 			/// \param _cb Functor to be invoked when a message arrives¡
 			Subscriber(const char* _node_name, const char* _topic, int _argc, char** _argv, CallBack _cb) {
 				back_end_ = SubscriberBackEnd::createBackEnd(_node_name, _topic, _argc, _argv);
-				back_end_->onMessage(CallBackDeserializer<T_>(_cb));
-			}
-
-		private:
-			/// Internal classes that deserializes incomming messages and subscribes to the back end
-			/// subscriber as a functor
-			template<class T_>
-			struct CallBackDeserializer {
-				CallBackDeserializer(CallBack<T_> _cb) 
-					:cb_(_cb) {}
-
-				void operator()(std::istream& _is) {
+				back_end_->onMessage([=](std::istream& _is){
 					T_ t;
 					_is >> t;
-					cb_(t);
-				}
-
-				CallBack<T_> cb_;
-			};
+					_cb(t);
+				});
+			}
 
 		private:
 			SubscriberBackEnd* back_end_ = nullptr;
