@@ -18,22 +18,47 @@
 // OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------------------------------------------------
-#include <hal_client/client.h>
-#ifdef GRVC_USE_ROS
-#include <hal_client/client_ros.h>
-#endif // GRVC_USE_ROS
+#ifndef _GRVCQUADROTOR_HALSERVER_SERVER_H_
+#define _GRVCQUADROTOR_HALSERVER_SERVER_H_
+
+#include <chrono>
+#include <grvc_com/publisher.h>
+#include <grvc_com/subscriber.h>
 
 namespace grvc { namespace hal {
+
+	// Forward declarations
+	class BackEnd;
+
+	/// Encapsulate all functionality of hal into a single class. Derive from this class if you want to implement
+	/// a project specific hal with more functionality
+	class Server {
+	public:
+		Server(int _argc, char** _argv);
+		virtual void run();
+
+	private:
+		void setDefaultParams();
+		void parseArguments(int _argc, char** _argv);
+		bool parseArg(const std::string& _arg, const std::string& _label, std::string& _dst);
+		void startCommunications(int _argc, char** _argv);
+		/// Read published info from back end and re-publish it to the service
+		void publishBackEndInfo();
+
+	private:
+		typedef std::chrono::high_resolution_clock::time_point Time;
+		Time last_update_;
+		// Communication interfaces
+		com::Subscriber* wp_sub_ = nullptr;
+
+		// Communication topics
+		std::string wp_topic_;
+		std::string hal_ns_;
+
+		BackEnd* platform_impl_;
+		int update_rate_ = 100;
+	};
 	
-	//------------------------------------------------------------------------------------------------------------------
-	Client* Client::createClient(int _argc, char** _argv) {
-		Client* client = nullptr;
-#ifdef GRVC_USE_ROS
-		client = new ClientROS("hal_client", _argc, _argv);
-#else
-		_argc; _argv; // This arguments may be unused for some platforms
-#endif // GRVC_USE_ROS
-		return client;
-	}
-	
-}}	// namespace grvc
+}}	// namespace grvc::hal
+
+#endif // _GRVCQUADROTOR_HALSERVER_SERVER_H_

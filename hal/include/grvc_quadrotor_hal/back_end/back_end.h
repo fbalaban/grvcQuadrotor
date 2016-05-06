@@ -18,30 +18,23 @@
 // OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------------------------------------------------
-#ifndef _GRVCQUADROTOR_HAL_CLIENT_CLIENT_H_
-#define _GRVCQUADROTOR_HAL_CLIENT_CLIENT_H_
+#ifndef _GRVCQUADROTOR_HALSERVER_BACKEND_BACKEND_H_
+#define _GRVCQUADROTOR_HALSERVER_BACKEND_BACKEND_H_
 
-#include <hal_common/types.h>
-#include <string>
-#include <vector>
+#include <grvc_quadrotor_hal/types.h>
 
 namespace grvc { namespace hal {
-	/// \brief Cient interface for other modules to communicate with a hal (or hal-derived) node
-
-	/// Different implementations of this interface are responsible of communications with an analogous hal service.
-	/// For example, hal::ClientRos (derived from hal::Client), implements communications using topics and services
-	/// and expects a hal::SericeRos to be running in some other node in the network. Equivalent, hal::ClientHttp
-	/// would require hal::ServiceHttp to be running somewhere, with an accessible IP address.
-	class Client {
+	
+	/// Common interface for back end implementations of hal
+	class BackEnd {
 	public:
-		// Public hal interface
 		/// Go to the specified waypoint, following a straight line.
 		/// \param _wp goal waypoint.
 		virtual void		goToWP			(const Vec3& _wp) = 0;
 		/// Perform a take off maneuver
 		/// \param _height targer height that must be reached to consider the take off complete.
 		virtual void		takeOff			(double _height) = 0;
-		/// Land on the current position.git 
+		/// Land on the current position.
 		virtual void		land			() = 0;
 		/// Retrieve the state of the last task requested
 		virtual TaskState	curTaskState	() const = 0;
@@ -50,20 +43,21 @@ namespace grvc { namespace hal {
 		/// Latest position estimation of the robot
 		virtual Vec3		position		() const = 0;
 
-		virtual ~Client() = default; // Ensure proper destructor calling for derived classes
+		virtual ~BackEnd() = default; // Ensure proper destructor calling for derived classes
 
-		/// \brief Create an adequate hal::Client depending on current platform and command arguments.
+		/// Keep running
+		/// \return \c false if the service has stopped. \c true otherwise.
+		virtual bool update() = 0;
+		/// \brief Create an adequate BackEnd depending on current platform and command arguments.
 		/// \param _argc number of arguments in _argv
 		/// \param _argv command line arguments passed to the program. This arguments will be parsed
-		/// and used to select the best fitting implementation of Service from those available in the
+		/// and used to select the best fitting implementation of BackEnd from those available in the
 		/// current platform.
-		/// \return the newly created Service. Whoever calls this method, is responsible for eventually
-		/// destroying the Service.
-		/// \remark This is the recommended method for creating Services, since it abstracts from the
-		/// underlying (platform-dependent) implementation details.
-		static Client* createClient(int _argc, char** _argv);
+		/// \return the newly created BackEnd. Whoever calls this method, is responsible for eventually
+		/// destroying the BackEnd.
+		static BackEnd* createBackEnd(int _argc, char** _argv);
 	};
 	
 }}	// namespace grvc::hal
 
-#endif // _GRVCQUADROTOR_HAL_CLIENT_CLIENT_H_
+#endif // _GRVCQUADROTOR_HALSERVER_BACKEND_BACKEND_H_

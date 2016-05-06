@@ -95,18 +95,15 @@ SET(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/modules")
 FIND_PACKAGE(Eigen3 REQUIRED)
 INCLUDE_DIRECTORIES(${EIGEN3_INCLUDE_DIR} ${GAZEBO_INCLUDE_DIRS})
 
-SET(COMMON_INCLUDES "include/hal_common/*.h")
-
 # --- uav server library. Extend this library to create more advanced servers ---
-set(SERVER_DIR src/server)
-file(GLOB_RECURSE HALSERVER_SOURCE_FILES "${SERVER_DIR}/*.cpp" "include/hal_server/*.h" ${COMMON_INCLUDES})
+file(GLOB_RECURSE HALSERVER_SOURCE_FILES "src/server/*.cpp" "include/grvc_quadrotor_hal/*.h")
 GroupSources(src/server server)
-GroupSources(include/hal_server server)
-GroupSources(include/hal_common common)
+GroupSources(include/grvc_quadrotor_hal server)
 add_library(hal_server STATIC ${HALSERVER_SOURCE_FILES})
 if(GRVCQUAD_USE_ROS)
 	target_link_libraries(hal_server LINK_PUBLIC ${GAZEBO_LIBRARIES})
 endif(GRVCQUAD_USE_ROS)
+target_include_directories(hal_server PUBLIC "${PROJECT_SOURCE_DIR}/../com/include")
 target_include_directories(hal_server PUBLIC "include")
 set_target_properties(hal_server PROPERTIES FOLDER "hal")
 
@@ -118,16 +115,6 @@ add_executable(hal_node ${HALNODE_SOURCE_FILES})
 target_include_directories(hal_node PUBLIC "include")
 target_link_libraries(hal_node LINK_PUBLIC uav_server)
 set_target_properties(hal_node PROPERTIES FOLDER "hal")
-
-# --- Client library. Communicates with uav server ---
-set(CLIENT_DIR src/client)
-file(GLOB_RECURSE HALCLIENT_SOURCE_FILES "${CLIENT_DIR}/*.cpp" "include/hal_client/*.h" ${COMMON_INCLUDES})
-GroupSources(src/client client)
-GroupSources(include/hal_client client)
-GroupSources(include/hal_common common)
-add_library(hal_client STATIC ${HALCLIENT_SOURCE_FILES})
-target_include_directories(hal_client PUBLIC "include")
-set_target_properties(hal_client PROPERTIES FOLDER "hal")
 
 # --- Test projects
 if(GRVCQUAD_BUILD_TESTS)

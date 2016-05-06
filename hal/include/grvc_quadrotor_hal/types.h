@@ -18,33 +18,33 @@
 // OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------------------------------------------------
-#ifdef GRVC_USE_ROS
+#ifndef _GRVCQUADROTOR_HAL_COMMON_TYPES_H_
+#define _GRVCQUADROTOR_HAL_COMMON_TYPES_H_
 
-#include <hal_client/client_ros.h>
-#include <grvc_quadrotor_hal/command.h>
+#include <Eigen/Core>
+#include <cstdint>
 
 namespace grvc { namespace hal {
 	
-	//------------------------------------------------------------------------------------------------------------------
-	ClientROS::ClientROS(const char* _node_name, int _argc, char** _argv) {
-		ros::init(_argc, _argv, _node_name, ros::init_options::AnonymousName);
-		ros_handle_ = new ros::NodeHandle(_node_name);
-		// Init myself
-		setDefaultParams();
-		parseArguments(_argc, _argv);
-		startRosCommunications();
-	}
+	typedef Eigen::Vector3d Vec3;
 
-	//------------------------------------------------------------------------------------------------------------------
-	void ClientROS::goToWP(const Vec3& _pos) {
-		grvc_quadrotor_hal::command cmd;
-		cmd.command = "GoToWP";
-		cmd.pos.position.x = _pos.x();
-		cmd.pos.position.y = _pos.y();
-		cmd.pos.position.z = _pos.z();
-		cmd_pub_.publish(cmd);
-	}
+	/// States in which a requested task can be during (or after) execution.
+	enum class TaskState : uint8_t {
+		finished = 0, ///< The task has finished with success.
+		failed, ///< The task failed during execution.
+		aborted, ///< The task was aborted from outside.
+		running ///< The task is still running.
+	};
 	
-}}	// namespace grvc
+}}	// namespace grvc::hal
 
-#endif // GRVC_USE_ROS
+std::istream& operator >> (std::istream& _is, grvc::hal::Vec3& _v) {
+	_is >> _v.x();
+	_is.get(); // skip ,
+	_is >> _v.y();
+	_is.get(); // skip ,
+	_is >> _v.z();
+	return _is;
+}
+
+#endif // _GRVCQUADROTOR_HAL_COMMON_TYPES_H_

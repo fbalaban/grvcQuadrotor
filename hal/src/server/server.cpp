@@ -23,9 +23,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //------------------------------------------------------------------------------
-#include <hal_server/server.h>
-#include <hal_server/service/service.h>
-#include <hal_server/back_end/back_end.h>
+#include <grvc_quadrotor_hal/server.h>
+#include <grvc_quadrotor_hal/types.h>
+#include <grvc_quadrotor_hal/back_end/back_end.h>
 #include <string>
 #include <thread>
 
@@ -37,13 +37,9 @@ namespace grvc { namespace hal {
 	//------------------------------------------------------------------------------------------------------------------
 	Server::Server(int _argc, char** _argv) {
 		// Set up back end implementation
-		platform_impl_ = BackEnd::createBackEnd(_argc, _argv);
-		// Set up public service
-		public_service_ = Service::createService(_argc, _argv);
-		// Link public service to implementation
-		registerCallBacks();
-		// Start time stamp for update cycle
-		last_update_ = high_resolution_clock::now();
+		setDefaultParams();
+		parseArguments(_argc, _argv);
+		startCommunications(_argc, _argv);
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
@@ -51,9 +47,7 @@ namespace grvc { namespace hal {
 		for (;;) {
 			if(!platform_impl_->update())
 				return;
-			publishBackEndInfo();
-			if (!public_service_->update())
-				return;
+			//publishBackEndInfo();
 			// Sleep until next update
 			if(update_rate_ > 0) {
 				auto period = milliseconds(1000/update_rate_);
@@ -64,21 +58,41 @@ namespace grvc { namespace hal {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	void Server::registerCallBacks() {
-		// Directly map back end implementation to public service call backs
-		auto bindGoToWP = [this](const Vec3& _v) { platform_impl_->goToWP(_v); };
-		public_service_->onGoToWP(bindGoToWP);
-		auto bindTakeOff = [this](double _z){ platform_impl_->takeOff(_z); };
-		public_service_->onTakeOff(bindTakeOff);
-		// Methods without arguments can simply be passed with std::bind
-		public_service_->onLand(std::bind(&BackEnd::land, platform_impl_));
-		public_service_->onAbort(std::bind(&BackEnd::abortTask, platform_impl_));
+	void Server::setDefaultParams() {
+		hal_ns_ = "hal_ns";
+		wp_topic_ = "go_to_wp";
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	void Server::publishBackEndInfo() {
-		public_service_->publishPosition(	platform_impl_->position() );
-		public_service_->publishTaskState(	platform_impl_->curTaskState() );
+	void Server::parseArguments(int _argc, char** _argv) {
+		const string hal_ns_arg = "-hal_ns=";
+		const string wp_topic_arg = "-wp_topic=";
+
+		for (int i = 0; i < _argc; ++i) {
+			string arg = _argv[i];
+			if (parseArg(arg, hal_ns_arg, hal_ns_))
+				break;
+			if (parseArg(arg, wp_topic_arg, wp_topic_))
+				break;
+		}
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	bool Server::parseArg(const string& _arg, const string& _label, string& _dst) {
+		if (_arg.substr(0, _label.size()) == _label) {
+			_dst = _arg.substr(_label.size());
+			return true;
+		}
+		return false;
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	void Server::startCommunications(int _argc, char** _argv) {
+		// Suscribe to commands topic
+		auto wp_full_topic = hal_ns_ + "/" + wp_topic_;
+		auto bindGoToWP = [this](const Vec3& _v) { platform_impl_->goToWP(_v); };
+		wp_sub_ = new com::Subscriber("hal_node", wp_full_topic.c_str(), _argc, _argv);
+		wp_sub_->setCallBack<Vec3>(bindGoToWP);
 	}
 	
 }}	// namespace grvc
