@@ -23,6 +23,7 @@
 
 namespace grvc { namespace com {
 	
+	/// Common interface for different back end implementations of communications
 	class PublisherBackEnd {
 	public:
 		/// Actually send a serialized message throught the communication channel
@@ -36,6 +37,6 @@ namespace grvc { namespace com {
 		static PublisherBackEnd* createBackEnd(const char* _nodeName, const char* _topic, int _argc, char** _argv);
 	};
 	
-}} // 
+}} // namespace grvc::com
 
 #endif // _GRVCQUADROTOR_COM_PUBLISHERBACKEND_H_
