@@ -26,6 +26,7 @@ namespace grvc { namespace com {
 	/// Common interface for different back end implementations of communications
 	class PublisherBackEnd {
 	public:
+		virtual ~PublisherBackEnd() = default;
 		/// Actually send a serialized message throught the communication channel
 		virtual void publish (const char* _msg) = 0;
 

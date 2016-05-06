@@ -31,6 +31,7 @@ namespace grvc {
 		/// Expects incomming data to be serialized as strings
 		class SubscriberBackEnd {
 		public:
+			virtual ~SubscriberBackEnd() = default;
 			/// Callback functors that can be invoked by the subscriber
 			/// \param T_ data type you expect to receive. This is the type your callback admits
 			typedef std::function<void(std::istream& _is)>	CallBack;
