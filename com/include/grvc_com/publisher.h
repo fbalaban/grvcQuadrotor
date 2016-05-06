@@ -40,6 +40,11 @@ namespace grvc { namespace com {
 		/// or operator << to be defined for serialization
 		template<class T_>
 		void publish(const T_& _msg);
+
+		/// Dataless publish
+		void publish() {
+			back_end_->publish(""); // Dummy, empty message
+		}
 	private:
 		template<class T_>
 		void serialize(std::ostream& _os, const T_& _t);

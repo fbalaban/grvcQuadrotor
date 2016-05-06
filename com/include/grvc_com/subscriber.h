@@ -50,6 +50,14 @@ namespace grvc {
 				back_end_->onMessage(CallBackDeserializer<T_>(_cb));
 			}
 
+			/// Specialization for dataless messages (simple notification events or commands)
+			void setCallBack(std::function<void()> _cb) {
+				auto wrapper = [&](std::istream& _is) {
+					_cb();
+				};
+				back_end_->onMessage(wrapper);
+			}
+
 		private:
 			/// Internal classes that deserializes incomming messages and subscribes to the back end
 			/// subscriber as a functor
