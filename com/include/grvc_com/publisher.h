@@ -29,7 +29,11 @@ namespace grvc { namespace com {
 	/// Allows publishing information to different nodes in the network
 	class Publisher {
 	public:
-		Publisher(const char* _nodeName, const char* _topic, int _argc, char** _argv);
+		/// \param _node_mame unique identifier of the executable running this publisher
+		/// \param _topic unique identifier with path/like/syntax that specifies the communication channel
+		/// \param _argc number of command line arguments
+		/// \param _argv array of command line arguments
+		Publisher(const char* _node_name, const char* _topic, int _argc, char** _argv);
 
 		/// Publish a message of arbitrary type.
 		/// \param T_ requires either a specialized implementation of Publisher::serialize
@@ -47,8 +51,8 @@ namespace grvc { namespace com {
 	//------------------------------------------------------------------------------------------------------------------
 	// Inline implementation
 	//------------------------------------------------------------------------------------------------------------------
-	Publisher::Publisher(const char* _nodeName, const char* _topic, int _argc, char** _argv) {
-		back_end_ = PublisherBackEnd::createBackEnd(_nodeName, _topic, _argc, _argv);
+	Publisher::Publisher(const char* _node_name, const char* _topic, int _argc, char** _argv) {
+		back_end_ = PublisherBackEnd::createBackEnd(_node_name, _topic, _argc, _argv);
 	}
 
 	//------------------------------------------------------------------------------------------------------------------

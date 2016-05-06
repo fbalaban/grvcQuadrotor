@@ -30,11 +30,11 @@ namespace grvc { namespace com {
 		virtual void publish (const char* _msg) = 0;
 
 		/// Creates the proper backend depending on current platform and command line arguments provided (argc, argv)
-		/// \param _nodeName unique identifier of the executable running this publisher
+		/// \param _node_mame unique identifier of the executable running this publisher
 		/// \param _topic unique identifier with path/like/syntax that specifies the communication channel
 		/// \param _argc number of command line arguments
 		/// \param _argv array of command line arguments
-		static PublisherBackEnd* createBackEnd(const char* _nodeName, const char* _topic, int _argc, char** _argv);
+		static PublisherBackEnd* createBackEnd(const char* _node_name, const char* _topic, int _argc, char** _argv);
 	};
 	
 }} // namespace grvc::com
