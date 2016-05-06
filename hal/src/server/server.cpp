@@ -61,18 +61,22 @@ namespace grvc { namespace hal {
 	void Server::setDefaultParams() {
 		hal_ns_ = "hal_ns";
 		wp_topic_ = "go_to_wp";
+		take_off_topic_ = "take_off";
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
 	void Server::parseArguments(int _argc, char** _argv) {
 		const string hal_ns_arg = "-hal_ns=";
 		const string wp_topic_arg = "-wp_topic=";
+		const string take_off_arg = "-take_off_topic=";
 
 		for (int i = 0; i < _argc; ++i) {
 			string arg = _argv[i];
 			if (parseArg(arg, hal_ns_arg, hal_ns_))
 				break;
 			if (parseArg(arg, wp_topic_arg, wp_topic_))
+				break;
+			if (parseArg(arg, take_off_arg, take_off_topic_))
 				break;
 		}
 	}
@@ -88,11 +92,15 @@ namespace grvc { namespace hal {
 
 	//------------------------------------------------------------------------------------------------------------------
 	void Server::startCommunications(int _argc, char** _argv) {
-		// Suscribe to commands topic
+		// Suscribe to waypoint command topic
 		auto wp_full_topic = hal_ns_ + "/" + wp_topic_;
 		auto bindGoToWP = [this](const Vec3& _v) { platform_impl_->goToWP(_v); };
 		wp_sub_ = new com::Subscriber("hal_node", wp_full_topic.c_str(), _argc, _argv);
 		wp_sub_->setCallBack<Vec3>(bindGoToWP);
+		// Suscribe to take off topic
+		auto take_off_topic = hal_ns_ + "/" + take_off_topic_;
+		auto bindTakeOff = [this](double _z) { platform_impl_->takeOff(_z); }
+		take_off_sub_ = new com::Subscriber("hal_node")
 	}
 	
 }}	// namespace grvc
