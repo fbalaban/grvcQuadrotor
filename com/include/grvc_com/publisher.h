@@ -22,7 +22,7 @@
 #define _GRVCQUADROTOR_COM_PUBLISHER_H_
 
 #include "publisher_back_end.h"
-#include <sstream>;
+#include <sstream>
 
 namespace grvc { namespace com {
 

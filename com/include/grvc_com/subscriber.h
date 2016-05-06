@@ -33,17 +33,20 @@ namespace grvc {
 			/// Callback functors that can be invoked by the subscriber
 			/// \param T_ data type you expect to receive. This is the type your callback admits
 			template<class T_>
-			using CallBack = std::function<T_>;
+			using CallBack = std::function<void(const T_&)>;
 
 			/// \param _node_mame unique identifier of the executable running this publisher
 			/// \param _topic unique identifier with path/like/syntax that specifies the communication channel
 			/// \param _argc number of command line arguments
 			/// \param _argv array of command line arguments
-			/// \param _cb Functor to be invoked when a message arrives
+			/// \param _cb Functor to be invoked when a message arrives¡
+			Subscriber(const char* _node_name, const char* _topic, int _argc, char** _argv) {
+				back_end_ = SubscriberBackEnd::createBackEnd(_node_name, _topic, _argc, _argv);
+			}
+
 			/// \param T_ data type you expect to receive. This is the type your callback admits
 			template<class T_>
-			Subscriber(const char* _node_name, const char* _topic, int _argc, char** _argv, CallBack<T_> _cb) {
-				back_end_ = SubscriberBackEnd(_nodeName, _topic, _argc, _argc);
+			void setCallBack(CallBack<T_> _cb) {
 				back_end_->onMessage(CallBackDeserializer<T_>(_cb));
 			}
 
@@ -58,7 +61,7 @@ namespace grvc {
 				void operator()(std::istream& _is) {
 					T_ t;
 					_is >> t;
-					mCb(t);
+					cb_(t);
 				}
 
 				CallBack<T_> cb_;
