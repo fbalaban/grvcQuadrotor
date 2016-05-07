@@ -24,6 +24,7 @@
 #ifdef GRVC_USE_ROS
 
 #include <ros/ros.h>
+#include <thread>
 
 namespace grvc { namespace com {
 	
@@ -40,6 +41,7 @@ namespace grvc { namespace com {
 		RosSingleton(const char* _node_name, int _argc, char** _argv);
 
 		ros::NodeHandle* ros_handle_ = nullptr;
+		std::thread spin_thread_;
 	};
 	
 }} // namespace grvc::com

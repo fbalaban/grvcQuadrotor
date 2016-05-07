@@ -22,6 +22,7 @@
 
 #include <grvc_com/ros/ros_singleton.h>
 #include <sstream>
+#include <thread>
 
 namespace grvc { namespace com {
 
@@ -40,6 +41,9 @@ namespace grvc { namespace com {
 	RosSingleton::RosSingleton(const char* _node_name, int _argc, char** _argv) {
 		ros::init(_argc, _argv, _node_name, ros::init_options::AnonymousName);
 		ros_handle_ = new ros::NodeHandle(_node_name);
+		spin_thread_ = std::thread([](){ 
+			ros::spin(); 
+		});
 	}
 
 }} // namespace grvc::com
