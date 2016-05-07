@@ -21,7 +21,7 @@
 #include <grvc_com/publisher_back_end.h>
 
 #ifdef GRVC_USE_ROS
-#include <grvc_com/publisher_back_end_ros.h>
+#include <grvc_com/ros/publisher_back_end_ros.h>
 #endif // GRVC_USE_ROS
 
 namespace grvc { namespace com {

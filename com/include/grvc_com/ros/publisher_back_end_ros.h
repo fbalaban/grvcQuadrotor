@@ -18,38 +18,25 @@
 // OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------------------------------------------------
-#ifdef GRVC_USE_ROS
+#ifndef _GRVCQUADROTOR_COM_ROS_PUBLISHERBACKENDROS_H_
+#define _GRVCQUADROTOR_COM_ROS_PUBLISHERBACKENDROS_H_
 
-#include <grvc_com/publisher_back_end_ros.h>
-#include <std_msgs/String.h>
+#include "../publisher_back_end.h"
+#include <ros/ros.h>
 
 namespace grvc { namespace com {
 	
-	//------------------------------------------------------------------------------------------------------------------
-	// Static data definitions
-	ros::NodeHandle* PublisherBackEndROS::ros_handle_ = nullptr;
+	/// Common interface for different back end implementations of communications
+	class PublisherBackEndROS : public PublisherBackEnd {
+	public:
+		PublisherBackEndROS(const char* _node_name, const char* _topic, int _argc, char** _argv);
+		/// Actually send a serialized message throught the communication channel
+		void publish (const char* _msg);
 
-	//------------------------------------------------------------------------------------------------------------------
-	PublisherBackEndROS::PublisherBackEndROS(const char* _node_name, const char* _topic, int _argc, char** _argv) {
-		init(_node_name, _argc, _argv);
-		ros_publisher_ = ros_handle_->advertise<std_msgs::String>(_topic, 0);
-	}
-
-	//------------------------------------------------------------------------------------------------------------------
-	void PublisherBackEndROS::init(const char* _node_name, int _argc, char** _argv) {
-		if(!ros_handle_) {
-			ros::init(_argc, _argv, _node_name, ros::init_options::AnonymousName);
-			ros_handle_ = new ros::NodeHandle(_node_name);
-		}
-	}
-
-	//------------------------------------------------------------------------------------------------------------------
-	void PublisherBackEndROS::publish (const char* _msg) {
-		std_msgs::String m;
-		m.data = _msg;
-		ros_publisher_.publish(m);
-	}
+	private:
+		ros::Publisher ros_publisher_;
+	};
 	
 }} // namespace grvc::com
 
-#endif // GRVC_USE_ROS
+#endif // _GRVCQUADROTOR_COM_ROS_PUBLISHERBACKENDROS_H_

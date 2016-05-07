@@ -20,36 +20,25 @@
 //----------------------------------------------------------------------------------------------------------------------
 #ifdef GRVC_USE_ROS
 
-#include <grvc_com/subscriber_back_end_ros.h>
-#include <sstream>
+#include <grvc_com/ros/publisher_back_end_ros.h>
+#include <grvc_com/ros/ros_singleton.h>
+#include <std_msgs/String.h>
 
 namespace grvc { namespace com {
 
 	//------------------------------------------------------------------------------------------------------------------
-	// Static data definitions
-	ros::NodeHandle* SubscriberBackEndROS::ros_handle_ = nullptr;
-
-	//------------------------------------------------------------------------------------------------------------------
-	SubscriberBackEndROS::SubscriberBackEndROS(const char* _node_name, const char* _topic, int _argc, char** _argv) {
-		init(_node_name, _argc, _argv);
-		ros_subscriber_ = ros_handle_->subscribe(_topic, 0, &SubscriberBackEndROS::onRosMsg, this);
+	PublisherBackEndROS::PublisherBackEndROS(const char* _node_name, const char* _topic, int _argc, char** _argv) {
+		RosSingleton::init(_node_name, _argc, _argv);
+		ros_publisher_ = RosSingleton::get()->handle()->advertise<std_msgs::String>(_topic, 0);
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	void SubscriberBackEndROS::init(const char* _node_name, int _argc, char** _argv) {
-		if(!ros_handle_) {
-			ros::init(_argc, _argv, _node_name, ros::init_options::AnonymousName);
-			ros_handle_ = new ros::NodeHandle(_node_name);
-		}
+	void PublisherBackEndROS::publish (const char* _msg) {
+		std_msgs::String m;
+		m.data = _msg;
+		ros_publisher_.publish(m);
 	}
-
-	//------------------------------------------------------------------------------------------------------------------
-	void SubscriberBackEndROS::onRosMsg(const std_msgs::String::ConstPtr& _s) {
-		std::stringstream ss;
-		ss << _s->data;
-		cb_(ss);
-	}
-
+	
 }} // namespace grvc::com
 
 #endif // GRVC_USE_ROS
