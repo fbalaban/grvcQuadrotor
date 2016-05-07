@@ -23,5 +23,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 	</include>
 
 	<!-- Spawn launch hal controller -->
-	<node name="grvc_hal_$(arg robot_name)" pkg="grvc_quadrotor_hal" type="hal_node" respawn="false"/>
+	<node name="grvc_hal_$(arg robot_name)" pkg="grvc_quadrotor_hal" type="hal_node" respawn="false"
+		args="-hal_ns=/$(arg robot_name) -wp_topic=goToWp"/>
 </launch>

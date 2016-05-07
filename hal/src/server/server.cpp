@@ -73,11 +73,11 @@ namespace grvc { namespace hal {
 		for (int i = 0; i < _argc; ++i) {
 			string arg = _argv[i];
 			if (parseArg(arg, hal_ns_arg, hal_ns_))
-				break;
+				continue;
 			if (parseArg(arg, wp_topic_arg, wp_topic_))
-				break;
+				continue;
 			if (parseArg(arg, take_off_arg, take_off_topic_))
-				break;
+				continue;
 		}
 	}
 
