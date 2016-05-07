@@ -84,6 +84,9 @@ GroupSources(include/grvc_com grvc_com)
 add_library(grvc_com STATIC ${COM_SOURCE_FILES})
 target_include_directories(grvc_com PUBLIC "include")
 set_target_properties(grvc_com PROPERTIES FOLDER "com")
+if(GRVCQUAD_USE_ROS)
+	target_link_libraries(grvc_com LINK_PUBLIC ${catkin_LIBRARIES})
+endif(GRVCQUAD_USE_ROS)
 
 # --- Test projects
 #if(GRVCQUAD_BUILD_TESTS)

@@ -31,7 +31,7 @@ namespace grvc {
 		SubscriberBackEnd* SubscriberBackEnd::createBackEnd(const char* _node_name, const char* _topic, int _argc, char** _argv) {
 			SubscriberBackEnd* be = nullptr; // Default implementation returns no back end.
 #ifdef GRVC_USE_ROS
-			be = new PublisherBackEndROS(_node_name, _topic, _argc, _argv);
+			be = new SubscriberBackEndROS(_node_name, _topic, _argc, _argv);
 #else
 			_node_name;
 			_topic;

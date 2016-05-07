@@ -50,7 +50,7 @@ namespace grvc {
 			/// \param _argv array of command line arguments
 			static SubscriberBackEnd* createBackEnd(const char* _node_name, const char* _topic, int _argc, char** _argv);
 
-		private:
+		protected:
 			CallBack cb_; ///< Back end implementations must invoke this CallBack.
 		};
 

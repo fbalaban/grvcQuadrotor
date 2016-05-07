@@ -30,14 +30,17 @@
 namespace grvc {
 	namespace com {
 
-		class SubscriberBackEndROS : SubscriberBackEnd {
+		class SubscriberBackEndROS : public SubscriberBackEnd {
+		public:
 			SubscriberBackEndROS(const char* _node_name, const char* _topic, int _argc, char** _argv);
-			ros::Subscriber* ros_subscriber_;
-			void onRosMsg(const std_msgs::String&::ConstPtr& _s);
+
+		private:
+			ros::Subscriber ros_subscriber_;
+			void onRosMsg(const std_msgs::String::ConstPtr& _s);
 
 			// Static
 			static void init(const char* _node_name, int _argc, char** _argv);
-			static ros::NodeHandle* ros_handle_ = nullptr;
+			static ros::NodeHandle* ros_handle_;
 		};
 
 	}

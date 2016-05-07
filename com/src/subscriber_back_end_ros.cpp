@@ -26,6 +26,10 @@
 namespace grvc { namespace com {
 
 	//------------------------------------------------------------------------------------------------------------------
+	// Static data definitions
+	ros::NodeHandle* SubscriberBackEndROS::ros_handle_ = nullptr;
+
+	//------------------------------------------------------------------------------------------------------------------
 	SubscriberBackEndROS::SubscriberBackEndROS(const char* _node_name, const char* _topic, int _argc, char** _argv) {
 		init(_node_name, _argc, _argv);
 		ros_subscriber_ = ros_handle_->subscribe(_topic, 0, &SubscriberBackEndROS::onRosMsg, this);
@@ -40,8 +44,8 @@ namespace grvc { namespace com {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	void SubscriberBackEndROS::onRosMsg(const std_msgs::String&::ConstPtr& _s) {
-		sstream ss;
+	void SubscriberBackEndROS::onRosMsg(const std_msgs::String::ConstPtr& _s) {
+		std::stringstream ss;
 		ss << _s->data;
 		cb_(ss);
 	}
