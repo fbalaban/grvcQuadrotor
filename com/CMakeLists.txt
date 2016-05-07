@@ -67,13 +67,12 @@ endmacro()
 if(GRVCQUAD_USE_ROS)
 	find_package(catkin REQUIRED COMPONENTS 
 		roscpp
-		std_msgs
-		message_generation)
+		std_msgs)
 
 	catkin_package(
 		INCLUDE_DIRS include
 		LIBRARIES grvc_com
-		CATKIN_DEPENDS roscpp message_runtime)
+		CATKIN_DEPENDS roscpp)
 
 	include_directories(${catkin_INCLUDE_DIRS})
 endif(GRVCQUAD_USE_ROS)

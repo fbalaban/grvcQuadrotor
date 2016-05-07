@@ -20,7 +20,7 @@
 //----------------------------------------------------------------------------------------------------------------------
 #ifdef GRVC_USE_ROS
 
-#include "subscriber_back_end_ros.h"
+#include <grvc_com/subscriber_back_end_ros.h>
 #include <sstream>
 
 namespace grvc { namespace com {

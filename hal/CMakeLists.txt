@@ -70,7 +70,8 @@ if(GRVCQUAD_USE_ROS)
 		std_msgs
 		gazebo_ros
 		geometry_msgs
-		message_generation)
+		message_generation
+		grvc_quadrotor_com)
 
 	add_message_files( FILES
 		command.msg)
@@ -82,7 +83,7 @@ if(GRVCQUAD_USE_ROS)
 	catkin_package(
 		INCLUDE_DIRS include
 		LIBRARIES hal_server hal_client
-		CATKIN_DEPENDS roscpp message_runtime
+		CATKIN_DEPENDS roscpp message_runtime grvc_quadrotor_com
 		DEPENDS gazebo_ros)
 
 	find_package(gazebo REQUIRED)
