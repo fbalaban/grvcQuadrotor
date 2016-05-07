@@ -18,26 +18,29 @@
 // OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------------------------------------------------
-#include <grvc_com/publisher_back_end.h>
+#ifndef _GRVCQUADROTOR_COM_PUBLISHERBACKENDROS_H_
+#define _GRVCQUADROTOR_COM_PUBLISHERBACKENDROS_H_
 
-#ifdef GRVC_USE_ROS
-#include <grvc_com/publisher_back_end_ros.h>
-#endif // GRVC_USE_ROS
+#include "publisher_back_end.h"
+#include <ros/ros.h>
 
 namespace grvc { namespace com {
 	
-	//------------------------------------------------------------------------------------------------------------------
-	PublisherBackEnd* PublisherBackEnd::createBackEnd(const char* _node_name, const char* _topic, int _argc, char** _argv) {
-		PublisherBackEnd* be = nullptr; // Default implementation returns no back end.
-#ifdef GRVC_USE_ROS
-		be = new PublisherBackEndROS(_node_name, _topic, _argc, _argv);
-#else
-		_node_name;
-		_topic;
-		_argc;
-		_argv;
-#endif // GRVC_USE_ROS
-		return be;
-	}
+	/// Common interface for different back end implementations of communications
+	class PublisherBackEndROS : public PublisherBackEnd {
+	public:
+		PublisherBackEndROS(const char* _node_name, const char* _topic, int _argc, char** _argv);
+		/// Actually send a serialized message throught the communication channel
+		void publish (const char* _msg);
+
+	private:
+		ros::Publisher ros_publisher_;
+
+		// Static
+		static void init(const char* _node_name, int _argc, char** _argv);
+		static ros::NodeHandle* ros_handle_;
+	};
 	
 }} // namespace grvc::com
+
+#endif // _GRVCQUADROTOR_COM_PUBLISHERBACKENDROS_H_
