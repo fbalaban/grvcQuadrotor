@@ -24,7 +24,7 @@
 #ifdef GRVC_USE_ROS
 
 #include <gazebo/common/PID.hh>
-#include <hal_common/types.h>
+#include <grvc_quadrotor_hal/types.h>
 
 namespace grvc { namespace hal {
 

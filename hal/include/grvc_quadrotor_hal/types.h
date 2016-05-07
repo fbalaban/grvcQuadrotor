@@ -38,7 +38,7 @@ namespace grvc { namespace hal {
 	
 }}	// namespace grvc::hal
 
-std::istream& operator >> (std::istream& _is, grvc::hal::Vec3& _v) {
+inline std::istream& operator >> (std::istream& _is, grvc::hal::Vec3& _v) {
 	_is >> _v.x();
 	_is.get(); // skip ,
 	_is >> _v.y();

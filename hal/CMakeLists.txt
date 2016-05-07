@@ -103,17 +103,17 @@ add_library(hal_server STATIC ${HALSERVER_SOURCE_FILES})
 if(GRVCQUAD_USE_ROS)
 	target_link_libraries(hal_server LINK_PUBLIC ${GAZEBO_LIBRARIES})
 endif(GRVCQUAD_USE_ROS)
-target_include_directories(hal_server PUBLIC "${PROJECT_SOURCE_DIR}/../com/include")
 target_include_directories(hal_server PUBLIC "include")
+target_link_libraries(hal_server LINK_PUBLIC grvc_com)
 set_target_properties(hal_server PROPERTIES FOLDER "hal")
 
 # --- Main executable, simple node running the uav service ---
 set(NODE_DIR src/node)
-file(GLOB_RECURSE HALNODE_SOURCE_FILES "${NODE_DIR}/*.cpp" ${COMMON_INCLUDES})
+file(GLOB_RECURSE HALNODE_SOURCE_FILES "${NODE_DIR}/*.cpp")
 GroupSources(src/node node)
 add_executable(hal_node ${HALNODE_SOURCE_FILES})
-target_include_directories(hal_node PUBLIC "include")
-target_link_libraries(hal_node LINK_PUBLIC uav_server)
+target_include_directories(hal_node PUBLIC "include" )
+target_link_libraries(hal_node LINK_PUBLIC hal_server)
 set_target_properties(hal_node PROPERTIES FOLDER "hal")
 
 # --- Test projects

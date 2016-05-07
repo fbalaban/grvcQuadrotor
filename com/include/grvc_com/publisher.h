@@ -56,7 +56,7 @@ namespace grvc { namespace com {
 	//------------------------------------------------------------------------------------------------------------------
 	// Inline implementation
 	//------------------------------------------------------------------------------------------------------------------
-	Publisher::Publisher(const char* _node_name, const char* _topic, int _argc, char** _argv) {
+	inline Publisher::Publisher(const char* _node_name, const char* _topic, int _argc, char** _argv) {
 		back_end_ = PublisherBackEnd::createBackEnd(_node_name, _topic, _argc, _argv);
 	}
 

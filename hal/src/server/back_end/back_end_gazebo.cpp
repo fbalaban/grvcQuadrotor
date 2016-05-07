@@ -21,7 +21,7 @@
 #ifdef GRVC_USE_ROS
 
 #include <geometry_msgs/Twist.h>
-#include <hal_server/back_end/back_end_gazebo.h>
+#include <grvc_quadrotor_hal/back_end/back_end_gazebo.h>
 #include <nav_msgs/Odometry.h>
 #include <ros/ros.h>
 #include <string>

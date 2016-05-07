@@ -23,8 +23,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //------------------------------------------------------------------------------
-#include <hal_server/server.h>
+#include <grvc_quadrotor_hal/server.h>
 
-int main(int, const char**) {
+using namespace grvc::hal;
+
+int main(int _argc, char** _argv) {
+
+	Server hal(_argc, _argv);
+	hal.run();
 	return 0;
 }
