@@ -20,13 +20,24 @@
 //----------------------------------------------------------------------------------------------------------------------
 #include <grvc_com/publisher.h>
 #include <grvc_quadrotor_hal/server.h>
+#include <cstdint>
+#include <thread>
 
 using namespace grvc::com;
+using namespace grvc::hal;
 
 int main(int _argc, char** _argv) {
 	// Use this to send waypoints to hal
-	Publisher* wp = new Publisher("hal_sample", "hal_ns", _argc, _argv);
+	Publisher* wpPub = new Publisher("hal_sample", "hal_ns", _argc, _argv);
 
+	Vec3 points[2] = { {0.0, 0.0, 1.0}, {3.0, 0.0, 1.0} };
+
+	for (size_t t = 0; t < 10; ++t) {
+		for (size_t i = 0; i < 2; ++i) {
+			wpPub->publish(points[i]);
+			std::this_thread::sleep_for(std::chrono::seconds(3));
+		}
+	}
 
 	return 0;
 }
