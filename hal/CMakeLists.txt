@@ -40,7 +40,7 @@ if(MSVC)
 	add_definitions(/W4 /WX) # Enable high level warnings and treat them like errors
 endif(MSVC)
 if(CMAKE_COMPILER_IS_GNUCXX)
-    add_definitions(-std=c++11 -Wall -Werror)
+	add_definitions(-std=c++11 -Wall -Werror)
 endif()
 
 if(GRVCQUAD_USE_ROS)
@@ -116,8 +116,3 @@ add_executable(hal_node ${HALNODE_SOURCE_FILES})
 target_include_directories(hal_node PUBLIC "include" )
 target_link_libraries(hal_node LINK_PUBLIC hal_server)
 set_target_properties(hal_node PROPERTIES FOLDER "hal")
-
-# --- Test projects
-if(GRVCQUAD_BUILD_TESTS)
-	add_subdirectory(test)
-ENDIF(GRVCQUAD_BUILD_TESTS)
