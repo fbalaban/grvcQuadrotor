@@ -72,10 +72,6 @@ if(GRVCQUAD_USE_ROS)
 		geometry_msgs
 		grvc_quadrotor_com)
 
-	#generate_messages( DEPENDENCIES 
-	#	std_msgs
-	#	geometry_msgs)
-
 	catkin_package(
 		INCLUDE_DIRS include
 		LIBRARIES hal_server hal_client
@@ -105,8 +101,7 @@ target_link_libraries(hal_server LINK_PUBLIC grvc_com)
 set_target_properties(hal_server PROPERTIES FOLDER "hal")
 
 # --- Main executable, simple node running the uav service ---
-set(NODE_DIR src/node)
-file(GLOB_RECURSE HALNODE_SOURCE_FILES "${NODE_DIR}/*.cpp")
+file(GLOB_RECURSE HALNODE_SOURCE_FILES "src/node/*.cpp")
 GroupSources(src/node node)
 add_executable(hal_node ${HALNODE_SOURCE_FILES})
 target_include_directories(hal_node PUBLIC "include" )

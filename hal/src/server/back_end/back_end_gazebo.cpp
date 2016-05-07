@@ -37,12 +37,38 @@ namespace grvc { namespace hal {
 		: cur_task_state_(TaskState::finished)
 	{
 		// Init ros
-		RosSingleton::init(_node_name, _argc, _argv);
-		ros_handle_ = RosSingleton::get()->handle();
+		com::RosSingleton::init(_node_name, _argc, _argv);
+		ros_handle_ = com::RosSingleton::get()->handle();
 		// Init myself
 		setDefaultParams();
 		parseArguments(_argc, _argv);
 		startRosCommunications();
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	void BackEndGazebo::goToWP(const Vec3&) {
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	void BackEndGazebo::takeOff(double) {
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	void BackEndGazebo::land() {
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	TaskState BackEndGazebo::curTaskState() const {
+		return TaskState::finished;
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	void BackEndGazebo::abortTask() {
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	Vec3 BackEndGazebo::position() const {
+		return Vec3::Zero();
 	}
 
 	//------------------------------------------------------------------------------------------------------------------

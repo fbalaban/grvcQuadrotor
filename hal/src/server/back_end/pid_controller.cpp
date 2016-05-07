@@ -18,25 +18,30 @@
 // OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------------------------------------------------
-#include <grvc_quadrotor_hal/back_end/back_end.h>
-
-#ifdef GRVC_USE_ROS
-	#include <grvc_quadrotor_hal/back_end/back_end_gazebo.h>
-#endif // GRVC_USE_ROS
+#include <grvc_quadrotor_hal/back_end/pid_controller.h>
 
 namespace grvc { namespace hal {
 	
 	//------------------------------------------------------------------------------------------------------------------
-	BackEnd* BackEnd::createBackEnd(const char* _node_name, int _argc, char** _argv) {
-		BackEnd* be = nullptr;
-#ifdef GRVC_USE_ROS
-		be = new BackEndGazebo(_node_name, _argc, _argv);
-#else
-		_node_name;
-		_argc;
-		_argv;
-#endif // GRVC_USE_ROS
-		return be;
+	PidController::PidController() {
+		// Set pid gains and limits
+		pid_x_.Init(5,0,2,0.0,0.0,2,-2);
+   		pid_y_.Init(5,0,2,0.0,0.0,2,-2);
+   		pid_z_.Init(1.0,0,0.0,0.0,0.0,2,-2);
+   		pid_yaw_.Init(2.5,0.0,0.0,0.0,0.0,2.0,-2.0);
 	}
-	
-}}	// namespace grvc::hal
+
+	//------------------------------------------------------------------------------------------------------------------
+	void PidController::updateControlActions(gazebo::common::Time _dt) {
+		// Position PIDs
+		Vec3 pos_error = cur_pos_ - pos_reference_;
+		vel_action_.x() = pid_x_.Update(pos_error.x(), _dt);
+		vel_action_.y() = pid_y_.Update(pos_error.y(), _dt);
+		vel_action_.z() = pid_z_.Update(pos_error.z(), _dt);
+
+		// Yaw PID
+		double yaw_error = cur_yaw_ - yaw_reference_;
+		yaw_action_ = pid_yaw_.Update(yaw_error, _dt);
+	}
+
+}} // namespace grvc

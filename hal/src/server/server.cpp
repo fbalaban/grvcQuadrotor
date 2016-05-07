@@ -45,8 +45,6 @@ namespace grvc { namespace hal {
 	//------------------------------------------------------------------------------------------------------------------
 	void Server::run() {
 		for (;;) {
-			if(!platform_impl_->update())
-				return;
 			//publishBackEndInfo();
 			// Sleep until next update
 			if(update_rate_ > 0) {
@@ -93,15 +91,16 @@ namespace grvc { namespace hal {
 	//------------------------------------------------------------------------------------------------------------------
 	void Server::startCommunications(int _argc, char** _argv) {
 		// Connect to back end hal
-		
+		const char node_name[] = "hal_node";
+		platform_impl_ = BackEnd::createBackEnd(node_name, _argc, _argv);
 		// Suscribe to waypoint command topic
 		auto wp_full_topic = hal_ns_ + "/" + wp_topic_;
 		auto bindGoToWP = [this](const Vec3& _v) { platform_impl_->goToWP(_v); };
-		wp_sub_ = new com::Subscriber<Vec3>("hal_node", wp_full_topic.c_str(), _argc, _argv, bindGoToWP);
+		wp_sub_ = new com::Subscriber<Vec3>(node_name, wp_full_topic.c_str(), _argc, _argv, bindGoToWP);
 		// Suscribe to take off topic
 		auto take_off_full_topic = hal_ns_ + "/" + take_off_topic_;
 		auto bindTakeOff = [this](double _z) { platform_impl_->takeOff(_z); };
-		take_off_sub_ = new com::Subscriber<double>("hal_node", take_off_full_topic.c_str(), _argc, _argv, bindTakeOff);
+		take_off_sub_ = new com::Subscriber<double>(node_name, take_off_full_topic.c_str(), _argc, _argv, bindTakeOff);
 	}
 	
 }}	// namespace grvc
