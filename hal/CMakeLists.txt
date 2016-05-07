@@ -94,7 +94,6 @@ endif(GRVCQUAD_USE_ROS)
 # --- External dependencies ---
 SET(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/../cmake/modules")
 FIND_PACKAGE(Eigen3 REQUIRED)
-INCLUDE_DIRECTORIES(${EIGEN3_INCLUDE_DIR} ${GAZEBO_INCLUDE_DIRS})
 
 # --- uav server library. Extend this library to create more advanced servers ---
 file(GLOB_RECURSE HALSERVER_SOURCE_FILES "src/server/*.cpp" "include/grvc_quadrotor_hal/*.h")
@@ -102,9 +101,10 @@ GroupSources(src/server server)
 GroupSources(include/grvc_quadrotor_hal server)
 add_library(hal_server STATIC ${HALSERVER_SOURCE_FILES})
 if(GRVCQUAD_USE_ROS)
-	target_link_libraries(hal_server LINK_PUBLIC ${GAZEBO_LIBRARIES})
+	target_include_directories(hal_server PRIVATE ${GAZEBO_INCLUDE_DIRS})
+	target_link_libraries(hal_server LINK_PRIVATE ${GAZEBO_LIBRARIES})
 endif(GRVCQUAD_USE_ROS)
-target_include_directories(hal_server PUBLIC "include")
+target_include_directories(hal_server PUBLIC "include" ${EIGEN3_INCLUDE_DIR})
 target_link_libraries(hal_server LINK_PUBLIC grvc_com)
 set_target_properties(hal_server PROPERTIES FOLDER "hal")
 

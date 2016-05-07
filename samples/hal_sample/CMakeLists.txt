@@ -24,15 +24,12 @@
 # SOFTWARE.
 ################################################################################
 cmake_minimum_required (VERSION 2.6)
-project(grvcQuadrotor)
+project(grvc_quadrotor_hal_sample)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 # ---- Configurable options ----
 # Pass this options to CMake in command line to select specific functionality for this project
-option(GRVCQUAD_BUILD_TESTS "Enable testing and generate test projects" ON)
-option(GRVCQUAD_BUILD_SAMPLES "Build sample projects" ON)
-
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 	option(GRVCQUAD_USE_ROS "Enable ros-specific code and interfaces" ON)
 else()
@@ -45,22 +42,24 @@ if(MSVC)
 	add_definitions(/W4 /WX) # Enable high level warnings and treat them like errors
 endif(MSVC)
 if(CMAKE_COMPILER_IS_GNUCXX)
-	add_definitions(-std=c++11 -Wall -Werror)
+    add_definitions(-std=c++11 -Wall -Werror)
 endif()
 
 if(GRVCQUAD_USE_ROS)
 	add_definitions(-DGRVC_USE_ROS)
+	
+	find_package(catkin REQUIRED COMPONENTS 
+		grvc_quadrotor_hal)
+
+	catkin_package(	CATKIN_DEPENDS grvc_quadrotor_hal)
+
+	include_directories(${catkin_INCLUDE_DIRS})
 endif(GRVCQUAD_USE_ROS)
 
-# Included subprojects
-add_subdirectory(com)
-add_subdirectory(hal)
-add_subdirectory(uav)
+#set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/../../cmake/modules")
+#FIND_PACKAGE(Eigen3 REQUIRED)
+#INCLUDE_DIRECTORIES(${EIGEN3_INCLUDE_DIR})
 
-if(GRVCQUAD_USE_ROS) # Only ros versions are available for this projects.
-	add_subdirectory(simulation)
-endif(GRVCQUAD_USE_ROS)
-
-if(GRVCQUAD_BUILD_SAMPLES)
-	add_subdirectory(samples/hal_sample)
-ENDIF(GRVCQUAD_BUILD_SAMPLES)
+add_executable(grvc_quad_hal_sample src/main.cpp)
+target_link_libraries(grvc_quad_hal_sample LINK_PUBLIC hal_server)
+set_target_properties(grvc_quad_hal_sample PROPERTIES FOLDER "samples")
