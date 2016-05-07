@@ -11,8 +11,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 <launch>
 	<!-- Spawn a quad: send the robot XML to param server, push robot_description to factory and spawn robot in gazebo-->
 	<include file="$(find grvc_quadrotor_hal)/launch/test_simulator.launch">
-		<arg name="robot_name" value="grvc_gazebo_1"/>
-		<arg name="id" value="1"/>
+		<arg name="robot_name" value="quad1"/>
 	</include>
 
 	<node name="grvc_hal_sample" pkg="grvc_quadrotor_hal_sample" type="grvc_quad_hal_sample" respawn="false"/>

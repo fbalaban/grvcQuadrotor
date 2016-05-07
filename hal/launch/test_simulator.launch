@@ -13,6 +13,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 	<arg name="use_sim_time" default="true"/>
 	<arg name="gui" default="true"/>
 	<arg name="multi" default="true"/>
+	<arg name="robot_name" default="grvc_gazebo_1"/>
 
 	<!-- ########################################################################## -->
 	<!-- Launch Gazebo -->
@@ -32,7 +33,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 	<!-- Spawn a quad: send the robot XML to param server, push robot_description to factory and spawn robot in gazebo-->
 	<include file="$(find grvc_quadrotor_hal)/launch/spawn_quad_gazebo.launch">
-		<arg name="robot_name" value="grvc_gazebo_1"/>
+		<arg name="robot_name" value="$(arg robot_name)"/>
 		<arg name="id" value="1"/>
 	</include>
 </launch>
