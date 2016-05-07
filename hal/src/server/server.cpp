@@ -92,6 +92,8 @@ namespace grvc { namespace hal {
 
 	//------------------------------------------------------------------------------------------------------------------
 	void Server::startCommunications(int _argc, char** _argv) {
+		// Connect to back end hal
+		
 		// Suscribe to waypoint command topic
 		auto wp_full_topic = hal_ns_ + "/" + wp_topic_;
 		auto bindGoToWP = [this](const Vec3& _v) { platform_impl_->goToWP(_v); };

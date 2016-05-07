@@ -26,32 +26,23 @@
 #include <ros/ros.h>
 #include <string>
 #include <tf/transform_datatypes.h>
+#include <grvc_com/ros/ros_singleton.h>
 
 using namespace std;
 
 namespace grvc { namespace hal {
 	
 	//------------------------------------------------------------------------------------------------------------------
-	BackEndGazebo::BackEndGazebo(const char* _nodeName, int _argc, char** _argv)
+	BackEndGazebo::BackEndGazebo(const char* _node_name, int _argc, char** _argv)
 		: cur_task_state_(TaskState::finished)
 	{
 		// Init ros
-		ros::init(_argc, _argv, _nodeName, ros::init_options::AnonymousName);
-		ros_handle_ = new ros::NodeHandle(_nodeName);
+		RosSingleton::init(_node_name, _argc, _argv);
+		ros_handle_ = RosSingleton::get()->handle();
 		// Init myself
 		setDefaultParams();
 		parseArguments(_argc, _argv);
 		startRosCommunications();
-		// Start running async
-		run();
-	}
-
-	//------------------------------------------------------------------------------------------------------------------
-	void BackEndGazebo::run() {
-		// Keep running asynchronously until some event cancels execution
-		ros::AsyncSpinner spinner(0);
-		spinner.start();
-		ros::waitForShutdown();
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
@@ -70,11 +61,11 @@ namespace grvc { namespace hal {
 		for(int i = 0; i < _argc; ++i) {
 			string arg = _argv[i];
 			if(parseArg(arg, gazebo_ns_arg, gazebo_ns_))
-				break;
+				continue;
 			if(parseArg(arg, cmd_vel_topic_arg, cmd_vel_topic_))
-				break;
+				continue;
 			if(parseArg(arg, odometry_topic_arg, odometry_topic_))
-				break;
+				continue;
 		}
 	}
 
