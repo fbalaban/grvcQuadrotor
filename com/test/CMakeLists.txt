@@ -47,22 +47,6 @@ if(GRVCQUAD_USE_ROS)
 	add_definitions(-DGRVC_USE_ROS)
 endif(GRVCQUAD_USE_ROS)
 
-# ---- Clasify sources according to folder structure ----
-# This macro is a modified version of http://www.cmake.org/pipermail/cmake/2013-November/056336.html
-macro(GroupSources curdir dirLabel)
-	file(GLOB children RELATIVE ${PROJECT_SOURCE_DIR}/${curdir}
-		${PROJECT_SOURCE_DIR}/${curdir}/*)
-	foreach(child ${children})
-		if(IS_DIRECTORY ${PROJECT_SOURCE_DIR}/${curdir}/${child})
-			GroupSources(${curdir}/${child} ${dirLabel}/${child})
-		else()
-			string(REPLACE "/" "\\" groupname ${dirLabel})
-			source_group(${groupname} FILES
-				${PROJECT_SOURCE_DIR}/${curdir}/${child})
-		endif()
-	endforeach()
-endmacro()
-
 # --- Catkin specific configuration for ros ---
 if(GRVCQUAD_USE_ROS)
 	find_package(catkin REQUIRED COMPONENTS 
@@ -78,17 +62,9 @@ if(GRVCQUAD_USE_ROS)
 endif(GRVCQUAD_USE_ROS)
 
 # --- uav server library. Extend this library to create more advanced servers ---
-file(GLOB_RECURSE COM_SOURCE_FILES "src/*.cpp" "include/grvc_com/*.h")
-GroupSources(src grvc_com)
-GroupSources(include/grvc_com grvc_com)
-add_library(grvc_com STATIC ${COM_SOURCE_FILES})
-target_include_directories(grvc_com PUBLIC "include")
-set_target_properties(grvc_com PROPERTIES FOLDER "com")
 if(GRVCQUAD_USE_ROS)
-	target_link_libraries(grvc_com LINK_PUBLIC ${catkin_LIBRARIES})
-endif(GRVCQUAD_USE_ROS)
 
-# --- Test projects
-if(GRVCQUAD_BUILD_TESTS)
-	add_subdirectory(test)
-endif(GRVCQUAD_BUILD_TESTS)
+ADD_EXECUTABLE(serializeTest "serialize.cpp")
+TARGET_INCLUDE_DIRECTORIES(serializeTest "../include")
+
+endif(GRVCQUAD_USE_ROS)
