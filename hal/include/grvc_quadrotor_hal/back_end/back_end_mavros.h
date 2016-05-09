@@ -18,22 +18,20 @@
 // OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------------------------------------------------
-#ifndef _GRVCQUADROTOR_HALSERVER_BACKEND_BACKENDGAZEBO_H_
-#define _GRVCQUADROTOR_HALSERVER_BACKEND_BACKENDGAZEBO_H_
+#ifndef _GRVCQUADROTOR_HALSERVER_BACKEND_BACKENDMAVROS_H_
+#define _GRVCQUADROTOR_HALSERVER_BACKEND_BACKENDMAVROS_H_
 
 #ifdef GRVC_USE_ROS
 
 #include "back_end.h"
-#include <nav_msgs/Odometry.h>
-#include "pid_controller.h"
 #include <ros/ros.h>
 
 namespace grvc { namespace hal {
 	
 	/// Common interface for back end implementations of hal
-	class BackEndGazebo : public BackEnd {
+	class BackEndMavros : public BackEnd {
 	public:
-		BackEndGazebo(const char* _node_name, int _argc, char** _argv);
+		BackEndMavros(const char* _node_name, int _argc, char** _argv);
 
 		/// Go to the specified waypoint, following a straight line.
 		/// \param _wp goal waypoint.
@@ -51,34 +49,14 @@ namespace grvc { namespace hal {
 		Vec3		position		() const override;
 
 	private:
-		void setDefaultParams();
-		void parseArguments(int _argc, char** _argv);
-		bool parseArg(const std::string& _arg, const std::string& _label, std::string& _dst);
 		void startRosCommunications();
-		void updateCb(const ros::TimerEvent& _te);
-		void publishCb(const ros::TimerEvent& _te);
-		void odometryCb(const nav_msgs::Odometry::ConstPtr&);
 
 	private:
-		TaskState cur_task_state_;
-
 		ros::NodeHandle* ros_handle_;
-		ros::Timer publish_timer_;
-		ros::Timer update_timer_;
-		float publish_rate_ = 100.f;
-		float update_rate_ = 100.f;
+		
+		/// Ros Communication		
+		ros::serviceClient takeOffClient;
 
-		// Control
-		PidController state_controller_;
-		bool has_odometry_;
-		bool has_references_;
-
-		// Ros communication
-		ros::Publisher	cmd_vel_pub_;
-   		ros::Subscriber odometry_sub_;
-		std::string odometry_topic_;
-		std::string cmd_vel_topic_;
-		std::string gazebo_ns_;
 	};
 	
 }}	// namespace grvc::hal
