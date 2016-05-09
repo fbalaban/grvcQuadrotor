@@ -54,16 +54,16 @@ namespace grvc { namespace hal {
 	//------------------------------------------------------------------------------------------------------------------
 	void BackEndGazebo::takeOff(double _z) {
 		has_references_ = true;
-		Vec3 ref_pos = state_controller_->pos();
-		ref_pos._z() = _z;
+		Vec3 ref_pos = state_controller_.pos();
+		ref_pos.z() = _z;
 		state_controller_.setReferencePos(ref_pos);
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
 	void BackEndGazebo::land() {
 		has_references_ = true;
-		Vec3 ref_pos = state_controller_->pos();
-		ref_pos._z() = 0.0;
+		Vec3 ref_pos = state_controller_.pos();
+		ref_pos.z() = 0.0;
 		state_controller_.setReferencePos(ref_pos);
 	}
 
@@ -74,7 +74,7 @@ namespace grvc { namespace hal {
 
 	//------------------------------------------------------------------------------------------------------------------
 	void BackEndGazebo::abortTask() {
-		state_controller.setReferencePos(state_controller_.pos());
+		state_controller_.setReferencePos(state_controller_.pos());
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
