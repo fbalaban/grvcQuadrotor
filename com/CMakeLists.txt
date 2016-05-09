@@ -77,12 +77,16 @@ if(GRVCQUAD_USE_ROS)
 	include_directories(${catkin_INCLUDE_DIRS})
 endif(GRVCQUAD_USE_ROS)
 
+# --- external dependencies ---
+SET(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/../cmake/modules")
+FIND_PACKAGE(Eigen3 REQUIRED)
+
 # --- communications library ---
 file(GLOB_RECURSE COM_SOURCE_FILES "src/*.cpp" "include/grvc_com/*.h")
 GroupSources(src grvc_com)
 GroupSources(include/grvc_com grvc_com)
 add_library(grvc_com STATIC ${COM_SOURCE_FILES})
-target_include_directories(grvc_com PUBLIC "include")
+target_include_directories(grvc_com PUBLIC "include"  ${EIGEN3_INCLUDE_DIR})
 set_target_properties(grvc_com PROPERTIES FOLDER "com")
 if(GRVCQUAD_USE_ROS)
 	target_link_libraries(grvc_com LINK_PUBLIC ${catkin_LIBRARIES})

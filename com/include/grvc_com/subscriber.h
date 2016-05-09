@@ -23,6 +23,7 @@
 
 #include <functional>
 #include "subscriber_back_end.h"
+#include <Eigen/Core>
 
 namespace grvc {
 	namespace com {
@@ -72,5 +73,17 @@ namespace grvc {
 
 	}
 } // namespace grvc::com
+
+// -------- Specialized extractor operators
+// Eigen vectors
+template<class Scalar_, int cols_>
+inline std::istream& operator >> (std::istream& _is, Eigen::Matrix<Scalar_,cols_,1>& _v) {
+	for (int i = 0; i < _v.rows() - 1; ++i) {
+		_is >> _v(i); // get ith component
+		_is.get(); // skip \n
+	}
+	_is >> _v(_v.rows()-1); // get last component
+	return _is;
+}
 
 #endif // _GRVCQUADROTOR_COM_SUBSCRIBER_H_

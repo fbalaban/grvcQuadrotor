@@ -38,13 +38,4 @@ namespace grvc { namespace hal {
 	
 }}	// namespace grvc::hal
 
-inline std::istream& operator >> (std::istream& _is, grvc::hal::Vec3& _v) {
-	_is >> _v.x();
-	_is.get(); // skip ,
-	_is >> _v.y();
-	_is.get(); // skip ,
-	_is >> _v.z();
-	return _is;
-}
-
 #endif // _GRVCQUADROTOR_HAL_COMMON_TYPES_H_
