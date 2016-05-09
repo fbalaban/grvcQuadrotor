@@ -77,7 +77,7 @@ if(GRVCQUAD_USE_ROS)
 	include_directories(${catkin_INCLUDE_DIRS})
 endif(GRVCQUAD_USE_ROS)
 
-# --- uav server library. Extend this library to create more advanced servers ---
+# --- communications library ---
 file(GLOB_RECURSE COM_SOURCE_FILES "src/*.cpp" "include/grvc_com/*.h")
 GroupSources(src grvc_com)
 GroupSources(include/grvc_com grvc_com)

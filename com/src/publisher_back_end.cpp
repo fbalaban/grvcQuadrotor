@@ -21,7 +21,7 @@
 #include <grvc_com/publisher_back_end.h>
 
 #ifdef GRVC_USE_ROS
-//#include <grvc_com/publisher_back_end_ros.h>
+#include <grvc_com/ros/publisher_back_end_ros.h>
 #endif // GRVC_USE_ROS
 
 namespace grvc { namespace com {
@@ -30,7 +30,7 @@ namespace grvc { namespace com {
 	PublisherBackEnd* PublisherBackEnd::createBackEnd(const char* _node_name, const char* _topic, int _argc, char** _argv) {
 		PublisherBackEnd* be = nullptr; // Default implementation returns no back end.
 #ifdef GRVC_USE_ROS
-		//be = new PublisherBackEndROS(_node_name, _topic, _argc, _argv);
+		be = new PublisherBackEndROS(_node_name, _topic, _argc, _argv);
 #else
 		_node_name;
 		_topic;

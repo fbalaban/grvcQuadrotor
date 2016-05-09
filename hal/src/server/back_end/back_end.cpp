@@ -1,5 +1,5 @@
 //----------------------------------------------------------------------------------------------------------------------
-// GRVC Quadrotor COM
+// GRVC Quadrotor HAL
 //----------------------------------------------------------------------------------------------------------------------
 // The MIT License (MIT)
 // 
@@ -18,28 +18,25 @@
 // OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------------------------------------------------
-#include <grvc_com/subscriber_back_end.h>
+#include <grvc_quadrotor_hal/back_end/back_end.h>
 
 #ifdef GRVC_USE_ROS
-#include <grvc_com/ros/subscriber_back_end_ros.h>
+	#include <grvc_quadrotor_hal/back_end/back_end_gazebo.h>
 #endif // GRVC_USE_ROS
 
-namespace grvc {
-	namespace com {
-
-		//------------------------------------------------------------------------------------------------------------------
-		SubscriberBackEnd* SubscriberBackEnd::createBackEnd(const char* _node_name, const char* _topic, int _argc, char** _argv) {
-			SubscriberBackEnd* be = nullptr; // Default implementation returns no back end.
+namespace grvc { namespace hal {
+	
+	//------------------------------------------------------------------------------------------------------------------
+	BackEnd* BackEnd::createBackEnd(const char* _node_name, int _argc, char** _argv) {
+		BackEnd* be = nullptr;
 #ifdef GRVC_USE_ROS
-			be = new SubscriberBackEndROS(_node_name, _topic, _argc, _argv);
+		be = new BackEndGazebo(_node_name, _argc, _argv);
 #else
-			_node_name;
-			_topic;
-			_argc;
-			_argv;
+		_node_name;
+		_argc;
+		_argv;
 #endif // GRVC_USE_ROS
-			return be;
-		}
-
+		return be;
 	}
-} // namespace grvc::com
+	
+}}	// namespace grvc::hal

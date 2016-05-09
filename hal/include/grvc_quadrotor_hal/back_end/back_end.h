@@ -45,9 +45,6 @@ namespace grvc { namespace hal {
 
 		virtual ~BackEnd() = default; // Ensure proper destructor calling for derived classes
 
-		/// Keep running
-		/// \return \c false if the service has stopped. \c true otherwise.
-		virtual bool update() = 0;
 		/// \brief Create an adequate BackEnd depending on current platform and command arguments.
 		/// \param _argc number of arguments in _argv
 		/// \param _argv command line arguments passed to the program. This arguments will be parsed
@@ -55,7 +52,7 @@ namespace grvc { namespace hal {
 		/// current platform.
 		/// \return the newly created BackEnd. Whoever calls this method, is responsible for eventually
 		/// destroying the BackEnd.
-		static BackEnd* createBackEnd(int _argc, char** _argv);
+		static BackEnd* createBackEnd(const char* _node_name, int _argc, char** _argv);
 	};
 	
 }}	// namespace grvc::hal

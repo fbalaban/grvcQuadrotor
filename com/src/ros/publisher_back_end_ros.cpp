@@ -18,34 +18,27 @@
 // OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------------------------------------------------
-#ifndef _GRVCQUADROTOR_COM_SUBSCRIBERBACKENDROS_H_
-#define _GRVCQUADROTOR_COM_SUBSCRIBERBACKENDROS_H_
-
 #ifdef GRVC_USE_ROS
 
-#include "subscriber_back_end.h"
-#include <ros/ros.h>
+#include <grvc_com/ros/publisher_back_end_ros.h>
+#include <grvc_com/ros/ros_singleton.h>
 #include <std_msgs/String.h>
 
-namespace grvc {
-	namespace com {
+namespace grvc { namespace com {
 
-		class SubscriberBackEndROS : public SubscriberBackEnd {
-		public:
-			SubscriberBackEndROS(const char* _node_name, const char* _topic, int _argc, char** _argv);
-
-		private:
-			ros::Subscriber ros_subscriber_;
-			void onRosMsg(const std_msgs::String::ConstPtr& _s);
-
-			// Static
-			static void init(const char* _node_name, int _argc, char** _argv);
-			static ros::NodeHandle* ros_handle_;
-		};
-
+	//------------------------------------------------------------------------------------------------------------------
+	PublisherBackEndROS::PublisherBackEndROS(const char* _node_name, const char* _topic, int _argc, char** _argv) {
+		RosSingleton::init(_node_name, _argc, _argv);
+		ros_publisher_ = RosSingleton::get()->handle()->advertise<std_msgs::String>(_topic, 0);
 	}
-} // namespace grvc::com
+
+	//------------------------------------------------------------------------------------------------------------------
+	void PublisherBackEndROS::publish (const char* _msg) {
+		std_msgs::String m;
+		m.data = _msg;
+		ros_publisher_.publish(m);
+	}
+	
+}} // namespace grvc::com
 
 #endif // GRVC_USE_ROS
-
-#endif // _GRVCQUADROTOR_COM_SUBSCRIBERBACKENDROS_H_

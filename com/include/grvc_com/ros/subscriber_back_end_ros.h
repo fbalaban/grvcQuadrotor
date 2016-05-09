@@ -18,28 +18,30 @@
 // OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------------------------------------------------
-#include <grvc_com/subscriber_back_end.h>
+#ifndef _GRVCQUADROTOR_COM_ROS_SUBSCRIBERBACKENDROS_H_
+#define _GRVCQUADROTOR_COM_ROS_SUBSCRIBERBACKENDROS_H_
 
 #ifdef GRVC_USE_ROS
-#include <grvc_com/ros/subscriber_back_end_ros.h>
-#endif // GRVC_USE_ROS
+
+#include "../subscriber_back_end.h"
+#include <ros/ros.h>
+#include <std_msgs/String.h>
 
 namespace grvc {
 	namespace com {
 
-		//------------------------------------------------------------------------------------------------------------------
-		SubscriberBackEnd* SubscriberBackEnd::createBackEnd(const char* _node_name, const char* _topic, int _argc, char** _argv) {
-			SubscriberBackEnd* be = nullptr; // Default implementation returns no back end.
-#ifdef GRVC_USE_ROS
-			be = new SubscriberBackEndROS(_node_name, _topic, _argc, _argv);
-#else
-			_node_name;
-			_topic;
-			_argc;
-			_argv;
-#endif // GRVC_USE_ROS
-			return be;
-		}
+		class SubscriberBackEndROS : public SubscriberBackEnd {
+		public:
+			SubscriberBackEndROS(const char* _node_name, const char* _topic, int _argc, char** _argv);
+
+		private:
+			ros::Subscriber ros_subscriber_;
+			void onRosMsg(const std_msgs::String::ConstPtr& _s);
+		};
 
 	}
 } // namespace grvc::com
+
+#endif // GRVC_USE_ROS
+
+#endif // _GRVCQUADROTOR_COM_ROS_SUBSCRIBERBACKENDROS_H_

@@ -33,7 +33,7 @@ namespace grvc { namespace hal {
 		PidController();
 
 		double 		yawSpd	() const { return yaw_action_; }
-		const Vec3& velocity() const { return spd_action_; }
+		const Vec3& velocity() const { return vel_action_; }
 
 		const Vec3& pos() const { return cur_pos_; }
 		void setPos(const Vec3& _pos)	{ cur_pos_ = _pos; }
@@ -47,7 +47,7 @@ namespace grvc { namespace hal {
 
 	private:
 		// Control
-		gazebo::common::PID pid_x, pid_y, pid_z, pid_yaw;
+		gazebo::common::PID pid_x_, pid_y_, pid_z_, pid_yaw_;
 
 		// Internal state
 		double	cur_yaw_, yaw_reference_;
@@ -55,7 +55,7 @@ namespace grvc { namespace hal {
 
 		// Control actions
 		double	yaw_action_;
-		Vec3  spd_action_;
+		Vec3  vel_action_;
 	};
 }} // namespace grvc::hal
 

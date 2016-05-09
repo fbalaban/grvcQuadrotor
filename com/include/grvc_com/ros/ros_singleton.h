@@ -18,28 +18,34 @@
 // OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------------------------------------------------
-#include <grvc_com/subscriber_back_end.h>
+#ifndef _GRVCQUADROTOR_COM_ROS_ROSSINGLETON_H_
+#define _GRVCQUADROTOR_COM_ROS_ROSSINGLETON_H_
 
 #ifdef GRVC_USE_ROS
-#include <grvc_com/ros/subscriber_back_end_ros.h>
+
+#include <ros/ros.h>
+#include <thread>
+
+namespace grvc { namespace com {
+	
+	/// Common interface for different back end implementations of communications
+	class RosSingleton {
+	public:
+		static void init(const char* _node_name, int _argc, char** _argv);
+		static RosSingleton* get() { return s_instance_; }
+
+		ros::NodeHandle* handle() { return ros_handle_; }
+
+	private:
+		static RosSingleton* s_instance_;
+		RosSingleton(const char* _node_name, int _argc, char** _argv);
+
+		ros::NodeHandle* ros_handle_ = nullptr;
+		std::thread spin_thread_;
+	};
+	
+}} // namespace grvc::com
+
 #endif // GRVC_USE_ROS
 
-namespace grvc {
-	namespace com {
-
-		//------------------------------------------------------------------------------------------------------------------
-		SubscriberBackEnd* SubscriberBackEnd::createBackEnd(const char* _node_name, const char* _topic, int _argc, char** _argv) {
-			SubscriberBackEnd* be = nullptr; // Default implementation returns no back end.
-#ifdef GRVC_USE_ROS
-			be = new SubscriberBackEndROS(_node_name, _topic, _argc, _argv);
-#else
-			_node_name;
-			_topic;
-			_argc;
-			_argv;
-#endif // GRVC_USE_ROS
-			return be;
-		}
-
-	}
-} // namespace grvc::com
+#endif // _GRVCQUADROTOR_COM_ROS_ROSSINGLETON_H_

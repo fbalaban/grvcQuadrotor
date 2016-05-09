@@ -1,5 +1,5 @@
 //----------------------------------------------------------------------------------------------------------------------
-// GRVC Quadrotor COM
+// GRVC Quadrotor HAL
 //----------------------------------------------------------------------------------------------------------------------
 // The MIT License (MIT)
 // 
@@ -18,28 +18,30 @@
 // OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------------------------------------------------
-#include <grvc_com/subscriber_back_end.h>
+#include <grvc_quadrotor_hal/back_end/pid_controller.h>
 
-#ifdef GRVC_USE_ROS
-#include <grvc_com/ros/subscriber_back_end_ros.h>
-#endif // GRVC_USE_ROS
-
-namespace grvc {
-	namespace com {
-
-		//------------------------------------------------------------------------------------------------------------------
-		SubscriberBackEnd* SubscriberBackEnd::createBackEnd(const char* _node_name, const char* _topic, int _argc, char** _argv) {
-			SubscriberBackEnd* be = nullptr; // Default implementation returns no back end.
-#ifdef GRVC_USE_ROS
-			be = new SubscriberBackEndROS(_node_name, _topic, _argc, _argv);
-#else
-			_node_name;
-			_topic;
-			_argc;
-			_argv;
-#endif // GRVC_USE_ROS
-			return be;
-		}
-
+namespace grvc { namespace hal {
+	
+	//------------------------------------------------------------------------------------------------------------------
+	PidController::PidController() {
+		// Set pid gains and limits
+		pid_x_.Init(5,0,2,0.0,0.0,2,-2);
+   		pid_y_.Init(5,0,2,0.0,0.0,2,-2);
+   		pid_z_.Init(1.0,0,0.0,0.0,0.0,2,-2);
+   		pid_yaw_.Init(2.5,0.0,0.0,0.0,0.0,2.0,-2.0);
 	}
-} // namespace grvc::com
+
+	//------------------------------------------------------------------------------------------------------------------
+	void PidController::updateControlActions(gazebo::common::Time _dt) {
+		// Position PIDs
+		Vec3 pos_error = cur_pos_ - pos_reference_;
+		vel_action_.x() = pid_x_.Update(pos_error.x(), _dt);
+		vel_action_.y() = pid_y_.Update(pos_error.y(), _dt);
+		vel_action_.z() = pid_z_.Update(pos_error.z(), _dt);
+
+		// Yaw PID
+		double yaw_error = cur_yaw_ - yaw_reference_;
+		yaw_action_ = pid_yaw_.Update(yaw_error, _dt);
+	}
+
+}} // namespace grvc

@@ -28,7 +28,7 @@ using namespace grvc::hal;
 
 int main(int _argc, char** _argv) {
 	// Use this to send waypoints to hal
-	Publisher* wpPub = new Publisher("hal_sample", "hal_ns", _argc, _argv);
+	Publisher* wpPub = new Publisher("hal_sample", "/quad1/goToWp", _argc, _argv);
 
 	Vec3 points[2] = { {0.0, 0.0, 1.0}, {3.0, 0.0, 1.0} };
 

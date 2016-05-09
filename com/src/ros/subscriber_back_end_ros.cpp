@@ -18,28 +18,27 @@
 // OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------------------------------------------------
-#include <grvc_com/subscriber_back_end.h>
-
 #ifdef GRVC_USE_ROS
+
 #include <grvc_com/ros/subscriber_back_end_ros.h>
-#endif // GRVC_USE_ROS
+#include <grvc_com/ros/ros_singleton.h>
+#include <sstream>
 
-namespace grvc {
-	namespace com {
+namespace grvc { namespace com {
 
-		//------------------------------------------------------------------------------------------------------------------
-		SubscriberBackEnd* SubscriberBackEnd::createBackEnd(const char* _node_name, const char* _topic, int _argc, char** _argv) {
-			SubscriberBackEnd* be = nullptr; // Default implementation returns no back end.
-#ifdef GRVC_USE_ROS
-			be = new SubscriberBackEndROS(_node_name, _topic, _argc, _argv);
-#else
-			_node_name;
-			_topic;
-			_argc;
-			_argv;
-#endif // GRVC_USE_ROS
-			return be;
-		}
-
+	//------------------------------------------------------------------------------------------------------------------
+	SubscriberBackEndROS::SubscriberBackEndROS(const char* _node_name, const char* _topic, int _argc, char** _argv) {
+		RosSingleton::init(_node_name, _argc, _argv);
+		ros_subscriber_ = RosSingleton::get()->handle()->subscribe(_topic, 0, &SubscriberBackEndROS::onRosMsg, this);
 	}
-} // namespace grvc::com
+
+	//------------------------------------------------------------------------------------------------------------------
+	void SubscriberBackEndROS::onRosMsg(const std_msgs::String::ConstPtr& _s) {
+		std::stringstream ss;
+		ss << _s->data;
+		cb_(ss);
+	}
+
+}} // namespace grvc::com
+
+#endif // GRVC_USE_ROS

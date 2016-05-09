@@ -20,34 +20,30 @@
 //----------------------------------------------------------------------------------------------------------------------
 #ifdef GRVC_USE_ROS
 
-#include <grvc_com/subscriber_back_end_ros.h>
+#include <grvc_com/ros/ros_singleton.h>
 #include <sstream>
+#include <thread>
 
 namespace grvc { namespace com {
 
 	//------------------------------------------------------------------------------------------------------------------
 	// Static data definitions
-	ros::NodeHandle* SubscriberBackEndROS::ros_handle_ = nullptr;
+	RosSingleton* RosSingleton::s_instance_ = nullptr;
 
 	//------------------------------------------------------------------------------------------------------------------
-	SubscriberBackEndROS::SubscriberBackEndROS(const char* _node_name, const char* _topic, int _argc, char** _argv) {
-		init(_node_name, _argc, _argv);
-		ros_subscriber_ = ros_handle_->subscribe(_topic, 0, &SubscriberBackEndROS::onRosMsg, this);
-	}
-
-	//------------------------------------------------------------------------------------------------------------------
-	void SubscriberBackEndROS::init(const char* _node_name, int _argc, char** _argv) {
-		if(!ros_handle_) {
-			ros::init(_argc, _argv, _node_name, ros::init_options::AnonymousName);
-			ros_handle_ = new ros::NodeHandle(_node_name);
+	void RosSingleton::init(const char* _node_name, int _argc, char** _argv) {
+		if(!s_instance_) {
+			s_instance_ = new RosSingleton(_node_name, _argc, _argv);
 		}
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	void SubscriberBackEndROS::onRosMsg(const std_msgs::String::ConstPtr& _s) {
-		std::stringstream ss;
-		ss << _s->data;
-		cb_(ss);
+	RosSingleton::RosSingleton(const char* _node_name, int _argc, char** _argv) {
+		ros::init(_argc, _argv, _node_name, ros::init_options::AnonymousName);
+		ros_handle_ = new ros::NodeHandle(_node_name);
+		spin_thread_ = std::thread([](){ 
+			ros::spin(); 
+		});
 	}
 
 }} // namespace grvc::com

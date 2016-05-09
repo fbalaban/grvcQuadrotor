@@ -33,7 +33,7 @@ namespace grvc { namespace hal {
 	/// Common interface for back end implementations of hal
 	class BackEndGazebo : public BackEnd {
 	public:
-		BackEndGazebo(const char* _nodeName, int _argc, char** _argv);
+		BackEndGazebo(const char* _node_name, int _argc, char** _argv);
 
 		/// Go to the specified waypoint, following a straight line.
 		/// \param _wp goal waypoint.
@@ -51,7 +51,6 @@ namespace grvc { namespace hal {
 		Vec3		position		() const override;
 
 	private:
-		void run();
 		void setDefaultParams();
 		void parseArguments(int _argc, char** _argv);
 		bool parseArg(const std::string& _arg, const std::string& _label, std::string& _dst);
