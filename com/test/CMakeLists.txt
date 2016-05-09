@@ -62,9 +62,7 @@ if(GRVCQUAD_USE_ROS)
 endif(GRVCQUAD_USE_ROS)
 
 # --- uav server library. Extend this library to create more advanced servers ---
-if(GRVCQUAD_USE_ROS)
-
 ADD_EXECUTABLE(serializeTest "serialize.cpp")
-TARGET_INCLUDE_DIRECTORIES(serializeTest "../include")
-
-endif(GRVCQUAD_USE_ROS)
+TARGET_INCLUDE_DIRECTORIES(serializeTest PUBLIC "../include")
+set_target_properties(serializeTest PROPERTIES FOLDER "test")
+ADD_TEST(com_serialize serializeTest)

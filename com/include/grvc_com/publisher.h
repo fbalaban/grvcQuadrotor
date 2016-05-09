@@ -21,8 +21,8 @@
 #ifndef _GRVCQUADROTOR_COM_PUBLISHER_H_
 #define _GRVCQUADROTOR_COM_PUBLISHER_H_
 
-#include "publisher_back_end.h"
 #include <sstream>
+#include "publisher_back_end.h"
 
 namespace grvc { namespace com {
 
