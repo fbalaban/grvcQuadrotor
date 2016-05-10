@@ -34,7 +34,7 @@ public:
 	{
 		stringstream ss;
 		ss << _msg;
-		cb_(ss);
+		msg_cb_(ss);
 	}
 } g_sub_back_end;
 
