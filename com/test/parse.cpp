@@ -36,6 +36,10 @@ public:
 		ss << _msg;
 		msg_cb_(ss);
 	}
+
+	void notify() {
+		notify_cb_();
+	}
 } g_sub_back_end;
 
 SubscriberBackEnd* SubscriberBackEnd::createBackEnd(const char*, const char*, int, char**) {
@@ -44,6 +48,17 @@ SubscriberBackEnd* SubscriberBackEnd::createBackEnd(const char*, const char*, in
 
 //----------------------------------------------------------------------------------------------------------------------
 int main(int, char**) {
+
+	// Notification callbacks
+	{
+		bool notified = false;
+		Subscriber<void> sub("", "", 0, nullptr, [&]() {
+			notified = true;
+		});
+		g_sub_back_end.notify();
+		assert(notified);
+	}
+
 	// Simple parse tests
 	{
 		Subscriber<size_t> sub("", "", 0, nullptr, [](const size_t& _i) {

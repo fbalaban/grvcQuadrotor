@@ -28,22 +28,35 @@
 namespace grvc {
 	namespace com {
 
+		/// Base class implementing common subscriber functionality
+		class SubscriberBase {
+		public:
+			typedef std::function<void(void)> NotifyCallBack;
+
+		protected:
+			SubscriberBase(const char* _node_name, const char* _topic, int _argc, char** _argv) {
+				back_end_ = SubscriberBackEnd::createBackEnd(_node_name, _topic, _argc, _argv);
+			}
+
+			SubscriberBackEnd* back_end_ = nullptr;
+		};
+
 		/// Subscribes to a communication channel and invokes a callback whenever a message is received
 		/// \param T_ data type you expect to receive. This is the type your callback admits
 		template<class T_>
-		class Subscriber {
+		class Subscriber : public SubscriberBase {
 		public:
 			/// Callback functors that can be invoked by the subscriber
 			typedef std::function<void(const T_&)> MsgCallBack;
-			typedef std::function<void(void)> NotifyCallBack;
 
 			/// \param _node_mame unique identifier of the executable running this publisher
 			/// \param _topic unique identifier with path/like/syntax that specifies the communication channel
 			/// \param _argc number of command line arguments
 			/// \param _argv array of command line arguments
 			/// \param _cb Functor to be invoked when a message arrives¡
-			Subscriber(const char* _node_name, const char* _topic, int _argc, char** _argv, MsgCallBack _cb) {
-				back_end_ = SubscriberBackEnd::createBackEnd(_node_name, _topic, _argc, _argv);
+			Subscriber(const char* _node_name, const char* _topic, int _argc, char** _argv, MsgCallBack _cb)
+				: SubscriberBase(_node_name, _topic, _argc, _argv)
+			{
 				back_end_->onMessage([=](std::istream& _is){
 					T_ t;
 					_is >> t;
@@ -55,26 +68,17 @@ namespace grvc {
 			void onNotification(NotifyCallBack _cb) {
 				back_end_->onNotification(_cb);
 			}
-
-		private:
-			SubscriberBackEnd* back_end_ = nullptr;
 		};
 
 		// Specialization for data-less subscribers
 		template<>
-		class Subscriber<void> {
+		class Subscriber<void> : public SubscriberBase {
 		public:
-			typedef std::function<void()> CallBack;
-
-			Subscriber(const char* _node_name, const char* _topic, int _argc, char** _argv, CallBack _cb) {
-				back_end_ = SubscriberBackEnd::createBackEnd(_node_name, _topic, _argc, _argv);
-				back_end_->onMessage([=](std::istream&){
-					_cb();
-				});
+			Subscriber(const char* _node_name, const char* _topic, int _argc, char** _argv, NotifyCallBack _cb)
+				: SubscriberBase(_node_name, _topic, _argc, _argv)
+			{
+				back_end_->onNotification(_cb);
 			}
-
-		private:
-			SubscriberBackEnd* back_end_ = nullptr;
 		};
 
 	}
