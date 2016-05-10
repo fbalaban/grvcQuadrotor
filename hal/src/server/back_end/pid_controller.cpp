@@ -18,6 +18,7 @@
 // OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------------------------------------------------
+#ifdef GRVC_USE_ROS
 #include <grvc_quadrotor_hal/back_end/pid_controller.h>
 
 namespace grvc { namespace hal {
@@ -26,9 +27,9 @@ namespace grvc { namespace hal {
 	PidController::PidController() {
 		// Set pid gains and limits
 		pid_x_.Init(5,0,2,0.0,0.0,2,-2);
-   		pid_y_.Init(5,0,2,0.0,0.0,2,-2);
-   		pid_z_.Init(1.0,0,0.0,0.0,0.0,2,-2);
-   		pid_yaw_.Init(2.5,0.0,0.0,0.0,0.0,2.0,-2.0);
+		pid_y_.Init(5,0,2,0.0,0.0,2,-2);
+		pid_z_.Init(1.0,0,0.0,0.0,0.0,2,-2);
+		pid_yaw_.Init(2.5,0.0,0.0,0.0,0.0,2.0,-2.0);
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
@@ -45,3 +46,5 @@ namespace grvc { namespace hal {
 	}
 
 }} // namespace grvc
+
+#endif // GRVC_USE_ROS

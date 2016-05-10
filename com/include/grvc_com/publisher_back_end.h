@@ -29,6 +29,8 @@ namespace grvc { namespace com {
 		virtual ~PublisherBackEnd() = default;
 		/// Actually send a serialized message throught the communication channel
 		virtual void publish (const char* _msg) = 0;
+		/// Send a simple notification without data. Similar to a ping, but expects no answer
+		virtual void notify() = 0;
 
 		/// Creates the proper backend depending on current platform and command line arguments provided (argc, argv)
 		/// \param _node_mame unique identifier of the executable running this publisher

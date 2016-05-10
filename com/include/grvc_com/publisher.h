@@ -42,8 +42,11 @@ namespace grvc { namespace com {
 		void publish(const T_& _msg);
 
 		/// Dataless publish
-		void publish() {
-			back_end_->publish(""); // Dummy, empty message
+		///
+		/// Sends an empty notification to all subscribers. Useful for simple commands that require no data
+		/// or when subscribers already know the data and are just waiting for a start signal.
+		void notify() {
+			back_end_->notify(); // Dummy, empty message
 		}
 	private:
 		template<class T_>

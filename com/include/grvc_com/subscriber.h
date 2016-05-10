@@ -34,20 +34,26 @@ namespace grvc {
 		class Subscriber {
 		public:
 			/// Callback functors that can be invoked by the subscriber
-			typedef std::function<void(const T_&)> CallBack;
+			typedef std::function<void(const T_&)> MsgCallBack;
+			typedef std::function<void(void)> NotifyCallBack;
 
 			/// \param _node_mame unique identifier of the executable running this publisher
 			/// \param _topic unique identifier with path/like/syntax that specifies the communication channel
 			/// \param _argc number of command line arguments
 			/// \param _argv array of command line arguments
 			/// \param _cb Functor to be invoked when a message arrives¡
-			Subscriber(const char* _node_name, const char* _topic, int _argc, char** _argv, CallBack _cb) {
+			Subscriber(const char* _node_name, const char* _topic, int _argc, char** _argv, MsgCallBack _cb) {
 				back_end_ = SubscriberBackEnd::createBackEnd(_node_name, _topic, _argc, _argv);
 				back_end_->onMessage([=](std::istream& _is){
 					T_ t;
 					_is >> t;
 					_cb(t);
 				});
+			}
+
+			/// Set call back for arriving notifications (see subscriber)
+			void onNotification(NotifyCallBack _cb) {
+				back_end_->onNotification(_cb);
 			}
 
 		private:

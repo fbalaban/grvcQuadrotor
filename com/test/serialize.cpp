@@ -35,7 +35,10 @@ public:
 		assert(expected_ == _msg);
 	}
 
+	void notify() override { notified_ = true; }
+
 	string expected_;
+	bool notified_ = false;
 } g_pub_back_end;
 
 PublisherBackEnd* PublisherBackEnd::createBackEnd(const char*, const char*, int, char**) {
@@ -45,6 +48,11 @@ PublisherBackEnd* PublisherBackEnd::createBackEnd(const char*, const char*, int,
 //----------------------------------------------------------------------------------------------------------------------
 int main(int, char**) {
 	Publisher p("","",0,nullptr);
+
+	// Notification
+	g_pub_back_end.notified_ = false;
+	p.notify();
+	assert(g_pub_back_end.notified_);
 
 	// Simple serialization tests
 	g_pub_back_end.expected_ = "42";

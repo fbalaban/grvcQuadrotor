@@ -34,14 +34,19 @@ namespace grvc {
 			virtual ~SubscriberBackEnd() = default;
 			/// Callback functors that can be invoked by the subscriber
 			/// \param T_ data type you expect to receive. This is the type your callback admits
-			typedef std::function<void(std::istream& _is)>	CallBack;
+			typedef std::function<void(std::istream& _is)>	MsgCallBack;
+			/// Callback functor for notifications
+			typedef std::function<void(void)> NotifyCallBack;
 
-			/// Register a callback
+			/// Register a callback for incomming messages
 			///
 			/// Whoever uses this class is responsible for registering callbacks for every event they want to be notified of.
 			/// New callbacks override older ones, so only the most recent one will be invoked for any event. If you require
 			/// Multiple callbacks to be invoked, you will need to do the dispatching for yourself.
-			void onMessage(CallBack _cb) { cb_ = _cb; }
+			void onMessage(MsgCallBack _cb) { msg_cb_ = _cb; }
+
+			/// Register a callback for dataless notifications
+			void onNotification(NotifyCallBack _cb) { notify_cb_ = _cb; }
 
 			/// Creates the proper backend depending on current platform and command line arguments provided (argc, argv)
 			/// \param _node_mame unique identifier of the executable running this subscriber
@@ -51,7 +56,9 @@ namespace grvc {
 			static SubscriberBackEnd* createBackEnd(const char* _node_name, const char* _topic, int _argc, char** _argv);
 
 		protected:
-			CallBack cb_; ///< Back end implementations must invoke this CallBack.
+			MsgCallBack msg_cb_; ///< Back end implementations must invoke this CallBack when new messages arrive.
+			/// Back end implementations must invoke this call back if they want to react to notifications
+			NotifyCallBack notify_cb_;
 		};
 
 	}
