@@ -50,11 +50,37 @@ namespace grvc { namespace hal {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	void BackEndMavros::takeOff(double) {
+	void BackEndMavros::takeOff(double altitude) {
+		
+		mavros_msgs::SetMode flightModeService;
+		flightModeService.base_mode=0;
+		flightModeService.custom_mode=FLIGHT_MODE_GUIDED;
+		if(!flightModeClient.call(flightModeService))
+			cur_task_state_=TaskState::aborted;
+
+		mavros_msgs::CommandBool armedService;
+		armedService.value=true;
+		if(!armedClient.call(armedService))
+			cur_task_state_=TaskState::aborted;
+
+		mavros_msgs::CommandTOL takeOffService;
+		takeOffService.altitude=altitude;
+		if(!takeOffClient.call(takeOffService))
+			cur_task_state_=TaskState::aborted;
+		else
+			cur_task_state_=TaskState::running;
+
+		
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
 	void BackEndMavros::land() {
+		mavros_msgs::CommandTOL land_service_;
+		land_service_.altitude=altitude;
+		if(!land_client_.call(land_service_))
+			cur_task_state_=TaskState::aborted;
+		else
+			cur_task_state_=TaskState::running;
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
@@ -72,10 +98,26 @@ namespace grvc { namespace hal {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	void BackEndGazebo::startRosCommunications() {
+	void BackEndMavros::startRosCommunications() {
 
 		//Call to server of mavros to take off
-		takeOffClient=n.serviceClient<mavros::CommandTOL>("/mavros/cmd/takeoff",0);
+		land_client_=ros_handle_.serviceClient<mavros::CommandTOL>("/mavros/cmd/land");
+		take_off_Client_=ros_handle_.serviceClient<mavros::CommandTOL>("/mavros/cmd/takeoff");
+		armed_client_=ros_handle_.serviceClient<mavros::CommandBool>("/mavros/cmd/arming");
+		flight_mode_Client_=ros_handle_.serviceClient<mavros::SetMode>("/mavros/set_mode");
+
+		ros_handle_.subscribe(position_full_topic.c_str(),1000, &BackEndMavros::positionCb,this);
+		ros_handle_.subscribe(altitude_full_topic.c_str(),1000, &BackEndMavros::altitudeCb,this);
+	}
+	//------------------------------------------------------------------------------------------------------------------
+	void BackEndMavros::positionCb(const gemometry_msgs::PoseStamped::ConstPtr& _uav) {
+		pos_x_=_uav.pose.position.x;
+		pos_y_=_uav.pose.position.y;
+		pos_z_=_uav.pose.position.z;
+	}
+	//------------------------------------------------------------------------------------------------------------------
+	void BackEndMavros::altitudeCb(const std_msgs::Float64::ConstPtr& _altitude) {
+		altitude_=_altitude.value;
 	}
 
 

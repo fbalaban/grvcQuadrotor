@@ -50,12 +50,26 @@ namespace grvc { namespace hal {
 
 	private:
 		void startRosCommunications();
+		void positionCb(const nav_msgs::NavSatFix::ConstPtr&);
+		void altitudeCb(const nav_msgs::Float64::ConstPtr&);
 
 	private:
 		ros::NodeHandle* ros_handle_;
 		
 		/// Ros Communication		
-		ros::serviceClient takeOffClient;
+		ros::serviceClient take_off_client_;
+		ros::serviceClient flight_mode_client_;
+		ros::serviceClient armed_client_;
+		ros::serviceClient land_client_;
+
+		ros::Subscriber	position_sub_;
+		ros::Subscriber altitude_sub_;
+		
+
+		
+		TaskState cur_task_state_;
+		double pos_x_, pos_y_, pos_z_;
+
 
 	};
 	
