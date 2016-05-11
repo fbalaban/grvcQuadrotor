@@ -22,6 +22,7 @@
 
 #include <grvc_com/ros/publisher_back_end_ros.h>
 #include <grvc_com/ros/ros_singleton.h>
+#include <std_msgs/Int32.h>
 #include <std_msgs/String.h>
 
 namespace grvc { namespace com {
@@ -36,7 +37,20 @@ namespace grvc { namespace com {
 	void PublisherBackEndROS::publish (const char* _msg) {
 		std_msgs::String m;
 		m.data = _msg;
+		if(!has_publisher_){
+			ros_publisher_ = RosSingleton::get()->handle()->advertise<std_msgs::String>(_topic, 0);
+			has_publisher_ = true;
+		}
 		ros_publisher_.publish(m);
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	void PublisherBackEndROS::notify () {
+		if(!has_publisher_) {
+			ros_publisher_ = RosSingleton::get()->handle()->advertise<std_msgs::Int32>(_topic, 0);
+			has_publisher_ = true;
+		}
+		ros_publisher_.publish(1);
 	}
 	
 }} // namespace grvc::com

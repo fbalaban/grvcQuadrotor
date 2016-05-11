@@ -31,10 +31,12 @@ namespace grvc { namespace com {
 	public:
 		PublisherBackEndROS(const char* _node_name, const char* _topic, int _argc, char** _argv);
 		/// Actually send a serialized message throught the communication channel
-		void publish (const char* _msg);
+		void publish (const char* _msg) override;
+		void notify() override;
 
 	private:
 		ros::Publisher ros_publisher_;
+		bool has_publisher_ = false;
 	};
 	
 }} // namespace grvc::com
