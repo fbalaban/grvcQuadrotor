@@ -45,7 +45,7 @@ namespace grvc { namespace com {
 		///
 		/// Sends an empty notification to all subscribers. Useful for simple commands that require no data
 		/// or when subscribers already know the data and are just waiting for a start signal.
-		void notify() {
+		void publish() {
 			back_end_->notify(); // Dummy, empty message
 		}
 	private:

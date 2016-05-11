@@ -51,11 +51,6 @@ namespace grvc {
 				});
 			}
 
-			/// Set call back for arriving notifications (see subscriber)
-			void onNotification(NotifyCallBack _cb) {
-				back_end_->onNotification(_cb);
-			}
-
 		private:
 			SubscriberBackEnd* back_end_ = nullptr;
 		};
@@ -68,7 +63,7 @@ namespace grvc {
 
 			Subscriber(const char* _node_name, const char* _topic, int _argc, char** _argv, CallBack _cb) {
 				back_end_ = SubscriberBackEnd::createBackEnd(_node_name, _topic, _argc, _argv);
-				back_end_->onMessage([=](std::istream&){
+				back_end_->onNotification([=](){
 					_cb();
 				});
 			}

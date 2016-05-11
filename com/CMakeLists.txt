@@ -94,5 +94,6 @@ endif(GRVCQUAD_USE_ROS)
 
 # --- Test projects
 if(GRVCQUAD_BUILD_TESTS)
+	ENABLE_TESTING()
 	add_subdirectory(test)
 endif(GRVCQUAD_BUILD_TESTS)

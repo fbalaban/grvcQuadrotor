@@ -51,7 +51,7 @@ int main(int, char**) {
 
 	// Notification
 	g_pub_back_end.notified_ = false;
-	p.notify();
+	p.publish();
 	assert(g_pub_back_end.notified_);
 
 	// Simple serialization tests
