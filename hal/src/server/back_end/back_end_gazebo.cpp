@@ -47,15 +47,15 @@ namespace grvc { namespace hal {
 
 	//------------------------------------------------------------------------------------------------------------------
 	void BackEndGazebo::goToWP(const Vec3& _pos) {
-		has_pos_ref_ = true;
+		ROS_INFO_STREAM("GoToWp " << _pos.transpose());
 		state_controller_.setReferencePos(_pos);
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
 	void BackEndGazebo::takeOff(double _z) {
 		if(!has_odometry_)
-			return; // Don't know take off destination
-		has_pos_ref_ = true;
+			return; // Can't figure out take off destination
+		ROS_INFO_STREAM("Take off curPos = " << state_controller_.pos().transpose() << ", z = " << _z);
 		Vec3 ref_pos = state_controller_.pos();
 		ref_pos.z() = _z;
 		state_controller_.setReferencePos(ref_pos);
@@ -64,8 +64,8 @@ namespace grvc { namespace hal {
 	//------------------------------------------------------------------------------------------------------------------
 	void BackEndGazebo::land() {
 		if(!has_odometry_)
-			return; // Can't land without knowing current position
-		has_pos_ref_ = true;
+			return; // Don't know where to land
+		ROS_INFO_STREAM("land curPos = " << state_controller_.pos().transpose());
 		Vec3 ref_pos = state_controller_.pos();
 		ref_pos.z() = 0.0;
 		state_controller_.setReferencePos(ref_pos);
@@ -154,14 +154,8 @@ namespace grvc { namespace hal {
 		if(!has_odometry_) {
 			has_odometry_ = true;
 			// Set current state as initial reference for control
-			if(!has_pos_ref_) {
-				state_controller_.setReferencePos(state_controller_.pos());
-				has_pos_ref_ = true;
-			}
-			if(!has_yaw_ref_) {
-				has_pos_ref_ = true;
-				state_controller_.setReferenceYaw(state_controller_.yaw());
-			}
+			state_controller_.setReferencePos(state_controller_.pos());
+			state_controller_.setReferenceYaw(state_controller_.yaw());
 			// Now that we have odometry, we can start running the control loop
 			update_timer_ = ros_handle_->createTimer(ros::Duration(1/update_rate_),
 				[this](const ros::TimerEvent& _te) { updateCb(_te); });
@@ -174,7 +168,6 @@ namespace grvc { namespace hal {
 	void BackEndGazebo::publishCb(const ros::TimerEvent&) {
 		// We can only publish control information when there is a state estimation available,
 		// generating control references for the PIDs
-		assert(has_odometry_);
 		geometry_msgs::Twist twist;
 		auto vel = state_controller_.velocity();
 		twist.linear.x = vel.x();
@@ -188,7 +181,6 @@ namespace grvc { namespace hal {
 
 	//------------------------------------------------------------------------------------------------------------------
 	void BackEndGazebo::updateCb(const ros::TimerEvent& _te) {
-		assert(has_odometry_);
 		// Compute real elapsed time. Might not exactly match the update rate
 		ros::Duration deltaT = _te.current_real - _te.last_real;
 		// Update control actions

@@ -72,8 +72,6 @@ namespace grvc { namespace hal {
 		// Control
 		PidController state_controller_;
 		bool has_odometry_ = false;
-		bool has_pos_ref_ = false;
-		bool has_yaw_ref_ = false;
 
 		// Ros communication
 		ros::Publisher	cmd_vel_pub_;

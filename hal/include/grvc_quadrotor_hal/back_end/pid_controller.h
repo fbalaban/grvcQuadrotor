@@ -36,12 +36,12 @@ namespace grvc { namespace hal {
 		const Vec3& velocity() const { return vel_action_; }
 
 		const Vec3& pos() const { return cur_pos_; }
-		void setPos(const Vec3& _pos)	{ cur_pos_ = _pos; }
+		void setPos(const Vec3& _pos)	{ cur_pos_ = _pos; has_pos_ = true;}
 		double yaw() const { return cur_yaw_; }
-		void setYaw(double _yaw)		{ cur_yaw_ = _yaw; }
+		void setYaw(double _yaw)		{ cur_yaw_ = _yaw; has_yaw_ = true; }
 
-		void setReferencePos(const Vec3& _pos)	{ pos_reference_ = _pos; }
-		void setReferenceYaw(double _yaw) 		{ yaw_reference_ = _yaw; }
+		void setReferencePos(const Vec3& _pos);
+		void setReferenceYaw(double _yaw);
 
 		void updateControlActions(gazebo::common::Time _dt);
 
@@ -52,6 +52,8 @@ namespace grvc { namespace hal {
 		// Internal state
 		double	cur_yaw_, yaw_reference_;
 		Vec3	cur_pos_, pos_reference_;
+		bool has_yaw_ = false, has_yaw_ref_ = false;
+		bool has_pos_ = false, has_pos_ref_ = false;
 
 		// Control actions
 		double	yaw_action_;

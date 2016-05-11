@@ -20,6 +20,7 @@
 //----------------------------------------------------------------------------------------------------------------------
 #ifdef GRVC_USE_ROS
 #include <grvc_quadrotor_hal/back_end/pid_controller.h>
+#include <ros/ros.h>
 
 namespace grvc { namespace hal {
 	
@@ -28,21 +29,41 @@ namespace grvc { namespace hal {
 		// Set pid gains and limits
 		pid_x_.Init(5,0,2,0.0,0.0,2,-2);
 		pid_y_.Init(5,0,2,0.0,0.0,2,-2);
-		pid_z_.Init(1.0,0,0.0,0.0,0.0,2,-2);
+		pid_z_.Init(3.0,1,0.0,0.0,0.0,2,-2);
 		pid_yaw_.Init(2.5,0.0,0.0,0.0,0.0,2.0,-2.0);
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	void PidController::setReferencePos(const Vec3& _pos) {
+		pos_reference_ = _pos;
+		pid_x_.Reset();
+		pid_y_.Reset();
+		pid_z_.Reset();
+		has_pos_ref_ = true;
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	void PidController::setReferenceYaw(double _yaw) {
+		yaw_reference_ = _yaw;
+		pid_yaw_.Reset();
+		has_yaw_ref_ = true;
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
 	void PidController::updateControlActions(gazebo::common::Time _dt) {
 		// Position PIDs
-		Vec3 pos_error = cur_pos_ - pos_reference_;
-		vel_action_.x() = pid_x_.Update(pos_error.x(), _dt);
-		vel_action_.y() = pid_y_.Update(pos_error.y(), _dt);
-		vel_action_.z() = pid_z_.Update(pos_error.z(), _dt);
+		if(has_pos_ && has_yaw_ref_) {
+			Vec3 pos_error = cur_pos_ - pos_reference_;
+			vel_action_.x() = pid_x_.Update(pos_error.x(), _dt);
+			vel_action_.y() = pid_y_.Update(pos_error.y(), _dt);
+			vel_action_.z() = pid_z_.Update(pos_error.z(), _dt);
+		}
 
 		// Yaw PID
-		double yaw_error = cur_yaw_ - yaw_reference_;
-		yaw_action_ = pid_yaw_.Update(yaw_error, _dt);
+		if(has_yaw_ && has_yaw_ref_) {
+			double yaw_error = cur_yaw_ - yaw_reference_;
+			yaw_action_ = pid_yaw_.Update(yaw_error, _dt);
+		}
 	}
 
 }} // namespace grvc
