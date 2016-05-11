@@ -47,13 +47,15 @@ namespace grvc { namespace hal {
 
 	//------------------------------------------------------------------------------------------------------------------
 	void BackEndGazebo::goToWP(const Vec3& _pos) {
-		has_references_ = true;
+		has_pos_ref_ = true;
 		state_controller_.setReferencePos(_pos);
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
 	void BackEndGazebo::takeOff(double _z) {
-		has_references_ = true;
+		if(!has_odometry_)
+			return; // Don't know take off destination
+		has_pos_ref_ = true;
 		Vec3 ref_pos = state_controller_.pos();
 		ref_pos.z() = _z;
 		state_controller_.setReferencePos(ref_pos);
@@ -61,7 +63,9 @@ namespace grvc { namespace hal {
 
 	//------------------------------------------------------------------------------------------------------------------
 	void BackEndGazebo::land() {
-		has_references_ = true;
+		if(!has_odometry_)
+			return; // Can't land without knowing current position
+		has_pos_ref_ = true;
 		Vec3 ref_pos = state_controller_.pos();
 		ref_pos.z() = 0.0;
 		state_controller_.setReferencePos(ref_pos);
@@ -142,11 +146,20 @@ namespace grvc { namespace hal {
 		tf::Matrix3x3(orientation).getRPY(roll, pitch, yaw);
 		state_controller_.setYaw(yaw);
 		// -- Init control loop if necessary
+		initControlReferences();
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	void BackEndGazebo::initControlReferences() {
 		if(!has_odometry_) {
 			has_odometry_ = true;
 			// Set current state as initial reference for control
-			if(!has_references_) {
+			if(!has_pos_ref_) {
 				state_controller_.setReferencePos(state_controller_.pos());
+				has_pos_ref_ = true;
+			}
+			if(!has_yaw_ref_) {
+				has_pos_ref_ = true;
 				state_controller_.setReferenceYaw(state_controller_.yaw());
 			}
 			// Now that we have odometry, we can start running the control loop

@@ -58,6 +58,7 @@ namespace grvc { namespace hal {
 		void updateCb(const ros::TimerEvent& _te);
 		void publishCb(const ros::TimerEvent& _te);
 		void odometryCb(const nav_msgs::Odometry::ConstPtr&);
+		void initControlReferences();
 
 	private:
 		TaskState cur_task_state_;
@@ -70,8 +71,9 @@ namespace grvc { namespace hal {
 
 		// Control
 		PidController state_controller_;
-		bool has_odometry_;
-		bool has_references_;
+		bool has_odometry_ = false;
+		bool has_pos_ref_ = false;
+		bool has_yaw_ref_ = false;
 
 		// Ros communication
 		ros::Publisher	cmd_vel_pub_;
