@@ -28,11 +28,14 @@ using namespace grvc::hal;
 
 int main(int _argc, char** _argv) {
 	// Use this to send waypoints to hal
-	Publisher* wpPub = new Publisher("hal_sample", "/quad1/hal/goToWp", _argc, _argv);
+	Publisher* wpPub = new Publisher("hal_sample", "/quad1/hal/go_to_wp", _argc, _argv);
+	Publisher* takeOffPub  = new Publisher("hal_sample", "/quad1/hal/take_off", _argc, _argv);
 
 	Vec3 points[2] = { {0.0, 0.0, 1.0}, {3.0, 0.0, 1.0} };
 
 	for (size_t t = 0; t < 100; ++t) {
+		takeOffPub->publish(1.0);
+		std::this_thread::sleep_for(std::chrono::seconds(3));
 		for (size_t i = 0; i < 2; ++i) {
 			wpPub->publish(points[i]);
 			std::this_thread::sleep_for(std::chrono::seconds(3));
