@@ -28,29 +28,32 @@
 namespace grvc { namespace com {
 
 	//------------------------------------------------------------------------------------------------------------------
-	PublisherBackEndROS::PublisherBackEndROS(const char* _node_name, const char* _topic, int _argc, char** _argv) {
+	PublisherBackEndROS::PublisherBackEndROS(const char* _node_name, const char* _topic, int _argc, char** _argv)
+		:topic_(_topic)
+	{
 		RosSingleton::init(_node_name, _argc, _argv);
-		ros_publisher_ = RosSingleton::get()->handle()->advertise<std_msgs::String>(_topic, 0);
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
 	void PublisherBackEndROS::publish (const char* _msg) {
-		std_msgs::String m;
-		m.data = _msg;
 		if(!has_publisher_){
-			ros_publisher_ = RosSingleton::get()->handle()->advertise<std_msgs::String>(_topic, 0);
+			ros_publisher_ = RosSingleton::get()->handle()->advertise<std_msgs::String>(topic_.c_str(), 0);
 			has_publisher_ = true;
 		}
+		std_msgs::String m;
+		m.data = _msg;
 		ros_publisher_.publish(m);
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
 	void PublisherBackEndROS::notify () {
 		if(!has_publisher_) {
-			ros_publisher_ = RosSingleton::get()->handle()->advertise<std_msgs::Int32>(_topic, 0);
+			ros_publisher_ = RosSingleton::get()->handle()->advertise<std_msgs::Int32>(topic_.c_str(), 0);
 			has_publisher_ = true;
 		}
-		ros_publisher_.publish(1);
+		std_msgs::Int32 m;
+		m.data = 1;
+		ros_publisher_.publish(m);
 	}
 	
 }} // namespace grvc::com

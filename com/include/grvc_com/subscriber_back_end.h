@@ -43,10 +43,10 @@ namespace grvc {
 			/// Whoever uses this class is responsible for registering callbacks for every event they want to be notified of.
 			/// New callbacks override older ones, so only the most recent one will be invoked for any event. If you require
 			/// Multiple callbacks to be invoked, you will need to do the dispatching for yourself.
-			void onMessage(MsgCallBack _cb) { msg_cb_ = _cb; }
+			virtual void onMessage(MsgCallBack _cb) { msg_cb_ = _cb; }
 
 			/// Register a callback for dataless notifications
-			void onNotification(NotifyCallBack _cb) { notify_cb_ = _cb; }
+			virtual void onNotification(NotifyCallBack _cb) { notify_cb_ = _cb; }
 
 			/// Creates the proper backend depending on current platform and command line arguments provided (argc, argv)
 			/// \param _node_mame unique identifier of the executable running this subscriber

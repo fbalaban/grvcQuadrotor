@@ -23,6 +23,7 @@
 
 #include "../publisher_back_end.h"
 #include <ros/ros.h>
+#include <string>
 
 namespace grvc { namespace com {
 	
@@ -35,6 +36,7 @@ namespace grvc { namespace com {
 		void notify() override;
 
 	private:
+		std::string topic_;
 		ros::Publisher ros_publisher_;
 		bool has_publisher_ = false;
 	};
