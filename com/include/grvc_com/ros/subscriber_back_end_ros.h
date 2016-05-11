@@ -25,7 +25,9 @@
 
 #include "../subscriber_back_end.h"
 #include <ros/ros.h>
+#include <std_msgs/Int32.h>
 #include <std_msgs/String.h>
+#include <string>
 
 namespace grvc {
 	namespace com {
@@ -33,10 +35,16 @@ namespace grvc {
 		class SubscriberBackEndROS : public SubscriberBackEnd {
 		public:
 			SubscriberBackEndROS(const char* _node_name, const char* _topic, int _argc, char** _argv);
+			void onMessage(MsgCallBack _cb) override;
+			void onNotification(NotifyCallBack _cb) override;
 
 		private:
-			ros::Subscriber ros_subscriber_;
+			ros::Subscriber ros_sub_;
 			void onRosMsg(const std_msgs::String::ConstPtr& _s);
+			void onRosNotification(const std_msgs::Int32::ConstPtr& _n);
+
+			bool has_subscriber_ = false;
+			std::string topic_;
 		};
 
 	}
