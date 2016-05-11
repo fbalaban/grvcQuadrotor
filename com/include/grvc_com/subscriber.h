@@ -46,9 +46,13 @@ namespace grvc {
 				back_end_ = SubscriberBackEnd::createBackEnd(_node_name, _topic, _argc, _argv);
 				back_end_->onMessage([=](std::istream& _is){
 					T_ t;
-					_is >> t;
+					deserialize(_is, t);
 					_cb(t);
 				});
+			}
+
+			void deserialize(std::istream& _is, T_& _t) {
+				_is >> _t;
 			}
 
 		private:
