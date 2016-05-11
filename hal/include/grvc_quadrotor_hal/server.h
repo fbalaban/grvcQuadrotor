@@ -52,10 +52,12 @@ namespace grvc { namespace hal {
 		// Communication interfaces
 		com::Subscriber<Vec3>* wp_sub_ = nullptr;
 		com::Subscriber<double>* take_off_sub_ = nullptr;
+		com::Subscriber<void>* land_sub_ = nullptr;
 
 		// Communication topics
 		std::string wp_topic_;
 		std::string take_off_topic_;
+		std::string land_topic_;
 		std::string hal_ns_;
 
 		BackEnd* platform_impl_;

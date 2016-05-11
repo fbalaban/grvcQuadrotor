@@ -60,6 +60,7 @@ namespace grvc { namespace hal {
 		hal_ns_ = "hal_ns";
 		wp_topic_ = "go_to_wp";
 		take_off_topic_ = "take_off";
+		land_topic_ = "land";
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
@@ -67,6 +68,7 @@ namespace grvc { namespace hal {
 		const string hal_ns_arg = "-hal_ns=";
 		const string wp_topic_arg = "-wp_topic=";
 		const string take_off_arg = "-take_off_topic=";
+		const string land_arg = "-land_topic=";
 
 		for (int i = 0; i < _argc; ++i) {
 			string arg = _argv[i];
@@ -75,6 +77,8 @@ namespace grvc { namespace hal {
 			if (parseArg(arg, wp_topic_arg, wp_topic_))
 				continue;
 			if (parseArg(arg, take_off_arg, take_off_topic_))
+				continue;
+			if (parseArg(arg, land_arg, land_topic_))
 				continue;
 		}
 	}
@@ -101,6 +105,10 @@ namespace grvc { namespace hal {
 		auto take_off_full_topic = hal_ns_ + "/" + take_off_topic_;
 		auto bindTakeOff = [this](double _z) { platform_impl_->takeOff(_z); };
 		take_off_sub_ = new com::Subscriber<double>(node_name, take_off_full_topic.c_str(), _argc, _argv, bindTakeOff);
+		// Suscribe to land topic
+		auto land_full_topic = hal_ns_ + "/" + land_topic_;
+		auto bindLand = std::bind(&BackEnd::land, platform_impl_);
+		land_sub_ = new com::Subscriber<void>(node_name, land_full_topic.c_str(), _argc, _argv, bindLand);
 	}
 	
 }}	// namespace grvc
