@@ -34,7 +34,7 @@ namespace grvc { namespace hal {
 	
 	//------------------------------------------------------------------------------------------------------------------
 	BackEndGazebo::BackEndGazebo(const char* _node_name, int _argc, char** _argv)
-		: cur_task_state_(TaskState::finished)
+		: cur_task_state_(TaskState::running)
 	{
 		// Init ros
 		com::RosSingleton::init(_node_name, _argc, _argv);
@@ -49,12 +49,14 @@ namespace grvc { namespace hal {
 	void BackEndGazebo::goToWP(const Vec3& _pos) {
 		ROS_INFO_STREAM("GoToWp " << _pos.transpose());
 		state_controller_.setReferencePos(_pos);
+		cur_task_state_ = TaskState::running;
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
 	void BackEndGazebo::takeOff(double _z) {
 		if(!has_odometry_)
 			return; // Can't figure out take off destination
+		cur_task_state_ = TaskState::running;
 		ROS_INFO_STREAM("Take off curPos = " << state_controller_.pos().transpose() << ", z = " << _z);
 		Vec3 ref_pos = state_controller_.pos();
 		ref_pos.z() = _z;
@@ -65,6 +67,7 @@ namespace grvc { namespace hal {
 	void BackEndGazebo::land() {
 		if(!has_odometry_)
 			return; // Don't know where to land
+		cur_task_state_ = TaskState::running;
 		ROS_INFO_STREAM("land curPos = " << state_controller_.pos().transpose());
 		Vec3 ref_pos = state_controller_.pos();
 		ref_pos.z() = 0.0;
@@ -79,6 +82,8 @@ namespace grvc { namespace hal {
 	//------------------------------------------------------------------------------------------------------------------
 	void BackEndGazebo::abortTask() {
 		state_controller_.setReferencePos(state_controller_.pos());
+		if(cur_task_state_ == TaskState::running)
+			cur_task_state_ = TaskState::aborted;
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
@@ -161,6 +166,7 @@ namespace grvc { namespace hal {
 				[this](const ros::TimerEvent& _te) { updateCb(_te); });
 			publish_timer_ = ros_handle_->createTimer(ros::Duration(1/publish_rate_),
 				[this](const ros::TimerEvent& _te) { publishCb(_te); });
+			cur_task_state_ = TaskState::finished; // Finished initialization
 		}
 	}
 
@@ -185,6 +191,20 @@ namespace grvc { namespace hal {
 		ros::Duration deltaT = _te.current_real - _te.last_real;
 		// Update control actions
 		state_controller_.updateControlActions(gazebo::common::Time(deltaT.sec, deltaT.nsec));
+		if(reachedGoal()) {
+			cur_task_state_ = TaskState::finished;
+		}
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	bool BackEndGazebo::reachedGoal() const {
+		double yawDiff = state_controller_.yawReference() - state_controller_.yaw();
+		if(yawDiff*yawDiff > 0.1)
+			return false;
+		double posDiff = (state_controller_.posReference() - state_controller_.pos()).norm();
+		if(posDiff > 0.1)
+			return false;
+		return true;
 	}
 }}	// namespace grvc::hal
 

@@ -59,6 +59,7 @@ namespace grvc { namespace hal {
 		void publishCb(const ros::TimerEvent& _te);
 		void odometryCb(const nav_msgs::Odometry::ConstPtr&);
 		void initControlReferences();
+		bool reachedGoal() const;
 
 	private:
 		TaskState cur_task_state_;

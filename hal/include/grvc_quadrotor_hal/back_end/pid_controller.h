@@ -41,7 +41,9 @@ namespace grvc { namespace hal {
 		void setYaw(double _yaw)		{ cur_yaw_ = _yaw; has_yaw_ = true; }
 
 		void setReferencePos(const Vec3& _pos);
+		const Vec3& posReference() const { return pos_reference_; }
 		void setReferenceYaw(double _yaw);
+		double yawReference() const { return yaw_reference_; }
 
 		void updateControlActions(gazebo::common::Time _dt);
 
