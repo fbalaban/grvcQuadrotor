@@ -46,15 +46,25 @@ namespace grvc { namespace hal {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	void BackEndGazebo::goToWP(const Vec3&) {
+	void BackEndGazebo::goToWP(const Vec3& _pos) {
+		has_references_ = true;
+		state_controller_.setReferencePos(_pos);
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	void BackEndGazebo::takeOff(double) {
+	void BackEndGazebo::takeOff(double _z) {
+		has_references_ = true;
+		Vec3 ref_pos = state_controller_.pos();
+		ref_pos.z() = _z;
+		state_controller_.setReferencePos(ref_pos);
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
 	void BackEndGazebo::land() {
+		has_references_ = true;
+		Vec3 ref_pos = state_controller_.pos();
+		ref_pos.z() = 0.0;
+		state_controller_.setReferencePos(ref_pos);
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
@@ -64,11 +74,12 @@ namespace grvc { namespace hal {
 
 	//------------------------------------------------------------------------------------------------------------------
 	void BackEndGazebo::abortTask() {
+		state_controller_.setReferencePos(state_controller_.pos());
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
 	Vec3 BackEndGazebo::position() const {
-		return Vec3::Zero();
+		return state_controller_.pos();
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
@@ -167,7 +178,7 @@ namespace grvc { namespace hal {
 		assert(has_odometry_);
 		// Compute real elapsed time. Might not exactly match the update rate
 		ros::Duration deltaT = _te.current_real - _te.last_real;
-		// Update control references
+		// Update control actions
 		state_controller_.updateControlActions(gazebo::common::Time(deltaT.sec, deltaT.nsec));
 	}
 }}	// namespace grvc::hal
