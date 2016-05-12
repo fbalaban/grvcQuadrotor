@@ -32,6 +32,7 @@ namespace grvc {
 		/// Allows publishing information to different nodes in the network
 		template<class Goal, class FeedBack>
 		class ActionClient {
+		public:
 			/// Possible states of a goal request
 			enum class GoalState {
 				accepted,
@@ -72,8 +73,8 @@ namespace grvc {
 			Subscriber<FeedBack>* fb_sub_ = nullptr;
 			Subscriber<std::string>* state_sub_ = nullptr;
 
-			GoalDelegate goal_cb;
-			FeedBackDelegate feedback_cb;
+			GoalDelegate goal_cb_;
+			FeedBackDelegate feedback_cb_;
 		};
 
 		//--------------------------------------------------------------------------------------------------------------
@@ -85,32 +86,24 @@ namespace grvc {
 			abort_pub_ = new Publisher(_node_name, (ns + "abort").c_str(), _argc, _argv);
 			// Goal state subscription
 			state_sub_ = new Subscriber<std::string>(_node_name, (ns + "state").c_str(), _argc, _argv, [this](const std::string& _state) {
-				switch (_state) {
-				case "pending":
+				if(_state == "pending")
 					cur_state_ = GoalState::pending;
-					break;
-				case "accepted":
+				else if(_state == "accepted")
 					cur_state_ = GoalState::accepted;
-					break;
-				case "rejected":
+				else if(_state == "rejected")
 					cur_state_ = GoalState::rejected;
-					break;
-				case "success":
+				else if(_state =="success")
 					cur_state_ = GoalState::success;
-					break;
-				case "fail":
+				else if (_state == "fail")
 					cur_state_ = GoalState::fail;
-					break;
-				case "cancelled":
+				else if (_state == "cancelled")
 					cur_state_ = GoalState::cancelled;
-					break;
-				}
-				if (_state == GoalState::success || _state == GoalState::fail) {
-					goal_cb_(cur_state);
+				if (cur_state_ == GoalState::success || cur_state_ == GoalState::fail) {
+					goal_cb_(cur_state_);
 				}
 			});
 			// Feedback subscription
-			fb_sub_ = new Subscriber<FeedBack>(_node_name, (ns + "feedback").c_str(), _argc, _argv, [this](const FeedBack& _fb) {
+			fb_sub_ = new Subscriber<FeedBack_>(_node_name, (ns + "feedback").c_str(), _argc, _argv, [this](const FeedBack_& _fb) {
 				feedback_cb_(_fb);
 			});
 		}

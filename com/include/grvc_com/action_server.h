@@ -38,9 +38,10 @@ namespace grvc {
 			/// \param _argv array of command line arguments
 			ActionServer(const char* _node_name, const char* _topic_base, int _argc, char** _argv);
 
-			/// \return whether the goal has been accepted
-			virtual bool onRequestedGoal(const Goal&) = 0;
-			virtual void abort() = 0; ///< Abort current goal (if any).
+			typedef std::function<bool(const Goal&)>	GoalCb;
+			void onRequestedGoal(GoalCb _cb) { goal_cb_ = _cb; }
+			typedef std::function<void(void)>			AbortCb;
+			void onAbort(AbortCb _cb)  { abort_cb_ = _cb; }
 
 		protected:
 			void goalSuccess();
@@ -51,7 +52,10 @@ namespace grvc {
 			Publisher* fb_pub_ = nullptr;
 			Publisher* state_pub_ = nullptr;
 			Subscriber<Goal>* goal_sub_ = nullptr;
-			Subscriber<Goal>* abort_sub_ = nullptr;
+			Subscriber<void>* abort_sub_ = nullptr;
+
+			GoalCb goal_cb_;
+			AbortCb abort_cb_;
 		};
 
 		//--------------------------------------------------------------------------------------------------------------
@@ -63,7 +67,7 @@ namespace grvc {
 			state_pub_ = new Publisher(_node_name, (ns + "state").c_str(), _argc, _argv);
 			// Goal subscription
 			goal_sub_ = new Subscriber<Goal_>(_node_name, (ns + "goal").c_str(), _argc, _argv, [this](const Goal_& _goal) {
-				if (onRequestedGoal(_goal)) {
+				if (goal_cb_(_goal)) {
 					state_pub_->publish("accepted");
 				}
 				else {
@@ -72,7 +76,7 @@ namespace grvc {
 			});
 			// Feedback subscription
 			abort_sub_ = new Subscriber<void>(_node_name, (ns + "abort").c_str(), _argc, _argv, [this]() {
-				abort();
+				abort_cb_();
 				state_pub_->publish("cancelled");
 			});
 		}

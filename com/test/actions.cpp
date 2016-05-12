@@ -23,11 +23,13 @@
 #include <string>
 #include <cassert>
 #include <Eigen/Core>
+#include <map>
 
 using namespace grvc::com;
 using namespace std;
 
 // -- Mock classes --
+//----------------------------------------------------------------------------------------------------------------------
 class MockSubscriberBE : public SubscriberBackEnd {
 public:
 	// Inherited via PublisherBackEnd
@@ -41,14 +43,54 @@ public:
 	void notify() {
 		notify_cb_();
 	}
-} g_sub_back_end;
+};
 
-SubscriberBackEnd* SubscriberBackEnd::createBackEnd(const char*, const char*, int, char**) {
-	return &g_sub_back_end;
+std::map<std::string, MockSubscriberBE*> g_subs;
+
+SubscriberBackEnd* SubscriberBackEnd::createBackEnd(const char*, const char* _ns, int, char**) {
+	g_subs[_ns] = new MockSubscriberBE;
+	return g_subs[_ns];
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+class MockPublisherBE : public PublisherBackEnd {
+	// Inherited via PublisherBackEnd
+	void publish(const char * _msg) override
+	{
+		g_subs[ns_]->receive(_msg);
+	}
+
+	void notify() override
+	{
+		g_subs[ns_]->notify();
+	}
+
+public:
+	std::string ns_;
+};
+
+std::map<std::string, MockPublisherBE*> g_pubs;
+
+PublisherBackEnd* PublisherBackEnd::createBackEnd(const char*, const char* _ns, int, char**) {
+	g_pubs[_ns] = new MockPublisherBE;
+	g_pubs[_ns]->ns_ = _ns;
+	return g_pubs[_ns];
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 int main(int, char**) {
+	{
+		typedef ActionClient<size_t, size_t> Client;
+		Client client("", "a", 0, nullptr);
+		ActionServer<size_t,size_t> server("", "a", 0, nullptr);
+		server.onRequestedGoal([](size_t _goal) {
+			return _goal == 1;
+		});
+		server.onAbort([](){});
 
+		// 
+
+		assert(client.goalState() == Client::GoalState::success);
+	}
 	return 0;
 }
