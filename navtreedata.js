@@ -18,7 +18,8 @@ var NAVTREE =
         [ "All", "functions.html", null ],
         [ "Functions", "functions_func.html", null ],
         [ "Variables", "functions_vars.html", null ],
-        [ "Typedefs", "functions_type.html", null ]
+        [ "Typedefs", "functions_type.html", null ],
+        [ "Enumerations", "functions_enum.html", null ]
       ] ]
     ] ],
     [ "Files", null, [
@@ -36,7 +37,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "_c_make_c_compiler_id_8c.html",
-"uav_2src_2node_2main_8cpp.html"
+"publisher__back__end__ros_8cpp_source.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

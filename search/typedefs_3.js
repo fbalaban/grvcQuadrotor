@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['msgcallback',['MsgCallBack',['../classgrvc_1_1com_1_1_subscriber.html#a16949b48cf43d34c4f2f02ee28ec7bad',1,'grvc::com::Subscriber::MsgCallBack()'],['../classgrvc_1_1com_1_1_subscriber_back_end.html#a3e5d9a72dcfc453c842e7d5e7212c0ca',1,'grvc::com::SubscriberBackEnd::MsgCallBack()']]]
+  ['goalcb',['GoalCb',['../classgrvc_1_1com_1_1_action_server.html#a5f131008751f1a66f65322ea0e175b08',1,'grvc::com::ActionServer']]],
+  ['goaldelegate',['GoalDelegate',['../classgrvc_1_1com_1_1_action_client.html#a826272191b84b4ece8710dcc18898d85',1,'grvc::com::ActionClient']]]
 ];

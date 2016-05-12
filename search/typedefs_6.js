@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['vec3',['Vec3',['../namespacegrvc_1_1hal.html#af50121d30dbfa22236d648d3442a3f7b',1,'grvc::hal::Vec3()'],['../namespacegrvc_1_1uav.html#a72a455d82e989e2111ae6056dbb1833b',1,'grvc::uav::Vec3()']]]
+  ['notifycallback',['NotifyCallBack',['../classgrvc_1_1com_1_1_subscriber.html#a3676188146773503e03dc8e1892104b2',1,'grvc::com::Subscriber::NotifyCallBack()'],['../classgrvc_1_1com_1_1_subscriber_back_end.html#a79fc295b363e7de25e9397936b027e18',1,'grvc::com::SubscriberBackEnd::NotifyCallBack()']]]
 ];

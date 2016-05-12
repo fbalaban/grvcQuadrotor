@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['gazeboquadrotorsimplecontroller',['GazeboQuadrotorSimpleController',['../classgazebo_1_1_gazebo_quadrotor_simple_controller.html',1,'gazebo']]]
+  ['client',['Client',['../classgrvc_1_1uav_1_1_client.html',1,'grvc::uav']]]
 ];

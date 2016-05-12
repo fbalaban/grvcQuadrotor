@@ -83,6 +83,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="functions_func.html"><span>Functions</span></a></li>
       <li><a href="functions_vars.html"><span>Variables</span></a></li>
       <li class="current"><a href="functions_type.html"><span>Typedefs</span></a></li>
+      <li><a href="functions_enum.html"><span>Enumerations</span></a></li>
     </ul>
   </div>
 </div><!-- top -->
@@ -117,10 +118,20 @@ $(document).ready(function(){initNavTree('functions_type.html','');});
 <div class="contents">
 &#160;<ul>
 <li>AbortCb
-: <a class="el" href="classgrvc_1_1uav_1_1_service.html#a1755de64c95265c37f30981d80a238b6">grvc::uav::Service</a>
+: <a class="el" href="classgrvc_1_1com_1_1_action_server.html#a92ba424a69bf078ea9ef78fa6e847d76">grvc::com::ActionServer&lt; Goal, FeedBack &gt;</a>
+, <a class="el" href="classgrvc_1_1uav_1_1_service.html#a1755de64c95265c37f30981d80a238b6">grvc::uav::Service</a>
 </li>
 <li>CallBack
 : <a class="el" href="classgrvc_1_1com_1_1_subscriber_3_01void_01_4.html#a2cdddf610f02deceb6df36efd7f6cc15">grvc::com::Subscriber&lt; void &gt;</a>
+</li>
+<li>FeedBackDelegate
+: <a class="el" href="classgrvc_1_1com_1_1_action_client.html#aa3f16b61e13acc032d77519a1fea21a2">grvc::com::ActionClient&lt; Goal, FeedBack &gt;</a>
+</li>
+<li>GoalCb
+: <a class="el" href="classgrvc_1_1com_1_1_action_server.html#a5f131008751f1a66f65322ea0e175b08">grvc::com::ActionServer&lt; Goal, FeedBack &gt;</a>
+</li>
+<li>GoalDelegate
+: <a class="el" href="classgrvc_1_1com_1_1_action_client.html#a826272191b84b4ece8710dcc18898d85">grvc::com::ActionClient&lt; Goal, FeedBack &gt;</a>
 </li>
 <li>LandCb
 : <a class="el" href="classgrvc_1_1uav_1_1_service.html#a77fd360a77163ad7e4eb4c86bb344071">grvc::uav::Service</a>
@@ -145,7 +156,7 @@ $(document).ready(function(){initNavTree('functions_type.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Thu May 12 2016 10:58:03 for grvc_quadrotor by
+    <li class="footer">Generated on Thu May 12 2016 15:02:34 for grvc_quadrotor by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.11 </li>
   </ul>
