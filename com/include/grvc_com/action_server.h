@@ -29,15 +29,6 @@ namespace grvc {
 		/// Allows publishing information to different nodes in the network
 		template<class Goal, class FeedBack>
 		class ActionServer {
-			/// Possible states of a goal request
-			enum class GoalState {
-				accepted,
-				pending,
-				rejected,
-				success,
-				fail,
-				cancelled
-			};
 
 		public:
 			/// \param _node_mame unique identifier of the executable running this server
@@ -52,15 +43,57 @@ namespace grvc {
 			virtual void abort() = 0; ///< Abort current goal (if any).
 
 		protected:
-			void setGoalState(GoalState);
+			void goalSuccess();
+			void goalFail();
 			void sendFeedBack(const FeedBack&);
 
 		private:
-			Subsciber<Goal>* goal_sub_ = nullptr;
-			Subscriber<Goal>* abort_sub_ = nullptr;
 			Publisher* fb_pub_ = nullptr;
 			Publisher* state_pub_ = nullptr;
+			Subsciber<Goal>* goal_sub_ = nullptr;
+			Subscriber<Goal>* abort_sub_ = nullptr;
 		};
+
+		//--------------------------------------------------------------------------------------------------------------
+		template<class Goal_, class FeedBack_>
+		ActionServer<Goal_, FeedBack_>::ActionServer(const char* _node_name, const char* _topic_base, int _argc, char** _argv) {
+			std::string ns = std::string(_topic_base) + "/";
+			// Create publishers
+			fb_pub_ = new Publisher(_node_name, (ns + "feedback").c_str(), _argc, _argv);
+			state_pub_ = new Publisher(_node_name, (ns + "state").c_str(), _argc, _argv);
+			// Goal subscription
+			goal_sub_ = new Subscriber<Goal_>(_node_name, (ns + "goal").c_str(), _argc, _argv, [this](const Goal_& _goal) {
+				if (onRequestedGoal(_goal)) {
+					state_pub_->publish("accepted");
+				}
+				else {
+					state_pub_->publish("rejected");
+				}
+			});
+			// Feedback subscription
+			abort_sub_ = new Subscriber<void>(_node_name, (ns + "abort").c_str(), _argc, _argv, [this]() {
+				abort();
+				state_pub_->publish("cancelled");
+			});
+		}
+
+		//--------------------------------------------------------------------------------------------------------------
+		template<class Goal_, class FeedBack_>
+		void ActionServer<Goal_, FeedBack_>::goalSuccess() {
+			state_pub_->publish("success");
+		}
+
+		//--------------------------------------------------------------------------------------------------------------
+		template<class Goal_, class FeedBack_>
+		void ActionServer<Goal_, FeedBack_>::goalFail() {
+			state_pub_->publish("fail");
+		}
+
+		//--------------------------------------------------------------------------------------------------------------
+		template<class Goal_, class FeedBack_>
+		void ActionServer<Goal_, FeedBack_>::sendFeedBack(const FeedBack& _fb) {
+			fb_pub_->publish(_fb);
+		}
 	}
 } // namespace grvc::com
 

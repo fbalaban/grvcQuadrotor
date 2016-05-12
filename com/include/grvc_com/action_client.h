@@ -70,7 +70,7 @@ namespace grvc {
 			Publisher* goal_pub_ = nullptr;
 			Publisher* abort_pub_ = nullptr;
 			Subscriber<FeedBack>* fb_sub_ = nullptr;
-			Subscriber<size_t>* state_sub_ = nullptr;
+			Subscriber<std::string>* state_sub_ = nullptr;
 
 			GoalDelegate goal_cb;
 			FeedBackDelegate feedback_cb;
@@ -84,10 +84,29 @@ namespace grvc {
 			goal_pub_ = new Publisher(_node_name, (ns + "goal").c_str(), _argc, _argv);
 			abort_pub_ = new Publisher(_node_name, (ns + "abort").c_str(), _argc, _argv);
 			// Goal state subscription
-			state_sub_ = new Subscriber<GoalState>(_node_name, (ns + "state").c_str(), _argc, _argv, [this](const GoalState& _state) {
-				cur_state_ = _state;
+			state_sub_ = new Subscriber<std::string>(_node_name, (ns + "state").c_str(), _argc, _argv, [this](const std::string& _state) {
+				switch (_state) {
+				case "pending":
+					cur_state_ = GoalState::pending;
+					break;
+				case "accepted":
+					cur_state_ = GoalState::accepted;
+					break;
+				case "rejected":
+					cur_state_ = GoalState::rejected;
+					break;
+				case "success":
+					cur_state_ = GoalState::success;
+					break;
+				case "fail":
+					cur_state_ = GoalState::fail;
+					break;
+				case "cancelled":
+					cur_state_ = GoalState::cancelled;
+					break;
+				}
 				if (_state == GoalState::success || _state == GoalState::fail) {
-					goal_cb_(_state);
+					goal_cb_(cur_state);
 				}
 			});
 			// Feedback subscription
