@@ -33,7 +33,7 @@ namespace grvc { namespace com {
 		virtual void notify() = 0;
 
 		/// Creates the proper backend depending on current platform and command line arguments provided (argc, argv)
-		/// \param _node_mame unique identifier of the executable running this publisher
+		/// \param _node_name unique identifier of the executable running this publisher
 		/// \param _topic unique identifier with path/like/syntax that specifies the communication channel
 		/// \param _argc number of command line arguments
 		/// \param _argv array of command line arguments

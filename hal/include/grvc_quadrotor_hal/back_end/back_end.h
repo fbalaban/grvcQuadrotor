@@ -46,6 +46,7 @@ namespace grvc { namespace hal {
 		virtual ~BackEnd() = default; // Ensure proper destructor calling for derived classes
 
 		/// \brief Create an adequate BackEnd depending on current platform and command arguments.
+		/// \param _node_name unique identifier of the hal executable
 		/// \param _argc number of arguments in _argv
 		/// \param _argv command line arguments passed to the program. This arguments will be parsed
 		/// and used to select the best fitting implementation of BackEnd from those available in the
