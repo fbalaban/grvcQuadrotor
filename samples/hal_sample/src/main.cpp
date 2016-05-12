@@ -31,12 +31,16 @@ int main(int _argc, char** _argv) {
 	Publisher* wpPub = new Publisher("hal_sample", "/quad1/hal/go_to_wp", _argc, _argv);
 	Publisher* takeOffPub  = new Publisher("hal_sample", "/quad1/hal/take_off", _argc, _argv);
 	Publisher* landPub  = new Publisher("hal_sample", "/quad1/hal/land", _argc, _argv);
+	std::string curState;
+	new Subscriber<std::string>("hal_sample", "/quad1/hal/state", _argc, _argv, [&](const std::string& _str) {
+		curState = _str;
+	});
 	
-
 	double flyZ = 1.0;
 	Vec3 points[2] = { {0.0, 0.0, flyZ}, {3.0, 0.0, flyZ} };
 
-	while()
+	while(curState != "finished")
+	{}
 	for (size_t t = 0; t < 100; ++t) {
 		takeOffPub->publish(flyZ);
 		std::this_thread::sleep_for(std::chrono::seconds(3));

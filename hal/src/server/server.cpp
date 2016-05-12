@@ -45,7 +45,7 @@ namespace grvc { namespace hal {
 	//------------------------------------------------------------------------------------------------------------------
 	void Server::run() {
 		for (;;) {
-			//publishBackEndInfo();
+			publishStateInfo();
 			// Sleep until next update
 			if(update_rate_ > 0) {
 				auto period = milliseconds(1000/update_rate_);
@@ -61,6 +61,7 @@ namespace grvc { namespace hal {
 		wp_topic_ = "go_to_wp";
 		take_off_topic_ = "take_off";
 		land_topic_ = "land";
+		state_topic_ = "state";
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
@@ -69,6 +70,7 @@ namespace grvc { namespace hal {
 		const string wp_topic_arg = "-wp_topic=";
 		const string take_off_arg = "-take_off_topic=";
 		const string land_arg = "-land_topic=";
+		const string state_arg = "-state_topic=";
 
 		for (int i = 0; i < _argc; ++i) {
 			string arg = _argv[i];
@@ -79,6 +81,8 @@ namespace grvc { namespace hal {
 			if (parseArg(arg, take_off_arg, take_off_topic_))
 				continue;
 			if (parseArg(arg, land_arg, land_topic_))
+				continue;
+			if (parseArg(arg, state_arg, state_topic_))
 				continue;
 		}
 	}
@@ -109,6 +113,36 @@ namespace grvc { namespace hal {
 		auto land_full_topic = hal_ns_ + "/" + land_topic_;
 		auto bindLand = std::bind(&BackEnd::land, platform_impl_);
 		land_sub_ = new com::Subscriber<void>(node_name, land_full_topic.c_str(), _argc, _argv, bindLand);
+		// Publish to state topic
+		auto state_full_topic = hal_ns_ + "/" + state_topic_;
+		state_pub_ = new com::Publisher(node_name, state_full_topic.c_str(), _argc, _argv);
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	void Server::publishStateInfo() {
+		TaskState cur_task_state = platform_impl_->curTaskState();
+		switch(cur_task_state) {
+			case TaskState::finished:
+			{
+				state_pub_-> publish("finished");
+				break;
+			}
+			case TaskState::running:
+			{
+				state_pub_-> publish("running");
+				break;
+			}
+			case TaskState::failed:
+			{
+				state_pub_-> publish("failed");
+				break;
+			}
+			case TaskState::aborted:
+			{
+				state_pub_-> publish("aborted");
+				break;
+			}
+		}
 	}
 	
 }}	// namespace grvc

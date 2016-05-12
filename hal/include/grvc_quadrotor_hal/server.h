@@ -44,7 +44,7 @@ namespace grvc { namespace hal {
 		bool parseArg(const std::string& _arg, const std::string& _label, std::string& _dst);
 		void startCommunications(int _argc, char** _argv);
 		/// Read published info from back end and re-publish it to the service
-		void publishBackEndInfo();
+		void publishStateInfo();
 
 	private:
 		typedef std::chrono::high_resolution_clock::time_point Time;
@@ -53,11 +53,13 @@ namespace grvc { namespace hal {
 		com::Subscriber<Vec3>* wp_sub_ = nullptr;
 		com::Subscriber<double>* take_off_sub_ = nullptr;
 		com::Subscriber<void>* land_sub_ = nullptr;
+		com::Publisher* state_pub_;
 
 		// Communication topics
 		std::string wp_topic_;
 		std::string take_off_topic_;
 		std::string land_topic_;
+		std::string state_topic_;
 		std::string hal_ns_;
 
 		BackEnd* platform_impl_;
