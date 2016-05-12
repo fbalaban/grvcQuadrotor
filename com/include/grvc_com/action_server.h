@@ -50,7 +50,7 @@ namespace grvc {
 		private:
 			Publisher* fb_pub_ = nullptr;
 			Publisher* state_pub_ = nullptr;
-			Subsciber<Goal>* goal_sub_ = nullptr;
+			Subscriber<Goal>* goal_sub_ = nullptr;
 			Subscriber<Goal>* abort_sub_ = nullptr;
 		};
 
@@ -91,7 +91,7 @@ namespace grvc {
 
 		//--------------------------------------------------------------------------------------------------------------
 		template<class Goal_, class FeedBack_>
-		void ActionServer<Goal_, FeedBack_>::sendFeedBack(const FeedBack& _fb) {
+		void ActionServer<Goal_, FeedBack_>::sendFeedBack(const FeedBack_& _fb) {
 			fb_pub_->publish(_fb);
 		}
 	}

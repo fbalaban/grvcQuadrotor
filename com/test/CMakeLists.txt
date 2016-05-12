@@ -36,3 +36,7 @@ ADD_TEST(com_serialize serializeTest)
 ADD_EXECUTABLE(parseTest "parse.cpp")
 set_target_properties(parseTest PROPERTIES FOLDER "test")
 ADD_TEST(com_parse parseTest)
+
+ADD_EXECUTABLE(actionsTest "actions.cpp")
+set_target_properties(actionsTest PROPERTIES FOLDER "test")
+ADD_TEST(com_actions actionsTest)
