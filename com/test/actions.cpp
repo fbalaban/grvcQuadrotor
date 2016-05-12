@@ -83,14 +83,43 @@ int main(int, char**) {
 		typedef ActionClient<size_t, size_t> Client;
 		Client client("", "a", 0, nullptr);
 		ActionServer<size_t,size_t> server("", "a", 0, nullptr);
-		server.onRequestedGoal([](size_t _goal) {
+		bool got_goal = false;
+		server.onRequestedGoal([&](size_t _goal) {
+			got_goal = true;
 			return _goal == 1;
 		});
 		server.onAbort([](){});
 
-		// 
-
+		// -- Test goal request
 		assert(client.goalState() == Client::GoalState::success);
+		client.setGoal(2); // Expect rejection
+		assert(got_goal);
+		assert(client.goalState() == Client::GoalState::rejected);
+		client.setGoal(1); // Expect acceptance
+		assert(client.goalState() == Client::GoalState::accepted);
+
+		// -- Test server side behavior
+		// Goal failure
+		client.onFinish([](const Client::GoalState& _gs) {
+			assert(_gs == Client::GoalState::fail);
+		});
+		server.goalFail();
+		assert(client.goalState() == Client::GoalState::fail);
+		// Goal success
+		client.onFinish([](const Client::GoalState& _gs) {
+			assert(_gs == Client::GoalState::success);
+		});
+		server.goalSuccess();
+		assert(client.goalState() == Client::GoalState::success);
+		
+		// -- Test feedback
+		bool got_fb = false;
+		client.onFeedBack([&](size_t _i) {
+			got_fb = true;
+			assert(_i == 3);
+		});
+		server.sendFeedBack(3);
+		assert(got_fb);
 	}
 	return 0;
 }

@@ -43,7 +43,7 @@ namespace grvc {
 			typedef std::function<void(void)>			AbortCb;
 			void onAbort(AbortCb _cb)  { abort_cb_ = _cb; }
 
-		protected:
+		public:
 			void goalSuccess();
 			void goalFail();
 			void sendFeedBack(const FeedBack&);

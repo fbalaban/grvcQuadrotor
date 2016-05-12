@@ -62,8 +62,8 @@ namespace grvc {
 			
 			/// Set up a callback to be invoked upon success or fail of goals.
 			/// aborted goals will not invoke this callback
-			void onFinish(GoalDelegate _cb) { goal_cb = _cb; }
-			void onFeedBack(FeedBackDelegate _cb) { feedback_cb = _cb; } ///< Set up callbacks to process feedback information
+			void onFinish(GoalDelegate _cb) { goal_cb_ = _cb; }
+			void onFeedBack(FeedBackDelegate _cb) { feedback_cb_ = _cb; } ///< Set up callbacks to process feedback information
 
 		private:
 			GoalState cur_state_ = GoalState::success;
@@ -111,8 +111,8 @@ namespace grvc {
 		//--------------------------------------------------------------------------------------------------------------
 		template<class Goal_, class FeedBack_>
 		void ActionClient<Goal_, FeedBack_>::setGoal(const Goal_& _goal) {
-			goal_pub_->publish(_goal);
 			cur_state_ = GoalState::pending;
+			goal_pub_->publish(_goal);
 		}
 
 		//--------------------------------------------------------------------------------------------------------------
