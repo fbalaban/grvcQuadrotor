@@ -46,6 +46,7 @@ namespace grvc { namespace hal {
 	void Server::run() {
 		for (;;) {
 			publishStateInfo();
+			pos_pub_->publish(platform_impl_->position());
 			// Sleep until next update
 			if(update_rate_ > 0) {
 				auto period = milliseconds(1000/update_rate_);
@@ -62,6 +63,7 @@ namespace grvc { namespace hal {
 		take_off_topic_ = "take_off";
 		land_topic_ = "land";
 		state_topic_ = "state";
+		pos_topic_ = "position";
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
@@ -71,6 +73,7 @@ namespace grvc { namespace hal {
 		const string take_off_arg = "-take_off_topic=";
 		const string land_arg = "-land_topic=";
 		const string state_arg = "-state_topic=";
+		const string pos_arg = "-position=";
 
 		for (int i = 0; i < _argc; ++i) {
 			string arg = _argv[i];
@@ -83,6 +86,8 @@ namespace grvc { namespace hal {
 			if (parseArg(arg, land_arg, land_topic_))
 				continue;
 			if (parseArg(arg, state_arg, state_topic_))
+				continue;
+			if (parseArg(arg, pos_arg, pos_topic_))
 				continue;
 		}
 	}
@@ -116,6 +121,9 @@ namespace grvc { namespace hal {
 		// Publish to state topic
 		auto state_full_topic = hal_ns_ + "/" + state_topic_;
 		state_pub_ = new com::Publisher(node_name, state_full_topic.c_str(), _argc, _argv);
+		// Publish to position topic
+		auto pos_full_topic = hal_ns_ + "/" + pos_topic_;
+		pos_pub_ = new com::Publisher(node_name, pos_full_topic.c_str(), _argc, _argv);
 	}
 
 	//------------------------------------------------------------------------------------------------------------------

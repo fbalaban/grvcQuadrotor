@@ -54,12 +54,14 @@ namespace grvc { namespace hal {
 		com::Subscriber<double>* take_off_sub_ = nullptr;
 		com::Subscriber<void>* land_sub_ = nullptr;
 		com::Publisher* state_pub_;
+		com::Publisher* pos_pub_;
 
 		// Communication topics
 		std::string wp_topic_;
 		std::string take_off_topic_;
 		std::string land_topic_;
 		std::string state_topic_;
+		std::string pos_topic_;
 		std::string hal_ns_;
 
 		BackEnd* platform_impl_;
