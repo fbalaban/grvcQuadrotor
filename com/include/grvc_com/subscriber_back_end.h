@@ -49,7 +49,7 @@ namespace grvc {
 			virtual void onNotification(NotifyCallBack _cb) { notify_cb_ = _cb; }
 
 			/// Creates the proper backend depending on current platform and command line arguments provided (argc, argv)
-			/// \param _node_mame unique identifier of the executable running this subscriber
+			/// \param _node_name unique identifier of the executable running this subscriber
 			/// \param _topic unique identifier with path/like/syntax that specifies the communication channel
 			/// \param _argc number of command line arguments
 			/// \param _argv array of command line arguments

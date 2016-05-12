@@ -37,7 +37,7 @@ namespace grvc {
 			typedef std::function<void(const T_&)> MsgCallBack;
 			typedef std::function<void(void)> NotifyCallBack;
 
-			/// \param _node_mame unique identifier of the executable running this publisher
+			/// \param _node_name unique identifier of the executable running this publisher
 			/// \param _topic unique identifier with path/like/syntax that specifies the communication channel
 			/// \param _argc number of command line arguments
 			/// \param _argv array of command line arguments
