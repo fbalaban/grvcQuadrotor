@@ -35,12 +35,12 @@ namespace grvc {
 		public:
 			/// Possible states of a goal request
 			enum class GoalState {
-				accepted,
-				pending,
-				rejected,
-				success,
-				fail,
-				cancelled
+				accepted, ///< The goal has been acknowledged and accepted by the server and is now running.
+				pending, ///< The goal has been sent to the server but hasn't been accepted nor rejected yet.
+				rejected, ///< The server couldn't accept the goal. It's been processed and rejected.
+				success, ///< The goal has been successfully completed.
+				fail, ///< The goal failed to complete.
+				cancelled /// The goal has been externally aborted before it could complete.
 			};
 
 			/// Delegate to be invoked on incomming feedback
