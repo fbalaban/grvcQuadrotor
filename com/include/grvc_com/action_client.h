@@ -24,6 +24,7 @@
 #include <functional>
 #include "publisher.h"
 #include "subscriber.h"
+#include <string>
 
 namespace grvc {
 	namespace com {
@@ -56,17 +57,63 @@ namespace grvc {
 			
 			void setGoal(const Goal&); ///< Request a new goal. Automatically cancels any previous goals
 			void abort(); ///< Abort current goal (if any).
-			GoalState goalState(); ///< Query state of last requested goal
-
-			void onFinish(GoalDelegate); ///< Set up a callback to be invoked upon completion or discarding of goals
-			void onFeedBack(FeedBackDelegate); ///< Set up callbacks to process feedback information
+			GoalState goalState() const; ///< Query state of last requested goal
+			
+			/// Set up a callback to be invoked upon success or fail of goals.
+			/// aborted goals will not invoke this callback
+			void onFinish(GoalDelegate _cb) { goal_cb = _cb; }
+			void onFeedBack(FeedBackDelegate _cb) { feedback_cb = _cb; } ///< Set up callbacks to process feedback information
 
 		private:
+			GoalState cur_state_ = GoalState::success;
+
 			Publisher* goal_pub_ = nullptr;
 			Publisher* abort_pub_ = nullptr;
 			Subscriber<FeedBack>* fb_sub_ = nullptr;
 			Subscriber<size_t>* state_sub_ = nullptr;
+
+			GoalDelegate goal_cb;
+			FeedBackDelegate feedback_cb;
 		};
+
+		//--------------------------------------------------------------------------------------------------------------
+		template<class Goal_, class FeedBack_>
+		ActionClient<Goal_, FeedBack_>::ActionClient(const char* _node_name, const char* _topic_base, int _argc, char** _argv) {
+			std::string ns = std::string(_topic_base) + "/";
+			// Create publishers
+			goal_pub_ = new Publisher(_node_name, (ns + "goal").c_str(), _argc, _argv);
+			abort_pub_ = new Publisher(_node_name, (ns + "abort").c_str(), _argc, _argv);
+			// Goal state subscription
+			state_sub_ = new Subscriber<GoalState>(_node_name, (ns + "state").c_str(), _argc, _argv, [this](const GoalState& _state) {
+				cur_state_ = _state;
+				if (_state == GoalState::success || _state == GoalState::fail) {
+					goal_cb_(_state);
+				}
+			});
+			// Feedback subscription
+			fb_sub_ = new Subscriber<FeedBack>(_node_name, (ns + "feedback").c_str(), _argc, _argv, [this](const FeedBack& _fb) {
+				feedback_cb_(_fb);
+			});
+		}
+
+		//--------------------------------------------------------------------------------------------------------------
+		template<class Goal_, class FeedBack_>
+		void ActionClient<Goal_, FeedBack_>::setGoal(const Goal_& _goal) {
+			goal_pub_->publish(_goal);
+			cur_state_ = GoalState::pending;
+		}
+
+		//--------------------------------------------------------------------------------------------------------------
+		template<class Goal_, class FeedBack_>
+		void ActionClient<Goal_, FeedBack_>::abort() {
+			abort_pub_->publish();
+		}
+
+		//--------------------------------------------------------------------------------------------------------------
+		template<class Goal_, class FeedBack_>
+		typename ActionClient<Goal_, FeedBack_>::GoalState ActionClient<Goal_, FeedBack_>::goalState() const {
+			return cur_state_;
+		}
 	}
 } // namespace grvc::com
 
