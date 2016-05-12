@@ -18,19 +18,17 @@
 // OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------------------------------------------------
-#ifndef _GRVCQUADROTOR_COM_ACTIONCLIENT_H_
-#define _GRVCQUADROTOR_COM_ACTIONCLIENT_H_
+#ifndef _GRVCQUADROTOR_COM_ACTIONSERVER_H_
+#define _GRVCQUADROTOR_COM_ACTIONSERVER_H_
 
 #include <functional>
-#include "publisher.h"
-#include "subscriber.h"
 
 namespace grvc {
 	namespace com {
 
 		/// Allows publishing information to different nodes in the network
 		template<class Goal, class FeedBack>
-		class ActionClient {
+		class ActionServer {
 			/// Possible states of a goal request
 			enum class GoalState {
 				accepted,
@@ -41,33 +39,29 @@ namespace grvc {
 				cancelled
 			};
 
-			/// Delegate to be invoked on incomming feedback
-			typedef std::function<void(const FeedBack&)>	FeedBackDelegate;
-			/// Delegate to be invoked upon completion, cancellation or failure of the current goal
-			typedef std::function<void(GoalState)>			GoalDelegate;
-
 		public:
-			/// \param _node_mame unique identifier of the executable running this client
+			/// \param _node_mame unique identifier of the executable running this server
 			/// \param _topic_base unique identifier with path/like/syntax that specifies the base communication channel.
 			/// All topics used by the action will be located under this namespace.
 			/// \param _argc number of command line arguments
 			/// \param _argv array of command line arguments
-			ActionClient(const char* _node_name, const char* _topic_base, int _argc, char** _argv);
-			
-			void setGoal(const Goal&); ///< Request a new goal. Automatically cancels any previous goals
-			void abort(); ///< Abort current goal (if any).
-			GoalState goalState(); ///< Query state of last requested goal
+			ActionServer(const char* _node_name, const char* _topic_base, int _argc, char** _argv);
 
-			void onFinish(GoalDelegate); ///< Set up a callback to be invoked upon completion or discarding of goals
-			void onFeedBack(FeedBackDelegate); ///< Set up callbacks to process feedback information
+			/// \return whether the goal has been accepted
+			virtual bool onRequestedGoal(const Goal&) = 0;
+			virtual void abort() = 0; ///< Abort current goal (if any).
+
+		protected:
+			void setGoalState(GoalState);
+			void sendFeedBack(const FeedBack&);
 
 		private:
-			Publisher* goal_pub_ = nullptr;
-			Publisher* abort_pub_ = nullptr;
-			Subscriber<FeedBack>* fb_sub_ = nullptr;
-			Subscriber<size_t>* state_sub_ = nullptr;
+			Subsciber<Goal>* goal_sub_ = nullptr;
+			Subscriber<Goal>* abort_sub_ = nullptr;
+			Publisher* fb_pub_ = nullptr;
+			Publisher* state_pub_ = nullptr;
 		};
 	}
 } // namespace grvc::com
 
-#endif // _GRVCQUADROTOR_COM_ACTIONCLIENT_H_
+#endif // _GRVCQUADROTOR_COM_ACTIONSERVER_H_
