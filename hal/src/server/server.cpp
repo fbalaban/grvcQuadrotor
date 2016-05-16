@@ -108,7 +108,7 @@ namespace grvc { namespace hal {
 		platform_impl_ = BackEnd::createBackEnd(node_name, _argc, _argv);
 		// Suscribe to waypoint command topic
 		auto wp_full_topic = hal_ns_ + "/" + wp_topic_;
-		auto bindGoToWP = [this](const Vec3& _v) { platform_impl_->goToWP(_v); };
+		auto bindGoToWP = [this](const Vec3& _v) { platform_impl_->goToWP({_v,0.0}); };
 		wp_sub_ = new com::Subscriber<Vec3>(node_name, wp_full_topic.c_str(), _argc, _argv, bindGoToWP);
 		// Suscribe to take off topic
 		auto take_off_full_topic = hal_ns_ + "/" + take_off_topic_;
