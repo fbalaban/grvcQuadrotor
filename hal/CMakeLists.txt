@@ -74,7 +74,7 @@ if(GRVCQUAD_USE_ROS)
 
 	catkin_package(
 		INCLUDE_DIRS include
-		LIBRARIES hal_server hal_client
+		LIBRARIES hal_server
 		CATKIN_DEPENDS roscpp grvc_quadrotor_com
 		DEPENDS gazebo_ros)
 
