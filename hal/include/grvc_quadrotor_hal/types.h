@@ -27,6 +27,13 @@
 namespace grvc { namespace hal {
 	
 	typedef Eigen::Vector3d Vec3;
+	typedef double Scalar;
+
+	/// Define a path point to command uavs
+	struct Waypoint {
+		Vec3 pos;
+		Scalar yaw;
+	};
 
 	/// States in which a requested task can be during (or after) execution.
 	enum class TaskState : uint8_t {
