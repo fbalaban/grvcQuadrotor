@@ -50,7 +50,7 @@ namespace grvc { namespace hal {
 		typedef std::chrono::high_resolution_clock::time_point Time;
 		Time last_update_;
 		// Communication interfaces
-		com::Subscriber<Vec3>* wp_sub_ = nullptr;
+		com::Subscriber<Waypoint>* wp_sub_ = nullptr;
 		com::Subscriber<double>* take_off_sub_ = nullptr;
 		com::Subscriber<void>* land_sub_ = nullptr;
 		com::Publisher* state_pub_;
