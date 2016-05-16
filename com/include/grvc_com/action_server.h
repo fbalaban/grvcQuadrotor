@@ -26,10 +26,18 @@
 namespace grvc {
 	namespace com {
 
+		class ActionServerBase {
+		public:
+			typedef std::function<void()>			AbortCb;
+			void onAbort(AbortCb _cb) { abort_cb_ = _cb; }
+
+		protected:
+			AbortCb abort_cb_;
+		};
+
 		/// Allows publishing information to different nodes in the network
 		template<class Goal, class FeedBack>
-		class ActionServer {
-
+		class ActionServer : public ActionServerBase {
 		public:
 			/// \param _node_mame unique identifier of the executable running this server
 			/// \param _topic_base unique identifier with path/like/syntax that specifies the base communication channel.
@@ -40,8 +48,6 @@ namespace grvc {
 
 			typedef std::function<bool(const Goal&)>	GoalCb;
 			void onRequestedGoal(GoalCb _cb) { goal_cb_ = _cb; }
-			typedef std::function<void()>			AbortCb;
-			void onAbort(AbortCb _cb)  { abort_cb_ = _cb; }
 
 		public:
 			void goalSuccess();
@@ -55,7 +61,6 @@ namespace grvc {
 			Subscriber<void>* abort_sub_ = nullptr;
 
 			GoalCb goal_cb_;
-			AbortCb abort_cb_;
 		};
 
 		//--------------------------------------------------------------------------------------------------------------
