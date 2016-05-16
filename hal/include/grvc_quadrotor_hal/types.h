@@ -23,6 +23,8 @@
 
 #include <Eigen/Core>
 #include <cstdint>
+#include <iostream>
+#include <grvc_com/subscriber.h> // For deserialization of Vec3
 
 namespace grvc { namespace hal {
 	
@@ -44,5 +46,19 @@ namespace grvc { namespace hal {
 	};
 	
 }}	// namespace grvc::hal
+
+inline std::ostream& operator<<(std::ostream& _os, const grvc::hal::Waypoint& _wp) {
+	_os << '{' << _wp.pos << ',' << _wp.yaw << '}';
+	return _os;
+}
+
+inline std::istream& operator>>(std::istream& _is, grvc::hal::Waypoint& _wp) {
+	_is.get(); // Skip {
+	_is >> _wp.pos;
+	_is.get(); // Skip ,
+	_is >> _wp.yaw;
+	_is.get(); // Skip }
+	return _is;
+}
 
 #endif // _GRVCQUADROTOR_HAL_COMMON_TYPES_H_
