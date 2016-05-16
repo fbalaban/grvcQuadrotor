@@ -40,7 +40,7 @@ namespace grvc {
 
 			typedef std::function<bool(const Goal&)>	GoalCb;
 			void onRequestedGoal(GoalCb _cb) { goal_cb_ = _cb; }
-			typedef std::function<void(void)>			AbortCb;
+			typedef std::function<void()>			AbortCb;
 			void onAbort(AbortCb _cb)  { abort_cb_ = _cb; }
 
 		public:
