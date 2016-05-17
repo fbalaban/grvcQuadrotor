@@ -52,6 +52,8 @@ namespace grvc { namespace com {
 	private:
 		template<class T_>
 		void serialize(std::ostream& _os, const T_& _t);
+		template<class T_>
+		void serialize(std::ostream& _os, const std::vector<T_>& _t);
 
 	private:
 		PublisherBackEnd* back_end_ = nullptr;
