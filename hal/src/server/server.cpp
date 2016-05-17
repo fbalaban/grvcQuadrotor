@@ -60,6 +60,7 @@ namespace grvc { namespace hal {
 	void Server::setDefaultParams() {
 		hal_ns_ = "hal_ns";
 		wp_topic_ = "go_to_wp";
+		path_topic_ = "path_topic";
 		take_off_topic_ = "take_off";
 		land_topic_ = "land";
 		state_topic_ = "state";
@@ -70,6 +71,7 @@ namespace grvc { namespace hal {
 	void Server::parseArguments(int _argc, char** _argv) {
 		const string hal_ns_arg = "-hal_ns=";
 		const string wp_topic_arg = "-wp_topic=";
+		const string path_arg = "-path_topic=";
 		const string take_off_arg = "-take_off_topic=";
 		const string land_arg = "-land_topic=";
 		const string state_arg = "-state_topic=";
@@ -80,6 +82,8 @@ namespace grvc { namespace hal {
 			if (parseArg(arg, hal_ns_arg, hal_ns_))
 				continue;
 			if (parseArg(arg, wp_topic_arg, wp_topic_))
+				continue;
+			if (parseArg(arg, path_arg, path_topic_))
 				continue;
 			if (parseArg(arg, take_off_arg, take_off_topic_))
 				continue;
@@ -110,6 +114,10 @@ namespace grvc { namespace hal {
 		auto wp_full_topic = hal_ns_ + "/" + wp_topic_;
 		auto bindGoToWP = [this](const Waypoint& _wp) { platform_impl_->goToWP(_wp); };
 		wp_sub_ = new com::Subscriber<Waypoint>(node_name, wp_full_topic.c_str(), _argc, _argv, bindGoToWP);
+		// Suscribe to path command topic
+		auto path_full_topic = hal_ns_ + "/" + path_topic_;
+		auto bindPath = [this](const WaypointList& _wpList) { platform_impl_->trackPath(_wpList); };
+		path_sub_ = new com::Subscriber<WaypointList>(node_name, path_full_topic.c_str(), _argc, _argv, bindPath);
 		// Suscribe to take off topic
 		auto take_off_full_topic = hal_ns_ + "/" + take_off_topic_;
 		auto bindTakeOff = [this](double _z) { platform_impl_->takeOff(_z); };

@@ -51,6 +51,7 @@ namespace grvc { namespace hal {
 		Time last_update_;
 		// Communication interfaces
 		com::Subscriber<Waypoint>* wp_sub_ = nullptr;
+		com::Subscriber<WaypointList>* path_sub_ = nullptr;
 		com::Subscriber<double>* take_off_sub_ = nullptr;
 		com::Subscriber<void>* land_sub_ = nullptr;
 		com::Publisher* state_pub_;
@@ -58,6 +59,7 @@ namespace grvc { namespace hal {
 
 		// Communication topics
 		std::string wp_topic_;
+		std::string path_topic_;
 		std::string take_off_topic_;
 		std::string land_topic_;
 		std::string state_topic_;
