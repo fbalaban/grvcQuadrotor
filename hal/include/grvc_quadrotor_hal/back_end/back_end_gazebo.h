@@ -38,6 +38,8 @@ namespace grvc { namespace hal {
 		/// Go to the specified waypoint, following a straight line.
 		/// \param _wp goal waypoint.
 		void		goToWP			(const Waypoint& _wp) override;
+		/// Follow a list of waypoints, one after another
+		void		trackPath		(const WaypointList& _path) override;
 		/// Perform a take off maneuver
 		/// \param _height targer height that must be reached to consider the take off complete.
 		void		takeOff			(double _height) override;
@@ -63,6 +65,7 @@ namespace grvc { namespace hal {
 
 	private:
 		TaskState cur_task_state_;
+		WaypointList cur_path_;
 
 		ros::NodeHandle* ros_handle_;
 		ros::Timer publish_timer_;
