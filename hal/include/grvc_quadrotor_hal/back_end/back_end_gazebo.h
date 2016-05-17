@@ -37,7 +37,7 @@ namespace grvc { namespace hal {
 
 		/// Go to the specified waypoint, following a straight line.
 		/// \param _wp goal waypoint.
-		void		goToWP			(const Vec3& _wp) override;
+		void		goToWP			(const Waypoint& _wp) override;
 		/// Perform a take off maneuver
 		/// \param _height targer height that must be reached to consider the take off complete.
 		void		takeOff			(double _height) override;
