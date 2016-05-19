@@ -39,10 +39,14 @@
 #include <nav_msgs/Odometry.h>
 
 #include <hector_gazebo_plugins/update_timer.h>
+#include <gazebo/common/PID.hh>
 
 namespace gazebo
 {
 
+/// Gazebo plugin for quadrotor control. Expects to receive commands in a velocity commands topic specified inside the urdf
+/// \remark Velocity commands are expected in local axes.
+/// \remark Yaw actually controls yaw speed. The quad doesn't have any absolute reference for position or yaw
 class GazeboQuadrotorSimpleController : public ModelPlugin
 {
 public:
@@ -50,80 +54,53 @@ public:
   virtual ~GazeboQuadrotorSimpleController();
 
 protected:
-  virtual void Load(physics::ModelPtr _model, sdf::ElementPtr _sdf);
-  virtual void Update();
-  virtual void Reset();
+  void parseSdfParams(physics::ModelPtr _model, sdf::ElementPtr _sdf);
+  void loadPID(sdf::ElementPtr _sdf, const char* _paramName, common::PID& _pid);
+  void load(physics::ModelPtr _model, sdf::ElementPtr _sdf);
+  void subscribeTopics();
+  void update();
+  void updatePIDs(double _dt);
+  void reset();
 
 private:
-  /// \brief The parent World
-  physics::WorldPtr world;
+  // Gazebo stuff
+  physics::WorldPtr world_; ///< \brief The parent World
+  physics::LinkPtr link_; ///< \brief The link referred to by this plugin
+  UpdateTimer control_timer_;
+  event::ConnectionPtr  update_connection_;
 
-  /// \brief The link referred to by this plugin
-  physics::LinkPtr link;
-
+  // ROS Stuff
   ros::NodeHandle* node_handle_;
   ros::CallbackQueue callback_queue_;
   ros::Subscriber velocity_subscriber_;
-  ros::Subscriber imu_subscriber_;
   ros::Subscriber state_subscriber_;
-
-  // void CallbackQueueThread();
-  // boost::mutex lock_;
-  // boost::thread callback_queue_thread_;
-
-  geometry_msgs::Twist velocity_command_;
-  void VelocityCallback(const geometry_msgs::TwistConstPtr&);
-  void ImuCallback(const sensor_msgs::ImuConstPtr&);
-  void StateCallback(const nav_msgs::OdometryConstPtr&);
-
-  ros::Time state_stamp;
-  math::Pose pose;
-  math::Vector3 euler, velocity, acceleration, angular_velocity;
 
   std::string link_name_;
   std::string namespace_;
   std::string velocity_topic_;
-  std::string imu_topic_;
   std::string state_topic_;
-  double max_force_;
 
-  class PIDController {
-  public:
-	PIDController();
-	virtual ~PIDController();
-	virtual void Load(sdf::ElementPtr _sdf, const std::string& prefix = "");
+  // Callbacks
+  void velocityCallback(const geometry_msgs::TwistConstPtr&);
+  void stateCallback(const nav_msgs::OdometryConstPtr&);
 
-	double gain_p;
-	double gain_i;
-	double gain_d;
-	double time_constant;
-	double limit;
-
-	double input;
-	double dinput;
-	double output;
-	double p, i, d;
-
-	double update(double input, double x, double dx, double dt);
-	void reset();
-  };
-
+  // Control
   struct Controllers {
-	PIDController roll;
-	PIDController pitch;
-	PIDController yaw;
-	PIDController velocity_x;
-	PIDController velocity_y;
-	PIDController velocity_z;
+    common::PID yaw; ///< Controller for yaw speed. Absolute yaw is not known by the quad
+    common::PID vx;
+    common::PID vy;
+    common::PID vz;
   } controllers_;
 
-  math::Vector3 inertia;
-  double mass;
+  math::Vector3 velocity_command_;
+  double yaw_command_;
 
-  math::Vector3 force, torque, velocity_to_send, worldVelocity;
+  double invMass;
+  double invZInertia;
 
-  UpdateTimer controlTimer;
-  event::ConnectionPtr updateConnection;
+  // Internal state
+  math::Vector3 cur_vel_;
+  double cur_yaw_spd_;
 };
 
 }
