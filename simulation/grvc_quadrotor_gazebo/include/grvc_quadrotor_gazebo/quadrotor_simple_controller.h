@@ -56,7 +56,7 @@ public:
 protected:
   void parseSdfParams(physics::ModelPtr _model, sdf::ElementPtr _sdf);
   void loadPID(sdf::ElementPtr _sdf, const char* _paramName, common::PID& _pid);
-  void load(physics::ModelPtr _model, sdf::ElementPtr _sdf);
+  void Load(physics::ModelPtr _model, sdf::ElementPtr _sdf) override;
   void subscribeTopics();
   void update();
   void updatePIDs(double _dt);

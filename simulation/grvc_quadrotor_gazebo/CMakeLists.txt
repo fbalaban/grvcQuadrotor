@@ -12,6 +12,14 @@ find_package(catkin REQUIRED COMPONENTS
   hector_uav_msgs
 )
 
+# --- Compiler specific options ---
+if(MSVC)
+	add_definitions(/W4 /WX) # Enable high level warnings and treat them like errors
+endif(MSVC)
+if(CMAKE_COMPILER_IS_GNUCXX)
+	add_definitions(-std=c++11 -Wall -Werror)
+endif()
+
 # Depend on system install of Gazebo
 find_package(gazebo REQUIRED)
 

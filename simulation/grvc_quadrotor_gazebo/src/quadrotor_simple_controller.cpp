@@ -36,10 +36,10 @@
 namespace gazebo {
 
 GazeboQuadrotorSimpleController::GazeboQuadrotorSimpleController()
-  : cur_vel_(0.0, 0.0, 0.0)
-  , cur_yaw_spd_(0.0)
-  , velocity_command_(0.0, 0.0, 0.0)
+  : velocity_command_(0.0, 0.0, 0.0)
   , yaw_command_(0.0)
+  , cur_vel_(0.0, 0.0, 0.0)
+  , cur_yaw_spd_(0.0)
 {
 }
 
@@ -74,7 +74,7 @@ void GazeboQuadrotorSimpleController::parseSdfParams(physics::ModelPtr _model, s
   if (!_sdf->HasElement("bodyName") || !_sdf->GetElement("bodyName")->GetValue())
   {
    link_ = _model->GetLink();
-   link_name_ = link->GetName();
+   link_name_ = link_->GetName();
   }
   else {
    link_name_ = _sdf->GetElement("bodyName")->Get<std::string>();
@@ -107,26 +107,25 @@ void GazeboQuadrotorSimpleController::loadPID(sdf::ElementPtr _sdf, const char* 
   if (_sdf->HasElement(prefix + "ProportionalGain")) gain_p = _sdf->GetElement(prefix + "ProportionalGain")->Get<double>();
   if (_sdf->HasElement(prefix + "DifferentialGain")) gain_d = _sdf->GetElement(prefix + "DifferentialGain")->Get<double>();
   if (_sdf->HasElement(prefix + "IntegralGain"))     gain_i = _sdf->GetElement(prefix + "IntegralGain")->Get<double>();
-  if (_sdf->HasElement(prefix + "TimeConstant"))     time_constant = _sdf->GetElement(prefix + "TimeConstant")->Get<double>();
   if (_sdf->HasElement(prefix + "Limit"))            limit = _sdf->GetElement(prefix + "Limit")->Get<double>();
 
-  _pid = PID(gain_p, gain_i, gain_d, 0.0, 0.0, limit, -limit);
+  _pid = common::PID(gain_p, gain_i, gain_d, 0.0, 0.0, limit, -limit);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Load the controller
-void GazeboQuadrotorSimpleController::load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
+void GazeboQuadrotorSimpleController::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
 {
   world_ = _model->GetWorld();
   parseSdfParams(_model, _sdf);
-  link_->SetGravityModel(false);
+  link_->SetGravityMode(false);
   // Init mass properties of the quad
   auto inertia = link_->GetInertial();
   if(inertia->GetMass() > 0.0)
     invMass = 1.0 / inertia->GetMass();
   else
     invMass = 1.0; // Default mass
-  invZInertia = 1.0 / inertia.GetIZZ();
+  invZInertia = 1.0 / inertia->GetIZZ();
 
   node_handle_ = new ros::NodeHandle(namespace_);
   subscribeTopics();
@@ -136,9 +135,9 @@ void GazeboQuadrotorSimpleController::load(physics::ModelPtr _model, sdf::Elemen
   // New Mechanism for Updating every World Cycle
   // Listen to the update event. This event is broadcast every
   // simulation iteration.
-  controlTimer.Load(world, _sdf);
+  control_timer_.Load(world_, _sdf);
   update_connection_ = event::Events::ConnectWorldUpdateBegin(
-     boost::bind(&GazeboQuadrotorSimpleController::Update, this));
+     boost::bind(&GazeboQuadrotorSimpleController::update, this));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -166,19 +165,19 @@ void GazeboQuadrotorSimpleController::subscribeTopics() {
 // Callbacks
 void GazeboQuadrotorSimpleController::velocityCallback(const geometry_msgs::TwistConstPtr& _velocity)
 {
-  velocity_command_ = *_velocity;
+  velocity_command_ = math::Vector3(_velocity->linear.x, _velocity->linear.y, _velocity->linear.z);
 }
 
 //------------------------------------------------------------------------------------------------------
 void GazeboQuadrotorSimpleController::stateCallback(const nav_msgs::OdometryConstPtr& _state)
 {
-  auto abs_vel = math::Vector3(_state->twist.twist.linear);
+  auto abs_vel = math::Vector3(_state->twist.twist.linear.x, _state->twist.twist.linear.y, _state->twist.twist.linear.z);
   // Transform velocity to local coordinates
-  auto msg_orientation = _state->pose.pose.orientation
-  Quaternion rotation (msg_orientation.w, msg_orientation.x, msg_orientation.y, msg_orientation.z);
+  auto msg_orientation = _state->pose.pose.orientation;
+  math::Quaternion rotation (msg_orientation.w, msg_orientation.x, msg_orientation.y, msg_orientation.z);
   cur_vel_ = rotation.RotateVectorReverse(cur_vel_);
 
-  cur_yaw_spd_ = state->twist.twist.angular.z;
+  cur_yaw_spd_ = _state->twist.twist.angular.z;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -207,36 +206,23 @@ void GazeboQuadrotorSimpleController::update()
 void GazeboQuadrotorSimpleController::updatePIDs(double _dt) {
   // Linear speeds
   auto vel_error = velocity_command_ - cur_vel_;
-  controllers_.vx.Update(vel_error.x, dt);
-  controllers_.vy.Update(vel_error.y, dt);
-  controllers_.vz.Update(vel_error.z, dt);
+  controllers_.vx.Update(vel_error.x, _dt);
+  controllers_.vy.Update(vel_error.y, _dt);
+  controllers_.vz.Update(vel_error.z, _dt);
 
   // Yaw speed
   double yaw_error = yaw_command_ - cur_yaw_spd_;
-  controllers_.yaw.Update(yaw_error, dt);
+  controllers_.yaw.Update(yaw_error, _dt);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Reset the controller
-void GazeboQuadrotorSimpleController::Reset()
+void GazeboQuadrotorSimpleController::reset()
 {
-  controllers_.roll.reset();
-  controllers_.pitch.reset();
-  controllers_.yaw.reset();
-  controllers_.velocity_x.reset();
-  controllers_.velocity_y.reset();
-  controllers_.velocity_z.reset();
-
-  force.Set();
-  torque.Set();
-
-  // reset state
-  pose.Reset();
-  velocity.Set();
-  angular_velocity.Set();
-  acceleration.Set();
-  euler.Set();
-  state_stamp = ros::Time();
+  controllers_.yaw.Reset();
+  controllers_.vx.Reset();
+  controllers_.vy.Reset();
+  controllers_.vz.Reset();
 }
 
 // Register this plugin with the simulator
