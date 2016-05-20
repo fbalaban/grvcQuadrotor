@@ -166,6 +166,7 @@ void GazeboQuadrotorSimpleController::subscribeTopics() {
 void GazeboQuadrotorSimpleController::velocityCallback(const geometry_msgs::TwistConstPtr& _velocity)
 {
   velocity_command_ = math::Vector3(_velocity->linear.x, _velocity->linear.y, _velocity->linear.z);
+  yaw_command_ = _velocity->angular.z;
 }
 
 //------------------------------------------------------------------------------------------------------
@@ -189,16 +190,19 @@ void GazeboQuadrotorSimpleController::update()
 
   double dt;
   if (control_timer_.update(dt) && dt > 0.0) {
-    updatePIDs(dt);
+    //ROS_INFO_STREAM("Plugin vel cmd = (" << velocity_command_.x << ", " << velocity_command_.y << ", " << velocity_command_.z << ")");
+    //ROS_INFO_STREAM("Plugin cur vel = (" << cur_vel_.x << ", " << cur_vel_.y << ", " << cur_vel_.z << ")");
+    // updatePIDs(dt);
 
-    math::Vector3 force;
-    force.x = controllers_.vx.GetCmd();
-    force.y = controllers_.vy.GetCmd();
-    force.z = controllers_.vz.GetCmd();
-    link_->SetForce(force * invMass);
+    // math::Vector3 force;
+    // force.x = controllers_.vx.GetCmd();
+    // force.y = controllers_.vy.GetCmd();
+    // force.z = controllers_.vz.GetCmd();
+    // ROS_INFO_STREAM("Plugin force = (" << force.x << ", " << force.y << ", " << force.z << ")");
+    //link_->SetForce(force * invMass);
 
-    math::Vector3 torque(0.0, 0.0, controllers_.yaw.GetCmd());
-    link_->SetTorque(torque * invZInertia);
+    //math::Vector3 torque(0.0, 0.0, controllers_.yaw.GetCmd());
+    //link_->SetTorque(torque * invZInertia);
   }
 }
 
