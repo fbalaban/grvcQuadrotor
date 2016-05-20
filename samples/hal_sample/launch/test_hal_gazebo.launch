@@ -14,5 +14,5 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 		<arg name="robot_name" value="quad1"/>
 	</include>
 
-	<node name="grvc_hal_sample" pkg="grvc_quadrotor_hal_sample" type="grvc_quad_hal_sample" respawn="false"/>
+	<node name="grvc_hal_sample" pkg="grvc_quadrotor_hal_sample" type="grvc_quad_hal_sample" respawn="false" output="screen"/>
 </launch>

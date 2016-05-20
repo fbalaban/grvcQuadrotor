@@ -66,12 +66,14 @@ namespace grvc { namespace hal {
 
 	//------------------------------------------------------------------------------------------------------------------
 	void BackEndGazebo::takeOff(double _z) {
+		ROS_INFO_STREAM("On take off");
 		if(!has_odometry_)
 			return; // Can't figure out take off destination
 		cur_task_state_ = TaskState::running;
 		ROS_INFO_STREAM("Take off curPos = " << state_controller_.pos().transpose() << ", z = " << _z);
 		Vec3 ref_pos = state_controller_.pos();
 		ref_pos.z() = _z;
+		ROS_INFO_STREAM("Take off refPos = " << ref_pos.transpose());
 		state_controller_.setReferencePos(ref_pos);
 	}
 
@@ -170,7 +172,6 @@ namespace grvc { namespace hal {
 	//------------------------------------------------------------------------------------------------------------------
 	void BackEndGazebo::initControlReferences() {
 		if(!has_odometry_) {
-			has_odometry_ = true;
 			// Set current state as initial reference for control
 			state_controller_.setReferencePos(state_controller_.pos());
 			state_controller_.setReferenceYaw(state_controller_.yaw());
@@ -180,6 +181,7 @@ namespace grvc { namespace hal {
 			publish_timer_ = ros_handle_->createTimer(ros::Duration(1/publish_rate_),
 				[this](const ros::TimerEvent& _te) { publishCb(_te); });
 			cur_task_state_ = TaskState::finished; // Finished initialization
+			has_odometry_ = true;
 		}
 	}
 
@@ -204,7 +206,7 @@ namespace grvc { namespace hal {
 		ros::Duration deltaT = _te.current_real - _te.last_real;
 		// Update control actions
 		state_controller_.updateControlActions(gazebo::common::Time(deltaT.sec, deltaT.nsec));
-		if(reachedGoal()) {
+		if(has_odometry_ && reachedGoal()) {
 			if(cur_path_.size()) {
 				state_controller_.setReferencePos(cur_path_.back().pos);
 				state_controller_.setReferenceYaw(cur_path_.back().yaw);
