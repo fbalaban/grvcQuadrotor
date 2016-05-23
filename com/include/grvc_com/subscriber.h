@@ -24,6 +24,7 @@
 #include <functional>
 #include "subscriber_back_end.h"
 #include <Eigen/Core>
+#include <vector>
 
 namespace grvc {
 	namespace com {

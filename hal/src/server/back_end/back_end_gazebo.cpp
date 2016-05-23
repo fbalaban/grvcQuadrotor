@@ -146,8 +146,8 @@ namespace grvc { namespace hal {
 		// Suscribe to odometry messages from gazebo
 		auto odometry_full_topic = gazebo_ns_ + "/" + odometry_topic_;
 		odometry_sub_ = ros_handle_->subscribe(odometry_full_topic.c_str(),
-               1000, &BackEndGazebo::odometryCb,
-                        this);
+			   1000, &BackEndGazebo::odometryCb,
+						this);
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
