@@ -46,9 +46,10 @@ namespace grvc { namespace hal {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	void BackEndGazebo::goToWP(const Vec3& _pos) {
-		ROS_INFO_STREAM("GoToWp " << _pos.transpose());
-		state_controller_.setReferencePos(_pos);
+	void BackEndGazebo::goToWP(const Waypoint& _wp) {
+		ROS_INFO_STREAM("GoToWp " << _wp.pos.transpose() << " yaw=" << _wp.yaw);
+		state_controller_.setReferencePos(_wp.pos);
+		state_controller_.setReferenceYaw(_wp.yaw);
 		cur_task_state_ = TaskState::running;
 	}
 
