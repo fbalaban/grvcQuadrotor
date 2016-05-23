@@ -60,7 +60,7 @@ namespace grvc { namespace hal {
 	void Server::setDefaultParams() {
 		hal_ns_ = "hal_ns";
 		wp_topic_ = "go_to_wp";
-		path_topic_ = "path_topic";
+		path_topic_ = "path";
 		take_off_topic_ = "take_off";
 		land_topic_ = "land";
 		state_topic_ = "state";
