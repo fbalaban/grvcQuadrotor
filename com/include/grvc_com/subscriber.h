@@ -56,17 +56,6 @@ namespace grvc {
 				_is >> _t;
 			}
 
-			void deserialize(std::istream& _is, std::vector<T_>& _v) {
-				_is.get(); // Skip [
-				while(_is.peek() != ']') {
-					_v.push_back(T_());
-					deserialize(_is, _v.back());
-					if(_is.peek() == ',')
-						_is.get(); // Skip ,
-				}
-				_is.get(); // Skip ]
-			}
-
 		private:
 			SubscriberBackEnd* back_end_ = nullptr;
 		};
@@ -100,6 +89,20 @@ inline std::istream& operator >> (std::istream& _is, Eigen::Matrix<Scalar_,cols_
 		_is.get(); // skip \n
 	}
 	_is >> _v(_v.rows()-1); // get last component
+	return _is;
+}
+
+// std::vector
+template<class T_>
+inline std::istream& operator >> (std::istream& _is, std::vector<T_>& _v) {
+	_is.get(); // Skip [
+	while(_is.peek() != ']') {
+		_v.push_back(T_());
+		_is >> _v.back();
+		if(_is.peek() == ',')
+			_is.get(); // Skip ,
+	}
+	_is.get(); // Skip ]
 	return _is;
 }
 
