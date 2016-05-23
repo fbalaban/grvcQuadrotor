@@ -18,42 +18,54 @@
 // OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------------------------------------------------
-#include <grvc_com/publisher.h>
-#include <grvc_quadrotor_hal/server.h>
 #include <cstdint>
 #include <thread>
 #include <iostream>
 
-using namespace grvc::com;
-using namespace grvc::hal;
+#include <geometry_msgs/Twist.h>
+#include <nav_msgs/Odometry.h>
+
+#include <ros/ros.h>
+
+geometry_msgs::Point pos;
+
+void odometryCb(const nav_msgs::Odometry::ConstPtr& _odom) {
+		// -- Update model controller --
+		pos = _odom->pose.pose.position;
+	}
 
 int main(int _argc, char** _argv) {
-	// Use this to send waypoints to hal
-	//Publisher* wpPub = new Publisher("hal_sample", "/quad1/hal/go_to_wp", _argc, _argv);
-	Publisher* takeOffPub  = new Publisher("hal_sample", "/quad1/hal/take_off", _argc, _argv);
-	Publisher* landPub  = new Publisher("hal_sample", "/quad1/hal/land", _argc, _argv);
-	std::string curState = "-";
-	new Subscriber<std::string>("hal_sample", "/quad1/hal/state", _argc, _argv, [&](const std::string& _str) {
-		curState = _str;
-	});
-	
-	double flyZ = 1.0;
-	//Vec3 points[2] = { {0.0, 0.0, flyZ}, {3.0, 0.0, flyZ} };
+	ros::init(_argc, _argv, "sample", ros::init_options::AnonymousName);
+	ros::NodeHandle* ros_handle = new ros::NodeHandle("sample");
+	auto spin_thread = std::thread([](){ ros::spin(); });
 
-	while(curState != "finished")
-	{
+	// Topic to set velocity references for gazebo plugin
+	auto cmd_vel_pub = ros_handle->advertise<geometry_msgs::Twist>("/quad1/cmd_vel", 0);
+
+	// Suscribe to odometry messages from gazebo
+	pos.x = 0.0;
+	pos.y = 0.0;
+	pos.z = 0.0;
+	ros_handle->subscribe("/quad1/ground_truth/state", 1000, &odometryCb);
+
+	geometry_msgs::Twist goalSpd;
+	goalSpd.angular.x = 0.0;
+	goalSpd.angular.y = 0.0;
+	goalSpd.angular.z = 0.0;
+	goalSpd.linear.x = 0.0;
+	goalSpd.linear.y = 0.0;
+	goalSpd.linear.z = 0.0;
+	
+	while(pos.z < 2.0) {
+		goalSpd.linear.z = 1.0;
+		cmd_vel_pub.publish(goalSpd);
 		std::this_thread::sleep_for(std::chrono::seconds(1));
 	}
-	for (size_t t = 0; t < 100; ++t) {
-		std::cout << "Take off to height="<<flyZ<<std::endl;
-		takeOffPub->publish(flyZ);
-		std::this_thread::sleep_for(std::chrono::seconds(4));
-		/*for (size_t i = 0; i < 2; ++i) {
-			wpPub->publish(points[i]);
-			std::this_thread::sleep_for(std::chrono::seconds(3));
-		}*/
-		landPub->publish();
-		std::this_thread::sleep_for(std::chrono::seconds(3));
+
+	while(pos.z > 0.5) {
+		goalSpd.linear.z = -1.0;
+		cmd_vel_pub.publish(goalSpd);
+		std::this_thread::sleep_for(std::chrono::seconds(1));
 	}
 
 	return 0;

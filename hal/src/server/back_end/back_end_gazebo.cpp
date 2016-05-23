@@ -66,11 +66,10 @@ namespace grvc { namespace hal {
 
 	//------------------------------------------------------------------------------------------------------------------
 	void BackEndGazebo::takeOff(double _z) {
-		ROS_INFO_STREAM("On take off");
 		if(!has_odometry_)
 			return; // Can't figure out take off destination
 		cur_task_state_ = TaskState::running;
-		ROS_INFO_STREAM("Take off curPos = " << state_controller_.pos().transpose() << ", z = " << _z);
+		ROS_INFO_STREAM("Take off curPos = " << state_controller_.pos().transpose());
 		Vec3 ref_pos = state_controller_.pos();
 		ref_pos.z() = _z;
 		ROS_INFO_STREAM("Take off refPos = " << ref_pos.transpose());

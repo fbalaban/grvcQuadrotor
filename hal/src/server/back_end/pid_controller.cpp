@@ -54,8 +54,8 @@ namespace grvc { namespace hal {
 		// Position PIDs
 		if(has_pos_ && has_yaw_ref_) {
 			Vec3 pos_error = cur_pos_ - pos_reference_;
-			vel_action_.x() = 0.0;//pid_x_.Update(pos_error.x(), _dt);
-			vel_action_.y() = 0.0;//pid_y_.Update(pos_error.y(), _dt);
+			vel_action_.x() = pid_x_.Update(pos_error.x(), _dt);
+			vel_action_.y() = pid_y_.Update(pos_error.y(), _dt);
 			vel_action_.z() = pid_z_.Update(pos_error.z(), _dt);
 		}
 

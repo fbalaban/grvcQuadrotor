@@ -190,26 +190,23 @@ void GazeboQuadrotorSimpleController::update()
 
   double dt;
   if (control_timer_.update(dt) && dt > 0.0) {
-    //ROS_INFO_STREAM("Plugin vel cmd = (" << velocity_command_.x << ", " << velocity_command_.y << ", " << velocity_command_.z << ")");
-    //ROS_INFO_STREAM("Plugin cur vel = (" << cur_vel_.x << ", " << cur_vel_.y << ", " << cur_vel_.z << ")");
-    // updatePIDs(dt);
+    updatePIDs(dt);
 
-    // math::Vector3 force;
-    // force.x = controllers_.vx.GetCmd();
-    // force.y = controllers_.vy.GetCmd();
-    // force.z = controllers_.vz.GetCmd();
-    // ROS_INFO_STREAM("Plugin force = (" << force.x << ", " << force.y << ", " << force.z << ")");
-    //link_->SetForce(force * invMass);
+    math::Vector3 force;
+    force.x = controllers_.vx.GetCmd();
+    force.y = controllers_.vy.GetCmd();
+    force.z = controllers_.vz.GetCmd();
+    link_->SetForce(force * invMass);
 
-    //math::Vector3 torque(0.0, 0.0, controllers_.yaw.GetCmd());
-    //link_->SetTorque(torque * invZInertia);
+    math::Vector3 torque(0.0, 0.0, controllers_.yaw.GetCmd());
+    link_->SetTorque(torque * invZInertia);
   }
 }
 
 //---------------------------------------------------------------------------------------------------
 void GazeboQuadrotorSimpleController::updatePIDs(double _dt) {
   // Linear speeds
-  auto vel_error = velocity_command_ - cur_vel_;
+  auto vel_error = cur_vel_ - velocity_command_;
   controllers_.vx.Update(vel_error.x, _dt);
   controllers_.vy.Update(vel_error.y, _dt);
   controllers_.vz.Update(vel_error.z, _dt);
