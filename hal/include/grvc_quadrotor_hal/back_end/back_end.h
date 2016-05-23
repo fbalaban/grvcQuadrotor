@@ -31,6 +31,8 @@ namespace grvc { namespace hal {
 		/// Go to the specified waypoint, following a straight line.
 		/// \param _wp goal waypoint.
 		virtual void		goToWP			(const Waypoint& _wp) = 0;
+		/// Follow a list of waypoints, one after another
+		virtual void		trackPath		(const WaypointList& _path) = 0;
 		/// Perform a take off maneuver
 		/// \param _height targer height that must be reached to consider the take off complete.
 		virtual void		takeOff			(double _height) = 0;

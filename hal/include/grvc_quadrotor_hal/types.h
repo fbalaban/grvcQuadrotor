@@ -25,6 +25,7 @@
 #include <cstdint>
 #include <iostream>
 #include <grvc_com/subscriber.h> // For deserialization of Vec3
+#include <vector>
 
 namespace grvc { namespace hal {
 	
@@ -36,6 +37,8 @@ namespace grvc { namespace hal {
 		Vec3 pos;
 		Scalar yaw;
 	};
+
+	typedef std::vector<Waypoint>	WaypointList;
 
 	/// States in which a requested task can be during (or after) execution.
 	enum class TaskState : uint8_t {

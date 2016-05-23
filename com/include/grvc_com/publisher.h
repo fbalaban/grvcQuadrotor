@@ -23,6 +23,7 @@
 
 #include <sstream>
 #include "publisher_back_end.h"
+#include <vector>
 
 namespace grvc { namespace com {
 
@@ -51,6 +52,8 @@ namespace grvc { namespace com {
 	private:
 		template<class T_>
 		void serialize(std::ostream& _os, const T_& _t);
+		template<class T_>
+		void serialize(std::ostream& _os, const std::vector<T_>& _t);
 
 	private:
 		PublisherBackEnd* back_end_ = nullptr;
@@ -75,6 +78,20 @@ namespace grvc { namespace com {
 	template<class T_>
 	void Publisher::serialize(std::ostream& _os, const T_& _t) {
 		_os << _t;
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	template<class T_>
+	void Publisher::serialize(std::ostream& _os, const std::vector<T_>& _v) {
+		_os << '[';
+		if(_v.size()) {
+			serialize(_os, _v[0]);
+			for(size_t i = 1; i < _v.size; ++i) {
+				_os << ',';
+				serialize(_os, _v[i]);
+			}
+		}
+		_os << ']';
 	}
 
 }} // namespace grvc::com

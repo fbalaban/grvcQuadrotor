@@ -47,10 +47,21 @@ namespace grvc { namespace hal {
 
 	//------------------------------------------------------------------------------------------------------------------
 	void BackEndGazebo::goToWP(const Waypoint& _wp) {
-		ROS_INFO_STREAM("GoToWp " << _wp.pos.transpose() << " yaw=" << _wp.yaw);
+		ROS_INFO_STREAM("GoToWp " << _wp.pos.transpose() << ", yaw = " << _wp.yaw);
+		cur_path_.clear(); // Cancel path tracking
 		state_controller_.setReferencePos(_wp.pos);
 		state_controller_.setReferenceYaw(_wp.yaw);
 		cur_task_state_ = TaskState::running;
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	void BackEndGazebo::trackPath(const WaypointList& _path) {
+		cur_path_.clear();
+		cur_path_.reserve(_path.size());
+		cur_path_.insert(cur_path_.begin(), _path.rbegin(), _path.rend()); // Store the path in reverse order (like a stack)
+		state_controller_.setReferencePos(cur_path_.back().pos);
+		state_controller_.setReferenceYaw(cur_path_.back().yaw);
+		cur_path_.pop_back();
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
@@ -83,6 +94,7 @@ namespace grvc { namespace hal {
 	//------------------------------------------------------------------------------------------------------------------
 	void BackEndGazebo::abortTask() {
 		state_controller_.setReferencePos(state_controller_.pos());
+		cur_path_.clear(); // Cancel current path, if any
 		if(cur_task_state_ == TaskState::running)
 			cur_task_state_ = TaskState::aborted;
 	}
@@ -193,7 +205,13 @@ namespace grvc { namespace hal {
 		// Update control actions
 		state_controller_.updateControlActions(gazebo::common::Time(deltaT.sec, deltaT.nsec));
 		if(reachedGoal()) {
-			cur_task_state_ = TaskState::finished;
+			if(cur_path_.size()) {
+				state_controller_.setReferencePos(cur_path_.back().pos);
+				state_controller_.setReferenceYaw(cur_path_.back().yaw);
+				cur_path_.pop_back();
+			}else {
+				cur_task_state_ = TaskState::finished;
+			}
 		}
 	}
 

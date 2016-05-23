@@ -55,6 +55,17 @@ namespace grvc {
 				_is >> _t;
 			}
 
+			void deserialize(std::istream& _is, std::vector<T_>& _v) {
+				_is.get(); // Skip [
+				while(_is.peek() != ']') {
+					_v.push_back(T_());
+					deserialize(_is, _v.back());
+					if(_is.peek() == ',')
+						_is.get(); // Skip ,
+				}
+				_is.get(); // Skip ]
+			}
+
 		private:
 			SubscriberBackEnd* back_end_ = nullptr;
 		};
