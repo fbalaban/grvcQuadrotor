@@ -116,6 +116,7 @@ $(document).ready(function(){initNavTree('subscriber_8h.html','');});
 <div class="textblock"><code>#include &lt;functional&gt;</code><br />
 <code>#include &quot;<a class="el" href="subscriber__back__end_8h_source.html">subscriber_back_end.h</a>&quot;</code><br />
 <code>#include &lt;Eigen/Core&gt;</code><br />
+<code>#include &lt;vector&gt;</code><br />
 </div>
 <p><a href="subscriber_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
@@ -138,6 +139,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a8e2919921caa09a57e6ee2be584e359d"><td class="memTemplParams" colspan="2">template&lt;class Scalar_ , int cols_&gt; </td></tr>
 <tr class="memitem:a8e2919921caa09a57e6ee2be584e359d"><td class="memTemplItemLeft" align="right" valign="top">std::istream &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="subscriber_8h.html#a8e2919921caa09a57e6ee2be584e359d">operator&gt;&gt;</a> (std::istream &amp;_is, Eigen::Matrix&lt; Scalar_, cols_, 1 &gt; &amp;_v)</td></tr>
 <tr class="separator:a8e2919921caa09a57e6ee2be584e359d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aebac21ac15c61659a8b13110ed5858f3"><td class="memTemplParams" colspan="2">template&lt;class T_ &gt; </td></tr>
+<tr class="memitem:aebac21ac15c61659a8b13110ed5858f3"><td class="memTemplItemLeft" align="right" valign="top">std::istream &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="subscriber_8h.html#aebac21ac15c61659a8b13110ed5858f3">operator&gt;&gt;</a> (std::istream &amp;_is, std::vector&lt; T_ &gt; &amp;_v)</td></tr>
+<tr class="separator:aebac21ac15c61659a8b13110ed5858f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a class="anchor" id="a8e2919921caa09a57e6ee2be584e359d"></a>
@@ -174,7 +178,45 @@ template&lt;class Scalar_ , int cols_&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="subscriber_8h_source.html#l00085">85</a> of file <a class="el" href="subscriber_8h_source.html">subscriber.h</a>.</p>
+<p>Definition at line <a class="el" href="subscriber_8h_source.html#l00086">86</a> of file <a class="el" href="subscriber_8h_source.html">subscriber.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aebac21ac15c61659a8b13110ed5858f3"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T_ &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::istream&amp; operator&gt;&gt; </td>
+          <td>(</td>
+          <td class="paramtype">std::istream &amp;&#160;</td>
+          <td class="paramname"><em>_is</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; T_ &gt; &amp;&#160;</td>
+          <td class="paramname"><em>_v</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="subscriber_8h_source.html#l00097">97</a> of file <a class="el" href="subscriber_8h_source.html">subscriber.h</a>.</p>
 
 </div>
 </div>
@@ -184,7 +226,7 @@ template&lt;class Scalar_ , int cols_&gt; </div>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_194442ccfdda5330a9fc879f923cbd7f.html">com</a></li><li class="navelem"><a class="el" href="dir_030034f24c5d1994a7101152d6c36273.html">include</a></li><li class="navelem"><a class="el" href="dir_4035457bcfa3594f24fb6955829cee5e.html">grvc_com</a></li><li class="navelem"><a class="el" href="subscriber_8h.html">subscriber.h</a></li>
-    <li class="footer">Generated on Thu May 12 2016 15:13:56 for grvc_quadrotor by
+    <li class="footer">Generated on Mon May 23 2016 11:51:32 for grvc_quadrotor by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.11 </li>
   </ul>

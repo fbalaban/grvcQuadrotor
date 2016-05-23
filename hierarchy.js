@@ -1,7 +1,9 @@
 var hierarchy =
 [
     [ "grvc::com::ActionClient< Goal, FeedBack >", "classgrvc_1_1com_1_1_action_client.html", null ],
-    [ "grvc::com::ActionServer< Goal, FeedBack >", "classgrvc_1_1com_1_1_action_server.html", null ],
+    [ "grvc::com::ActionServerBase", "classgrvc_1_1com_1_1_action_server_base.html", [
+      [ "grvc::com::ActionServer< Goal, FeedBack >", "classgrvc_1_1com_1_1_action_server.html", null ]
+    ] ],
     [ "grvc::hal::BackEnd", "classgrvc_1_1hal_1_1_back_end.html", null ],
     [ "grvc::uav::Client", "classgrvc_1_1uav_1_1_client.html", null ],
     [ "ModelPlugin", null, [
@@ -20,11 +22,13 @@ var hierarchy =
     [ "grvc::com::Subscriber< double >", "classgrvc_1_1com_1_1_subscriber.html", null ],
     [ "grvc::com::Subscriber< FeedBack >", "classgrvc_1_1com_1_1_subscriber.html", null ],
     [ "grvc::com::Subscriber< Goal >", "classgrvc_1_1com_1_1_subscriber.html", null ],
+    [ "grvc::com::Subscriber< grvc::hal::Waypoint >", "classgrvc_1_1com_1_1_subscriber.html", null ],
     [ "grvc::com::Subscriber< std::string >", "classgrvc_1_1com_1_1_subscriber.html", null ],
-    [ "grvc::com::Subscriber< Vec3 >", "classgrvc_1_1com_1_1_subscriber.html", null ],
     [ "grvc::com::Subscriber< void >", "classgrvc_1_1com_1_1_subscriber_3_01void_01_4.html", null ],
+    [ "grvc::com::Subscriber< WaypointList >", "classgrvc_1_1com_1_1_subscriber.html", null ],
     [ "grvc::com::SubscriberBackEnd", "classgrvc_1_1com_1_1_subscriber_back_end.html", [
       [ "MockSubscriberBE", "class_mock_subscriber_b_e.html", null ],
       [ "MockSubscriberBE", "class_mock_subscriber_b_e.html", null ]
-    ] ]
+    ] ],
+    [ "grvc::hal::Waypoint", "structgrvc_1_1hal_1_1_waypoint.html", null ]
 ];

@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['vec3',['Vec3',['../namespacegrvc_1_1hal.html#af50121d30dbfa22236d648d3442a3f7b',1,'grvc::hal::Vec3()'],['../namespacegrvc_1_1uav.html#a72a455d82e989e2111ae6056dbb1833b',1,'grvc::uav::Vec3()']]]
+  ['takeoffcb',['TakeOffCb',['../classgrvc_1_1uav_1_1_service.html#af9fe47e08e48efb57b4ed0db75a4b23e',1,'grvc::uav::Service']]],
+  ['trackpathcb',['TrackPathCb',['../classgrvc_1_1uav_1_1_service.html#ac1a5519c06d479324a3944e79ca8c83d',1,'grvc::uav::Service']]]
 ];

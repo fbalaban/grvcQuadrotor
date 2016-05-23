@@ -5,6 +5,7 @@ var dir_4035457bcfa3594f24fb6955829cee5e =
       [ "ActionClient", "classgrvc_1_1com_1_1_action_client.html", "classgrvc_1_1com_1_1_action_client" ]
     ] ],
     [ "action_server.h", "action__server_8h.html", [
+      [ "ActionServerBase", "classgrvc_1_1com_1_1_action_server_base.html", "classgrvc_1_1com_1_1_action_server_base" ],
       [ "ActionServer", "classgrvc_1_1com_1_1_action_server.html", "classgrvc_1_1com_1_1_action_server" ]
     ] ],
     [ "publisher.h", "publisher_8h.html", [

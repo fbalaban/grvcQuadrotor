@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['scalar',['Scalar',['../namespacegrvc_1_1hal.html#aa3ed328260d6c8b55cc0cb67628488f5',1,'grvc::hal']]],
   ['sendfeedback',['sendFeedBack',['../classgrvc_1_1com_1_1_action_server.html#a0c4723a23b6dedb0a25648a1075cd464',1,'grvc::com::ActionServer']]],
   ['serialize_2ecpp',['serialize.cpp',['../serialize_8cpp.html',1,'']]],
   ['server',['Server',['../classgrvc_1_1uav_1_1_server.html',1,'grvc::uav']]],
@@ -21,9 +22,10 @@ var searchData=
   ['subscriber_3c_20double_20_3e',['Subscriber&lt; double &gt;',['../classgrvc_1_1com_1_1_subscriber.html',1,'grvc::com']]],
   ['subscriber_3c_20feedback_20_3e',['Subscriber&lt; FeedBack &gt;',['../classgrvc_1_1com_1_1_subscriber.html',1,'grvc::com']]],
   ['subscriber_3c_20goal_20_3e',['Subscriber&lt; Goal &gt;',['../classgrvc_1_1com_1_1_subscriber.html',1,'grvc::com']]],
+  ['subscriber_3c_20grvc_3a_3ahal_3a_3awaypoint_20_3e',['Subscriber&lt; grvc::hal::Waypoint &gt;',['../classgrvc_1_1com_1_1_subscriber.html',1,'grvc::com']]],
   ['subscriber_3c_20std_3a_3astring_20_3e',['Subscriber&lt; std::string &gt;',['../classgrvc_1_1com_1_1_subscriber.html',1,'grvc::com']]],
-  ['subscriber_3c_20vec3_20_3e',['Subscriber&lt; Vec3 &gt;',['../classgrvc_1_1com_1_1_subscriber.html',1,'grvc::com']]],
   ['subscriber_3c_20void_20_3e',['Subscriber&lt; void &gt;',['../classgrvc_1_1com_1_1_subscriber_3_01void_01_4.html',1,'grvc::com']]],
+  ['subscriber_3c_20waypointlist_20_3e',['Subscriber&lt; WaypointList &gt;',['../classgrvc_1_1com_1_1_subscriber.html',1,'grvc::com']]],
   ['subscriber_5fback_5fend_2ecpp',['subscriber_back_end.cpp',['../subscriber__back__end_8cpp.html',1,'']]],
   ['subscriber_5fback_5fend_2eh',['subscriber_back_end.h',['../subscriber__back__end_8h.html',1,'']]],
   ['subscriber_5fback_5fend_5fros_2ecpp',['subscriber_back_end_ros.cpp',['../subscriber__back__end__ros_8cpp.html',1,'']]],

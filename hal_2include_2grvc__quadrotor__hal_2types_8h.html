@@ -106,18 +106,29 @@ $(document).ready(function(){initNavTree('hal_2include_2grvc__quadrotor__hal_2ty
 
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#namespaces">Namespaces</a> &#124;
 <a href="#typedef-members">Typedefs</a> &#124;
-<a href="#enum-members">Enumerations</a>  </div>
+<a href="#enum-members">Enumerations</a> &#124;
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">types.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;Eigen/Core&gt;</code><br />
 <code>#include &lt;cstdint&gt;</code><br />
+<code>#include &lt;iostream&gt;</code><br />
+<code>#include &lt;<a class="el" href="subscriber_8h_source.html">grvc_com/subscriber.h</a>&gt;</code><br />
+<code>#include &lt;vector&gt;</code><br />
 </div>
 <p><a href="hal_2include_2grvc__quadrotor__hal_2types_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structgrvc_1_1hal_1_1_waypoint.html">grvc::hal::Waypoint</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Define a path point to command uavs.  <a href="structgrvc_1_1hal_1_1_waypoint.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
 Namespaces</h2></td></tr>
 <tr class="memitem:namespacegrvc"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacegrvc.html">grvc</a></td></tr>
@@ -129,6 +140,10 @@ Namespaces</h2></td></tr>
 Typedefs</h2></td></tr>
 <tr class="memitem:af50121d30dbfa22236d648d3442a3f7b"><td class="memItemLeft" align="right" valign="top">typedef Eigen::Vector3d&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacegrvc_1_1hal.html#af50121d30dbfa22236d648d3442a3f7b">grvc::hal::Vec3</a></td></tr>
 <tr class="separator:af50121d30dbfa22236d648d3442a3f7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa3ed328260d6c8b55cc0cb67628488f5"><td class="memItemLeft" align="right" valign="top">typedef double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacegrvc_1_1hal.html#aa3ed328260d6c8b55cc0cb67628488f5">grvc::hal::Scalar</a></td></tr>
+<tr class="separator:aa3ed328260d6c8b55cc0cb67628488f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6479539c375dded1d558e401735e9ac2"><td class="memItemLeft" align="right" valign="top">typedef std::vector&lt; Waypoint &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacegrvc_1_1hal.html#a6479539c375dded1d558e401735e9ac2">grvc::hal::WaypointList</a></td></tr>
+<tr class="separator:a6479539c375dded1d558e401735e9ac2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -139,14 +154,94 @@ Enumerations</h2></td></tr>
  }<tr class="memdesc:a2a48dd60a8c8531b8167c4e139cde2ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">States in which a requested task can be during (or after) execution.  <a href="namespacegrvc_1_1hal.html#a2a48dd60a8c8531b8167c4e139cde2ff">More...</a><br /></td></tr>
 </td></tr>
 <tr class="separator:a2a48dd60a8c8531b8167c4e139cde2ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a44d26043cdf06cf003bedf00fd1c0286"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="hal_2include_2grvc__quadrotor__hal_2types_8h.html#a44d26043cdf06cf003bedf00fd1c0286">operator&lt;&lt;</a> (std::ostream &amp;_os, const <a class="el" href="structgrvc_1_1hal_1_1_waypoint.html">grvc::hal::Waypoint</a> &amp;_wp)</td></tr>
+<tr class="separator:a44d26043cdf06cf003bedf00fd1c0286"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a685c3850f747770a1673dd60ea009272"><td class="memItemLeft" align="right" valign="top">std::istream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="hal_2include_2grvc__quadrotor__hal_2types_8h.html#a685c3850f747770a1673dd60ea009272">operator&gt;&gt;</a> (std::istream &amp;_is, <a class="el" href="structgrvc_1_1hal_1_1_waypoint.html">grvc::hal::Waypoint</a> &amp;_wp)</td></tr>
+<tr class="separator:a685c3850f747770a1673dd60ea009272"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Function Documentation</h2>
+<a class="anchor" id="a44d26043cdf06cf003bedf00fd1c0286"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::ostream&amp; operator&lt;&lt; </td>
+          <td>(</td>
+          <td class="paramtype">std::ostream &amp;&#160;</td>
+          <td class="paramname"><em>_os</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structgrvc_1_1hal_1_1_waypoint.html">grvc::hal::Waypoint</a> &amp;&#160;</td>
+          <td class="paramname"><em>_wp</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="hal_2include_2grvc__quadrotor__hal_2types_8h_source.html#l00053">53</a> of file <a class="el" href="hal_2include_2grvc__quadrotor__hal_2types_8h_source.html">types.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a685c3850f747770a1673dd60ea009272"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::istream&amp; operator&gt;&gt; </td>
+          <td>(</td>
+          <td class="paramtype">std::istream &amp;&#160;</td>
+          <td class="paramname"><em>_is</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structgrvc_1_1hal_1_1_waypoint.html">grvc::hal::Waypoint</a> &amp;&#160;</td>
+          <td class="paramname"><em>_wp</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="hal_2include_2grvc__quadrotor__hal_2types_8h_source.html#l00058">58</a> of file <a class="el" href="hal_2include_2grvc__quadrotor__hal_2types_8h_source.html">types.h</a>.</p>
+
+</div>
+</div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_52c912f73dac9c4c0e442232e1b2bd80.html">hal</a></li><li class="navelem"><a class="el" href="dir_6dff7e51a7506716a97b97d6dc5c6ea1.html">include</a></li><li class="navelem"><a class="el" href="dir_300a4f278b3482bd5bdb69a6ad4c1728.html">grvc_quadrotor_hal</a></li><li class="navelem"><a class="el" href="hal_2include_2grvc__quadrotor__hal_2types_8h.html">types.h</a></li>
-    <li class="footer">Generated on Thu May 12 2016 15:13:56 for grvc_quadrotor by
+    <li class="footer">Generated on Mon May 23 2016 11:51:33 for grvc_quadrotor by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.11 </li>
   </ul>

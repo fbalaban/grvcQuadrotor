@@ -37,7 +37,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "_c_make_c_compiler_id_8c.html",
-"publisher__back__end__ros_8cpp_source.html"
+"publisher_8h.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
